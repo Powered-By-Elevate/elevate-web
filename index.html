@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Elevate Managed Services</title>
@@ -35,7 +36,7 @@
     --mono:    "IBM Plex Mono", "SF Mono", Consolas, monospace;
 
     --measure: 64ch;
-    --shell:   1140px;
+    --shell:   1680px;
   }
 
   /* ---------- tokens: dark (system default, unless an explicit light choice) ---------- */
@@ -120,6 +121,7 @@
     margin-inline: auto;
     padding-inline: 24px;
   }
+  @media (min-width: 1200px) { .shell { padding-inline: 44px; } }
 
   .band { padding-block: 92px; }
   .band--alt { background: var(--ground-alt); }
@@ -146,7 +148,7 @@
   .band-title {
     font-family: var(--display);
     font-weight: 500;
-    font-size: clamp(30px, 4.2vw, 44px);
+    font-size: clamp(30px, 3.4vw, 50px);
     line-height: 1.12;
     letter-spacing: -.01em;
     margin: 0 0 18px;
@@ -191,12 +193,7 @@
     gap: 24px;
     padding-block: 16px;
   }
-  .nav { display: flex; align-items: center; gap: 30px; }
-  .nav a {
-    font-size: 14.5px; color: var(--ink-soft);
-    text-decoration: none; white-space: nowrap;
-  }
-  .nav a:hover { color: var(--teal); }
+  .masthead__actions { display: flex; align-items: center; gap: 12px; }
 
   .btn {
     display: inline-block;
@@ -231,20 +228,30 @@
     bottom: -86px;
     width: min(1500px, 160%);
     height: 300px;
-    opacity: .4;
+    opacity: .55;
     pointer-events: none;
     z-index: 0;
   }
   .hero__inner { position: relative; z-index: 1; }
 
+  .hero__grid { display: grid; gap: 40px; }
+  @media (min-width: 1100px) {
+    .hero__grid {
+      grid-template-columns: 1.35fr 1fr;
+      gap: 72px;
+      align-items: end;
+    }
+    .hero__aside { padding-bottom: 10px; }
+  }
+
   .hero h1 {
     font-family: var(--display);
     font-weight: 500;
-    font-size: clamp(40px, 6.6vw, 74px);
+    font-size: clamp(40px, 6.2vw, 84px);
     line-height: 1.04;
     letter-spacing: -.022em;
-    max-width: 16ch;
-    margin: 0 0 24px;
+    max-width: 15ch;
+    margin: 0;
   }
   .hero h1 em {
     font-style: italic;
@@ -253,7 +260,7 @@
     background-clip: text;
     color: transparent;
   }
-  .hero__sub { font-size: 19px; color: var(--ink-soft); max-width: 56ch; }
+  .hero__sub { font-size: 19px; color: var(--ink-soft); max-width: 52ch; }
   .hero__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
 
   .tagline {
@@ -261,8 +268,8 @@
     font-style: italic;
     font-size: 15.5px;
     color: var(--ink-faint);
-    margin-top: 46px;
-    padding-top: 22px;
+    margin-top: 30px;
+    padding-top: 20px;
     border-top: 1px solid var(--rule-soft);
     max-width: var(--measure);
   }
@@ -272,9 +279,9 @@
   .thesis__line {
     font-family: var(--display);
     font-weight: 400;
-    font-size: clamp(24px, 3.5vw, 38px);
-    line-height: 1.28;
-    max-width: 20ch;
+    font-size: clamp(24px, 2.9vw, 46px);
+    line-height: 1.26;
+    max-width: 26ch;
     margin: 0;
   }
   .thesis__line span { display: block; }
@@ -416,13 +423,56 @@
   .foot__fam strong { color: var(--ink-soft); font-weight: 500; }
   .foot__legal { font-size: 13px; color: var(--ink-faint); margin-top: 26px; }
 
+
+  /* ---------- theme toggle: icon follows the RENDERED theme, pure CSS ---------- */
+  .theme-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; padding: 0;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--ink-soft);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color .18s ease, color .18s ease;
+  }
+  .theme-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .theme-btn svg { width: 17px; height: 17px; display: block; }
+  .theme-btn .i-sun  { display: none; }
+  .theme-btn .i-moon { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-btn .i-sun  { display: block; }
+    :root:not([data-theme="light"]) .theme-btn .i-moon { display: none; }
+  }
+  :root[data-theme="dark"]  .theme-btn .i-sun  { display: block; }
+  :root[data-theme="dark"]  .theme-btn .i-moon { display: none; }
+  :root[data-theme="light"] .theme-btn .i-sun  { display: none; }
+  :root[data-theme="light"] .theme-btn .i-moon { display: block; }
+
+  /* ---------- back to top ---------- */
+  .to-top {
+    position: fixed; right: 24px; bottom: 24px; z-index: 60;
+    width: 46px; height: 46px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--rule);
+    background: var(--card);
+    color: var(--teal);
+    border-radius: 2px;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    opacity: 0; visibility: hidden; transform: translateY(10px);
+    transition: opacity .22s ease, transform .22s ease, visibility .22s, border-color .18s ease;
+  }
+  .to-top.is-on { opacity: 1; visibility: visible; transform: none; }
+  .to-top:hover { border-color: var(--teal); }
+  .to-top svg { width: 18px; height: 18px; display: block; }
+  @media (max-width: 640px) { .to-top { right: 16px; bottom: 16px; } }
+
   /* ---------- responsive ---------- */
   @media (max-width: 940px) {
     .pillars { grid-template-columns: repeat(2, 1fr); }
     .tiers { grid-template-columns: repeat(2, 1fr); }
     .people { grid-template-columns: repeat(2, 1fr); }
     .thesis__grid { grid-template-columns: 1fr; gap: 36px; }
-    .nav { display: none; }
   }
   @media (max-width: 640px) {
     body { font-size: 16px; }
@@ -474,15 +524,13 @@
       </span>
     </a>
 
-    <nav class="nav" aria-label="Primary">
-      <a href="#platform">Platform</a>
-      <a href="#pillars">Pillars</a>
-      <a href="#engagements">Engagements</a>
-      <a href="#who">Who we serve</a>
-      <a href="#leadership">Leadership</a>
-    </nav>
-
-    <a class="btn btn--solid" href="#contact">Book a discovery call</a>
+    <div class="masthead__actions">
+      <button class="theme-btn" id="themeToggle" type="button" aria-label="Switch between light and dark mode">
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+      </button>
+      <a class="btn btn--solid" href="#contact">Book a discovery call</a>
+    </div>
   </div>
 </header>
 
@@ -491,23 +539,30 @@
   <!-- ============ HERO ============ -->
   <section class="hero">
     <svg class="hero__arc" viewBox="0 0 1400 300" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <path d="M-40 268 C 320 208, 760 132, 1440 44" fill="none" stroke="url(#elv-grad-soft)" stroke-width="3"/>
-      <path d="M-40 292 C 340 236, 800 168, 1440 84" fill="none" stroke="url(#elv-grad-soft)" stroke-width="1.5" opacity=".6"/>
+      <path d="M-40 292 C 340 252, 820 206, 1440 166" fill="none" stroke="url(#elv-grad-soft)" stroke-width="3"/>
+      <path d="M-40 304 C 360 270, 840 228, 1440 192" fill="none" stroke="url(#elv-grad-soft)" stroke-width="1.5" opacity=".6"/>
     </svg>
 
     <div class="shell hero__inner">
-      <p class="eyebrow">The Execution Platform</p>
-      <h1>Managed execution for companies that cannot afford <em>open loops</em>.</h1>
-      <p class="hero__sub">
-        Elevate runs finance, compliance, people operations, and business intelligence for a
-        family of operating companies in construction, development, and education. The same
-        team and the same system are now open to outside clients.
-      </p>
-      <div class="hero__cta">
-        <a class="btn btn--solid" href="#contact">Book a discovery call</a>
-        <a class="btn btn--ghost" href="#platform">See how it works</a>
+      <div class="hero__grid">
+        <div>
+          <p class="eyebrow">The Execution Platform</p>
+          <h1>Managed execution for companies that cannot afford <em>open loops</em>.</h1>
+        </div>
+
+        <div class="hero__aside">
+          <p class="hero__sub">
+            Elevate runs finance, compliance, people operations, and business intelligence for a
+            family of operating companies in construction, development, and education. The same
+            team and the same system are now open to outside clients.
+          </p>
+          <div class="hero__cta">
+            <a class="btn btn--solid" href="#contact">Book a discovery call</a>
+            <a class="btn btn--ghost" href="#platform">See how it works</a>
+          </div>
+          <p class="tagline">Strategic Solutions. Personalized Support. Elevated Success.</p>
+        </div>
       </div>
-      <p class="tagline">Strategic Solutions. Personalized Support. Elevated Success.</p>
     </div>
   </section>
 
@@ -783,3 +838,53 @@
     </p>
   </div>
 </footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var KEY = "elv-theme";
+
+  // Respect the browser's setting by default: only stamp when the visitor chose.
+  var stored = null;
+  try { stored = localStorage.getItem(KEY); } catch (e) {}
+  if (stored === "dark" || stored === "light") root.setAttribute("data-theme", stored);
+
+  var toggle = document.getElementById("themeToggle");
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      var set = root.getAttribute("data-theme");
+      var isDark = set ? set === "dark"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      var next = isDark ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem(KEY, next); } catch (e) {}
+    });
+  }
+
+  var top = document.getElementById("toTop");
+  if (top) {
+    var queued = false;
+    function update() {
+      // scrollingElement is correct in both standards and quirks mode
+      var se = document.scrollingElement || document.documentElement;
+      var max = se.scrollHeight - se.clientHeight;
+      var y = window.scrollY || window.pageYOffset || se.scrollTop || 0;
+      top.classList.toggle("is-on", max > 0 && (y / max) > 0.72);
+      queued = false;
+    }
+    window.addEventListener("scroll", function () {
+      if (!queued) { queued = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    update();
+    top.addEventListener("click", function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    });
+  }
+})();
+</script>
