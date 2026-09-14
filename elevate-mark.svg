@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 54" width="70" height="54" role="img" aria-label="Elevate">
+  <defs>
+    <linearGradient id="elv" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0C6980"/>
+      <stop offset="55%" stop-color="#2F9DA8"/>
+      <stop offset="100%" stop-color="#E6C068"/>
+    </linearGradient>
+  </defs>
+  <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#elv)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/>
+</svg>
