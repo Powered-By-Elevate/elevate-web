@@ -342,38 +342,6 @@
     text-transform: uppercase; color: var(--gold-deep); margin-top: auto; padding-top: 10px;
   }
 
-  /* ---------- tiers ---------- */
-  .tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 46px; align-items: start; }
-  .tier {
-    border: 1px solid var(--rule);
-    background: var(--ground);
-    padding: 24px 20px 26px;
-    border-radius: 2px;
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .tier__n { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); letter-spacing: .08em; }
-  .tier h3 { font-family: var(--display); font-size: 23px; font-weight: 500; line-height: 1.1; }
-  .tier p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.55; }
-  /* only the recommended tier is lifted: the card device spent by role */
-  .tier--rec {
-    background: var(--card);
-    border-color: var(--teal);
-    box-shadow: var(--card-shadow);
-    padding-block: 30px 32px;
-  }
-  .tier--rec .tier__n { color: var(--teal); }
-  .tier__badge {
-    align-self: flex-start;
-    font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
-    background: var(--teal); color: #fff; padding: 4px 9px; border-radius: 2px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .tier__badge { color: #06171C; }
-  }
-  :root[data-theme="dark"] .tier__badge { color: #06171C; }
-
-  .tiers__note { margin-top: 20px; font-size: 14.5px; color: var(--ink-faint); max-width: var(--measure); }
-
   /* ---------- verticals ---------- */
   .verticals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; margin-top: 44px; }
   .vertical { border-top: 2px solid var(--teal); padding-top: 18px; }
@@ -395,12 +363,36 @@
     letter-spacing: .05em; margin-top: 12px; display: block;
   }
 
-  /* ---------- leadership ---------- */
-  .people { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-top: 44px; }
-  .person { display: flex; flex-direction: column; gap: 4px; }
-  .person__rule { height: 2px; width: 34px; background: linear-gradient(90deg, var(--teal), var(--gold)); margin-bottom: 12px; }
-  .person h3 { font-family: var(--display); font-size: 21px; font-weight: 500; line-height: 1.15; }
-  .person p { font-size: 14px; color: var(--ink-faint); letter-spacing: .01em; }
+  /* ---------- leadership: a single contact block, not a grid of headshots ---------- */
+  .lead-card {
+    margin-top: 40px;
+    max-width: 640px;
+    border-top: 1px solid var(--rule);
+    padding-top: 26px;
+  }
+  .person__rule { height: 2px; width: 34px; background: linear-gradient(90deg, var(--teal), var(--gold)); margin-bottom: 16px; }
+  .lead-card h3 {
+    font-family: var(--display); font-weight: 500;
+    font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1; margin-bottom: 6px;
+  }
+  .lead-card__role {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 16px;
+  }
+  .lead-card__bio { color: var(--ink-soft); font-size: 16.5px; max-width: 54ch; }
+  .lead-card__contact {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 8px 24px; margin: 24px 0 0; align-items: baseline;
+  }
+  .lead-card__contact dt {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+  .lead-card__contact dd { margin: 0; font-size: 15.5px; color: var(--ink); }
+  @media (max-width: 540px) {
+    .lead-card__contact { grid-template-columns: 1fr; gap: 3px; }
+    .lead-card__contact dd { margin-bottom: 12px; }
+  }
 
   /* ---------- closing ---------- */
   .close { background: var(--ground-deep); color: var(--on-deep); padding-block: 84px; }
@@ -418,9 +410,7 @@
 
   /* ---------- footer ---------- */
   .foot { background: var(--ground); border-top: 1px solid var(--rule-soft); padding-block: 40px 48px; }
-  .foot__row { display: flex; flex-wrap: wrap; gap: 28px; justify-content: space-between; align-items: flex-start; }
-  .foot__fam { font-size: 14px; color: var(--ink-faint); max-width: 48ch; }
-  .foot__fam strong { color: var(--ink-soft); font-weight: 500; }
+  .foot__row { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; }
   .foot__legal { font-size: 13px; color: var(--ink-faint); margin-top: 26px; }
 
 
@@ -451,8 +441,10 @@
   /* ---------- back to top ---------- */
   .to-top {
     position: fixed; right: 24px; bottom: 24px; z-index: 60;
-    width: 46px; height: 46px; padding: 0;
-    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 16px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    font-family: var(--body); font-size: 14px; font-weight: 500;
+    white-space: nowrap;
     border: 1px solid var(--rule);
     background: var(--card);
     color: var(--teal);
@@ -470,15 +462,13 @@
   /* ---------- responsive ---------- */
   @media (max-width: 940px) {
     .pillars { grid-template-columns: repeat(2, 1fr); }
-    .tiers { grid-template-columns: repeat(2, 1fr); }
-    .people { grid-template-columns: repeat(2, 1fr); }
     .thesis__grid { grid-template-columns: 1fr; gap: 36px; }
   }
   @media (max-width: 640px) {
     body { font-size: 16px; }
     .band { padding-block: 64px; }
     .hero { padding-block: 68px 58px; }
-    .pillars, .tiers, .verticals, .people { grid-template-columns: 1fr; }
+    .pillars, .verticals { grid-template-columns: 1fr; }
     .process { grid-template-columns: 1fr; gap: 28px; }
     .step { padding: 0 0 0 18px; border-left: 2px solid var(--rule); }
     .step:first-child { padding-left: 18px; border-left: 2px solid var(--rule); }
@@ -660,52 +650,8 @@
     </div>
   </section>
 
-  <!-- ============ TIERS ============ -->
-  <section class="band band--alt" id="engagements">
-    <div class="shell">
-      <p class="eyebrow">Engagement tiers</p>
-      <h2 class="band-title">Four levels of coverage. One operating standard.</h2>
-      <p class="lede">
-        Scope is set against what your operation actually needs, not a seat count. Tiers can be
-        taken whole or assembled à la carte by pillar.
-      </p>
-
-      <div class="tiers">
-        <article class="tier">
-          <span class="tier__n">00</span>
-          <h3>Core Mini</h3>
-          <p>A first foothold for a single entity. Essential finance and reporting coverage, run on the Elevate cadence.</p>
-        </article>
-
-        <article class="tier">
-          <span class="tier__n">01</span>
-          <h3>Core Lite</h3>
-          <p>Adds meeting cadence, action tracking, and entity-level scorecards, so execution is visible week to week.</p>
-        </article>
-
-        <article class="tier tier--rec">
-          <span class="tier__badge">Recommended</span>
-          <span class="tier__n">02</span>
-          <h3>Core Growth</h3>
-          <p>The full execution layer across multiple pillars, for operators adding entities, projects, or locations.</p>
-        </article>
-
-        <article class="tier">
-          <span class="tier__n">03</span>
-          <h3>Core Enterprise</h3>
-          <p>Multi-entity coverage with consolidated reporting, governance support, and role-based bundles.</p>
-        </article>
-      </div>
-
-      <p class="tiers__note">
-        Role-based bundles and single-pillar engagements are available where a full tier is more
-        than the situation calls for.
-      </p>
-    </div>
-  </section>
-
   <!-- ============ WHO WE SERVE ============ -->
-  <section class="band" id="who">
+  <section class="band band--alt" id="who">
     <div class="shell">
       <p class="eyebrow">Who we serve</p>
       <h2 class="band-title">Built inside an operating company, not a consultancy.</h2>
@@ -732,7 +678,7 @@
   </section>
 
   <!-- ============ PROCESS ============ -->
-  <section class="band band--alt">
+  <section class="band">
     <div class="shell">
       <p class="eyebrow">Getting started</p>
       <h2 class="band-title">Operational by day 31.</h2>
@@ -765,32 +711,25 @@
   </section>
 
   <!-- ============ LEADERSHIP ============ -->
-  <section class="band" id="leadership">
+  <section class="band band--alt" id="leadership">
     <div class="shell">
       <p class="eyebrow">Leadership</p>
-      <h2 class="band-title">The people accountable for the work.</h2>
+      <h2 class="band-title">The person accountable for education engagements.</h2>
 
-      <div class="people">
-        <article class="person">
-          <span class="person__rule"></span>
-          <h3>Walt Gill</h3>
-          <p>Chief Executive Officer</p>
-        </article>
-        <article class="person">
-          <span class="person__rule"></span>
-          <h3>Joseph Fawole</h3>
-          <p>President</p>
-        </article>
-        <article class="person">
-          <span class="person__rule"></span>
-          <h3>Marc Davis</h3>
-          <p>Chief Operating Officer</p>
-        </article>
-        <article class="person">
-          <span class="person__rule"></span>
-          <h3>Anita Russell</h3>
-          <p>Vice President of Finance</p>
-        </article>
+      <div class="lead-card">
+        <span class="person__rule"></span>
+        <h3>Amanda C. Tucker</h3>
+        <p class="lead-card__role">Director of Education &amp; Workforce Development</p>
+        <p class="lead-card__bio">
+          Leads academic-model design, school start-up strategy, partnerships, and the financial
+          and operational planning behind Elevate's education clients.
+        </p>
+        <dl class="lead-card__contact">
+          <dt>Email</dt>
+          <dd><a href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a></dd>
+          <dt>Office</dt>
+          <dd>735 E Main St, First Floor<br>Spartanburg, SC</dd>
+        </dl>
       </div>
     </div>
   </section>
@@ -826,10 +765,6 @@
         </span>
       </a>
 
-      <p class="foot__fam">
-        Part of the True North family of companies, alongside <strong>True North Companies</strong>,
-        <strong>True North K-12</strong>, and <strong>True Places</strong>.
-      </p>
     </div>
 
     <p class="foot__legal">
@@ -841,6 +776,7 @@
 
 <button class="to-top" id="toTop" type="button" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+  <span>Back to top</span>
 </button>
 
 <script>
