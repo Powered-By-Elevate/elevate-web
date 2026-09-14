@@ -336,6 +336,7 @@
     line-height: 1.3; letter-spacing: -.005em;
   }
   .pillar p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.55; }
+  .pillar--filler { min-height: 0; }
   .pillar--lead { background: var(--card); box-shadow: inset 3px 0 0 var(--gold); }
   .pillar__flag {
     font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
@@ -363,36 +364,12 @@
     letter-spacing: .05em; margin-top: 12px; display: block;
   }
 
-  /* ---------- leadership: a single contact block, not a grid of headshots ---------- */
-  .lead-card {
-    margin-top: 40px;
-    max-width: 640px;
-    border-top: 1px solid var(--rule);
-    padding-top: 26px;
-  }
-  .person__rule { height: 2px; width: 34px; background: linear-gradient(90deg, var(--teal), var(--gold)); margin-bottom: 16px; }
-  .lead-card h3 {
-    font-family: var(--display); font-weight: 500;
-    font-size: clamp(26px, 2.6vw, 34px); line-height: 1.1; margin-bottom: 6px;
-  }
-  .lead-card__role {
-    font-family: var(--mono); font-size: 12px; letter-spacing: .1em;
-    text-transform: uppercase; color: var(--teal); margin-bottom: 16px;
-  }
-  .lead-card__bio { color: var(--ink-soft); font-size: 16.5px; max-width: 54ch; }
-  .lead-card__contact {
-    display: grid; grid-template-columns: auto 1fr;
-    gap: 8px 24px; margin: 24px 0 0; align-items: baseline;
-  }
-  .lead-card__contact dt {
-    font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
-    text-transform: uppercase; color: var(--ink-faint);
-  }
-  .lead-card__contact dd { margin: 0; font-size: 15.5px; color: var(--ink); }
-  @media (max-width: 540px) {
-    .lead-card__contact { grid-template-columns: 1fr; gap: 3px; }
-    .lead-card__contact dd { margin-bottom: 12px; }
-  }
+  /* ---------- leadership ---------- */
+  .people { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-top: 44px; }
+  .person { display: flex; flex-direction: column; gap: 4px; }
+  .person__rule { height: 2px; width: 34px; background: linear-gradient(90deg, var(--teal), var(--gold)); margin-bottom: 12px; }
+  .person h3 { font-family: var(--display); font-size: 21px; font-weight: 500; line-height: 1.15; }
+  .person p { font-size: 14px; color: var(--ink-faint); letter-spacing: .01em; }
 
   /* ---------- closing ---------- */
   .close { background: var(--ground-deep); color: var(--on-deep); padding-block: 84px; }
@@ -462,13 +439,15 @@
   /* ---------- responsive ---------- */
   @media (max-width: 940px) {
     .pillars { grid-template-columns: repeat(2, 1fr); }
+    .people { grid-template-columns: repeat(2, 1fr); }
     .thesis__grid { grid-template-columns: 1fr; gap: 36px; }
   }
   @media (max-width: 640px) {
     body { font-size: 16px; }
     .band { padding-block: 64px; }
     .hero { padding-block: 68px 58px; }
-    .pillars, .verticals { grid-template-columns: 1fr; }
+    .pillars, .verticals, .people { grid-template-columns: 1fr; }
+    .pillar--filler { display: none; }
     .process { grid-template-columns: 1fr; gap: 28px; }
     .step { padding: 0 0 0 18px; border-left: 2px solid var(--rule); }
     .step:first-child { padding-left: 18px; border-left: 2px solid var(--rule); }
@@ -589,7 +568,7 @@
   <!-- ============ PILLARS ============ -->
   <section class="band" id="pillars">
     <div class="shell">
-      <p class="eyebrow">Eight service pillars</p>
+      <p class="eyebrow">Seven service pillars</p>
       <h2 class="band-title">Take the whole back office, or take the part that is breaking.</h2>
       <p class="lede">
         Every pillar runs on the same execution layer, so a client who starts with one can add
@@ -635,17 +614,14 @@
           <p>Brand, collateral, and campaign execution held to the same delivery cadence.</p>
         </article>
 
-        <article class="pillar">
-          <span class="pillar__n">07</span>
-          <h3>Information Technology</h3>
-          <p>Infrastructure, access control, and vendor management with a single point of accountability.</p>
-        </article>
 
         <article class="pillar">
-          <span class="pillar__n">08</span>
+          <span class="pillar__n">07</span>
           <h3>Business Intelligence</h3>
           <p>Entity-level scorecards and the reporting layer that sits above them.</p>
         </article>
+
+        <div class="pillar pillar--filler" aria-hidden="true"></div>
       </div>
     </div>
   </section>
@@ -714,22 +690,29 @@
   <section class="band band--alt" id="leadership">
     <div class="shell">
       <p class="eyebrow">Leadership</p>
-      <h2 class="band-title">The person accountable for education engagements.</h2>
+      <h2 class="band-title">The people accountable for the work.</h2>
 
-      <div class="lead-card">
-        <span class="person__rule"></span>
-        <h3>Amanda C. Tucker</h3>
-        <p class="lead-card__role">Director of Education &amp; Workforce Development</p>
-        <p class="lead-card__bio">
-          Leads academic-model design, school start-up strategy, partnerships, and the financial
-          and operational planning behind Elevate's education clients.
-        </p>
-        <dl class="lead-card__contact">
-          <dt>Email</dt>
-          <dd><a href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a></dd>
-          <dt>Office</dt>
-          <dd>735 E Main St, First Floor<br>Spartanburg, SC</dd>
-        </dl>
+      <div class="people">
+        <article class="person">
+          <span class="person__rule"></span>
+          <h3>Amanda C. Tucker</h3>
+          <p>Director of Education &amp; Workforce Development</p>
+        </article>
+        <article class="person">
+          <span class="person__rule"></span>
+          <h3>Anita Russell</h3>
+          <p>Vice President of Finance</p>
+        </article>
+        <article class="person">
+          <span class="person__rule"></span>
+          <h3>Marc Davis</h3>
+          <p>Chief Operating Officer</p>
+        </article>
+        <article class="person">
+          <span class="person__rule"></span>
+          <h3>Joseph Fawole</h3>
+          <p>President</p>
+        </article>
       </div>
     </div>
   </section>
