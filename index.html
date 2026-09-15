@@ -385,6 +385,8 @@
      inside the disc and the monogram behind leaks as a thin ring at the rim. A small
      overfill covers it. Keep zoom >= 1 + 2*|lift|, and lift is 0 on both. */
   .person__disc--masked img { transform: scale(1.045); }
+  /* zoom must stay >= 1 + 2*|lift| or a crescent shows at the bottom of the disc */
+  .person__disc--tucker img { transform: scale(1.22) translateY(-7.7%); }
   /* landscape source: bias the square crop toward the head */
   .person__disc--high img { object-position: center 28%; }
   /* The monogram is pinned to the light-theme teal ramp in BOTH themes: white on the
@@ -725,7 +727,7 @@
 
       <div class="people">
         <article class="person">
-          <div class="person__disc person__disc--masked"><div class="person__mono">AT</div><img src="assets/team-tucker.png" alt="Amanda C. Tucker" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
+          <div class="person__disc person__disc--masked person__disc--tucker"><div class="person__mono">AT</div><img src="assets/team-tucker.png" alt="Amanda C. Tucker" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <span class="person__rule"></span>
           <h3>Amanda C. Tucker</h3>
           <p>Director of Education &amp; Workforce Development</p>
