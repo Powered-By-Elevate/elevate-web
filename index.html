@@ -385,6 +385,8 @@
      inside the disc and the monogram behind leaks as a thin ring at the rim. A small
      overfill covers it. Keep zoom >= 1 + 2*|lift|, and lift is 0 on both. */
   .person__disc--masked img { transform: scale(1.045); }
+  /* landscape source: bias the square crop toward the head */
+  .person__disc--high img { object-position: center 28%; }
   /* The monogram is pinned to the light-theme teal ramp in BOTH themes: white on the
      dark-theme --teal (#3AA6C0) measures 2.6:1 and fails even the large-text floor,
      where white on #0C6980 measures 6.27:1. */
@@ -735,13 +737,13 @@
           <p>Vice President of Finance</p>
         </article>
         <article class="person">
-          <div class="person__disc"><div class="person__mono">MD</div></div>
+          <div class="person__disc"><div class="person__mono">MD</div><img src="assets/team-davis.png" alt="Marc Davis" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <span class="person__rule"></span>
           <h3>Marc Davis</h3>
           <p>Chief Operating Officer</p>
         </article>
         <article class="person">
-          <div class="person__disc"><div class="person__mono">MK</div></div>
+          <div class="person__disc person__disc--high"><div class="person__mono">MK</div><img src="assets/team-knowles.png" alt="Matthew Knowles" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <span class="person__rule"></span>
           <h3>Matthew Knowles</h3>
           <p>Financial Analyst</p>
