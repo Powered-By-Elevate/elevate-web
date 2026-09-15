@@ -387,6 +387,11 @@
   .person__disc--masked img { transform: scale(1.045); }
   /* zoom must stay >= 1 + 2*|lift| or a crescent shows at the bottom of the disc */
   .person__disc--tucker img { transform: scale(1.22) translateY(-7.7%); }
+  /* Landscape source: cover fits it to the disc HEIGHT and crops the sides, so
+     there is no vertical overflow and object-position cannot move it. The crown
+     sat on the top edge and the circle mask cut it. Scale up to create that room,
+     then shift down. Keep zoom >= 1 + 2*|shift| or a gap opens. */
+  .person__disc--knowles img { transform: scale(1.18) translateY(6.5%); }
   /* The monogram is pinned to the light-theme teal ramp in BOTH themes: white on the
      dark-theme --teal (#3AA6C0) measures 2.6:1 and fails even the large-text floor,
      where white on #0C6980 measures 6.27:1. */
@@ -743,7 +748,7 @@
           <p>Chief Operating Officer</p>
         </article>
         <article class="person">
-          <div class="person__disc"><div class="person__mono">MK</div><img src="assets/team-knowles.png" alt="Matthew Knowles" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
+          <div class="person__disc person__disc--knowles"><div class="person__mono">MK</div><img src="assets/team-knowles.png" alt="Matthew Knowles" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <span class="person__rule"></span>
           <h3>Matthew Knowles</h3>
           <p>Financial Analyst</p>
