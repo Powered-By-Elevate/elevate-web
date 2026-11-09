@@ -459,7 +459,7 @@ def services():
     inds = ["Construction", "Retail", "Food &amp; beverage", "Industrial", "Freight", "Software", "Schools"]
     return page("services.html", "Business Services", "Financial management, compliance, operations, people, marketing and business intelligence.",
         hero("Business services", 'Take the whole back office. <span class="it">Or the part that is breaking.</span>',
-             "Every service runs on the same execution layer, so a client who starts with one can add another without rebuilding their reporting. Led by Joseph Fawole.",
+             "Every service runs on the same execution layer, so a client who starts with one can add another without rebuilding their reporting.",
              "bo-papers.jpg", f'<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=Business%20services">Talk to us</a></div>', "center 30%", "page-hero") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run</div>
 <h2 class="h2">Six services. <span class="it">One team accountable.</span></h2></div>
@@ -484,7 +484,7 @@ def education():
     beyond = ["Enrollment &amp; Marketing", "Leadership &amp; Academics", "Community &amp; Workforce Partnerships"]
     return page("education.html", "Elevate Education", "The complete back office for charter and private schools.",
         hero("Education services", 'Built around <span class="it">your school.</span>',
-             "The complete back office for charter and private schools, built around each school's stage, priorities and staff, from the first planning year to every audit after. Led by Amanda C. Tucker.",
+             "The complete back office for charter and private schools, built around each school's stage, priorities and staff, from the first planning year to every audit after.",
              "q3-017.jpg", f'<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=Education%20services">Talk to our education team</a><a class="btn btn--line" href="#launch">Starting a new school?</a></div>', "center", "page-hero") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run for schools</div>
 <h2 class="h2">The money, <span class="it">handled.</span> Every review, <span class="it">ready.</span></h2>
