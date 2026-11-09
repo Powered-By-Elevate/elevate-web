@@ -8,17 +8,9 @@
   --display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
   --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
   --shell: 1240px;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
-  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
-  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
-  color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
-  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
-  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
-  color-scheme: dark }
+
 *, *::before, *::after { box-sizing: border-box }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.65 var(--body); -webkit-font-smoothing: antialiased }
 h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-family: var(--display); font-weight: 500; letter-spacing: -.01em; line-height: 1.08 }
@@ -205,6 +197,45 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-card .chip { font-size: 13.5px; padding: 7px 13px; text-decoration: none; transition: background .2s ease, border-color .2s ease }
 .demo-card .chip:hover { background: rgba(230,192,104,.16); border-color: var(--gold) }
 .featured .btns .btn--line { color: #fff }
+
+/* contact panel */
+.contact { width: min(560px, calc(100% - 32px)); border: 0; border-radius: 26px; padding: clamp(26px, 4vw, 40px); background: var(--card); color: var(--ink); box-shadow: 0 40px 90px -30px rgba(5,42,51,.6) }
+.contact::backdrop { background: rgba(5,42,51,.55); backdrop-filter: blur(3px) }
+.contact[open] { display: grid; gap: 16px }
+.contact h2 { font-size: clamp(32px, 4vw, 44px) }
+.contact p { color: var(--ink2) }
+.contact .eyebrow { margin: 0 }
+.contact__x { position: absolute; top: 14px; right: 14px; margin: 0 }
+.contact__x button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer }
+.contact__mail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); font: 500 17px var(--body); word-break: break-all }
+.contact__mail span { flex: 1; min-width: 0; user-select: all }
+.contact__mail .btn { padding: 10px 16px; font-size: 14px; cursor: pointer; background: transparent; color: var(--teal) }
+.contact__open { display: flex; flex-wrap: wrap; gap: 10px }
+.contact__open .btn--line { color: var(--teal) }
+
+/* contact page */
+.contact-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: clamp(32px, 5vw, 64px); align-items: start }
+.contact-intro { display: grid; gap: 20px; min-width: 0 }
+.contact-intro .note { color: var(--ink2) }
+.contact-card { padding: clamp(26px, 4vw, 42px) }
+.fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px }
+.field { display: grid; gap: 8px; min-width: 0 }
+.field.full { grid-column: 1 / -1 }
+.field label { font: 600 12.5px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2) }
+.field small { font-weight: 400; letter-spacing: 0; text-transform: none }
+.field input, .field select, .field textarea { font: 400 16.5px/1.4 var(--body); padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); width: 100% }
+.field textarea { resize: vertical }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--teal2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal2) 22%, transparent) }
+.contact-card button[type=submit] { margin-top: 20px; border: 0; cursor: pointer }
+.contact-card button[disabled] { opacity: .6; cursor: default }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px }
+.done { display: grid; gap: 12px }
+.done h2 { font-size: clamp(30px, 3.6vw, 42px) }
+.done p { color: var(--ink2) }
+
+[hidden] { display: none !important }
+.mast__end { display: flex; align-items: center; gap: 10px }
+@media (max-width: 860px) { .mast__end { flex-direction: row-reverse } }
 /* closing band and footer */
 .close { text-align: left }
 .close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
@@ -273,13 +304,12 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 .person .ph { width: 168px; height: 168px }
 .close h2 { font-size: clamp(42px, 6vw, 84px) }
 @media (prefers-reduced-motion: reduce) { .card, .tile { transition: none } .card:hover, .tile:hover { transform: none } }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .band:not(.deep)::after { background-image: radial-gradient(rgba(100,198,220,.12) 1px, transparent 1.5px) } }
 </style></head><body><header class="mast"><div class="shell mast__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m20" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m20)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
-<nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html" class="portal" aria-current="page">Client Portal</a></nav></div></header><main><section class="band signin-band"><div class="shell"><div class="signin">
+<div class="mast__end"><nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html" aria-current="page">Client Portal</a></nav></div></div></header><main><section class="band signin-band"><div class="shell"><div class="signin">
 <div class="signin__card card">
 <div class="eyebrow">Client sign-in</div>
 <h1>Sign in to your <span class="it">dashboard.</span></h1>

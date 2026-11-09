@@ -27,17 +27,9 @@ CSS = r"""
   --display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
   --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
   --shell: 1240px;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
-  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
-  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
-  color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
-  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
-  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
-  color-scheme: dark }
+
 *, *::before, *::after { box-sizing: border-box }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.65 var(--body); -webkit-font-smoothing: antialiased }
 h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-family: var(--display); font-weight: 500; letter-spacing: -.01em; line-height: 1.08 }
@@ -224,6 +216,45 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-card .chip { font-size: 13.5px; padding: 7px 13px; text-decoration: none; transition: background .2s ease, border-color .2s ease }
 .demo-card .chip:hover { background: rgba(230,192,104,.16); border-color: var(--gold) }
 .featured .btns .btn--line { color: #fff }
+
+/* contact panel */
+.contact { width: min(560px, calc(100% - 32px)); border: 0; border-radius: 26px; padding: clamp(26px, 4vw, 40px); background: var(--card); color: var(--ink); box-shadow: 0 40px 90px -30px rgba(5,42,51,.6) }
+.contact::backdrop { background: rgba(5,42,51,.55); backdrop-filter: blur(3px) }
+.contact[open] { display: grid; gap: 16px }
+.contact h2 { font-size: clamp(32px, 4vw, 44px) }
+.contact p { color: var(--ink2) }
+.contact .eyebrow { margin: 0 }
+.contact__x { position: absolute; top: 14px; right: 14px; margin: 0 }
+.contact__x button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer }
+.contact__mail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); font: 500 17px var(--body); word-break: break-all }
+.contact__mail span { flex: 1; min-width: 0; user-select: all }
+.contact__mail .btn { padding: 10px 16px; font-size: 14px; cursor: pointer; background: transparent; color: var(--teal) }
+.contact__open { display: flex; flex-wrap: wrap; gap: 10px }
+.contact__open .btn--line { color: var(--teal) }
+
+/* contact page */
+.contact-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: clamp(32px, 5vw, 64px); align-items: start }
+.contact-intro { display: grid; gap: 20px; min-width: 0 }
+.contact-intro .note { color: var(--ink2) }
+.contact-card { padding: clamp(26px, 4vw, 42px) }
+.fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px }
+.field { display: grid; gap: 8px; min-width: 0 }
+.field.full { grid-column: 1 / -1 }
+.field label { font: 600 12.5px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2) }
+.field small { font-weight: 400; letter-spacing: 0; text-transform: none }
+.field input, .field select, .field textarea { font: 400 16.5px/1.4 var(--body); padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); width: 100% }
+.field textarea { resize: vertical }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--teal2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal2) 22%, transparent) }
+.contact-card button[type=submit] { margin-top: 20px; border: 0; cursor: pointer }
+.contact-card button[disabled] { opacity: .6; cursor: default }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px }
+.done { display: grid; gap: 12px }
+.done h2 { font-size: clamp(30px, 3.6vw, 42px) }
+.done p { color: var(--ink2) }
+
+[hidden] { display: none !important }
+.mast__end { display: flex; align-items: center; gap: 10px }
+@media (max-width: 860px) { .mast__end { flex-direction: row-reverse } }
 /* closing band and footer */
 .close { text-align: left }
 .close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
@@ -292,7 +323,6 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 .person .ph { width: 168px; height: 168px }
 .close h2 { font-size: clamp(42px, 6vw, 84px) }
 @media (prefers-reduced-motion: reduce) { .card, .tile { transition: none } .card:hover, .tile:hover { transform: none } }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .band:not(.deep)::after { background-image: radial-gradient(rgba(100,198,220,.12) 1px, transparent 1.5px) } }
 """
 
 MARK = '''<svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m{i}" x1="0" y1="1" x2="1" y2="0">
@@ -334,24 +364,26 @@ def swoosh(op=0.5):
             f'<path d="M-40 500 C 430 466, 900 340, 1480 120" fill="none" stroke="url(#sw{i})" stroke-width="1.3" opacity=".7" vector-effect="non-scaling-stroke"/></svg>')
 
 def nav(current):
-    PC, CUR = ' class="portal"', ' aria-current="page"'
-    links = "".join(f'<a href="{f}"{PC if f == "portal.html" else ""}{CUR if f == current else ""}>{t}</a>' for f, t in PAGES)
+    CUR = ' aria-current="page"'
+    links = "".join(f'<a href="{f}"{CUR if f == current else ""}>{t}</a>' for f, t in PAGES)
     return f'''<header class="mast"><div class="shell mast__row">{lockup()}
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
-<nav class="nav" id="nav" aria-label="Main">{links}</nav></div></header>'''
+<div class="mast__end"><nav class="nav" id="nav" aria-label="Main">{links}</nav></div></div></header>'''
 
 def close_band():
     return f'''<section class="band deep close">{swoosh(.6)}<div class="shell">
 <div class="eyebrow">Ready to partner?</div>
 <h2>Let's start a <span class="it">conversation.</span></h2>
 <p class="lede">Bring the part of the operation that keeps slipping. We will tell you what it would take to run it properly, and what that costs, before you commit to anything.</p>
-<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=Discovery%20call%20request">Book a discovery call</a>
+<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Discovery%20call%20request">Book a discovery call</a>
 <span class="copy" aria-label="Email address">{EMAIL}</span></div></div></section>'''
 
 def footer():
     links = "".join(f'<a href="{f}">{t}</a>' for f, t in PAGES)
     return f'''<footer class="foot"><div class="shell"><div class="foot__row">{lockup()}<nav aria-label="Footer">{links}</nav></div>
 <small>&copy; 2026 Elevate Managed Services. Thoughtful solutions. Brighter tomorrows.</small></div></footer>'''
+
+
 
 SCRIPT = """<script>
 (function(){try{history.scrollRestoration='manual';}catch(e){}
@@ -368,7 +400,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
 def page(fname, title, desc, body):
     head = (f'<title>{title}</title><meta name="description" content="{desc}">'
             '<meta name="claude:viewport-fit-sides" content="cover">' + FONTS + f'<style>{CSS}</style>')
-    inner = f'{nav(fname)}<main>{body}{close_band() if fname != "portal.html" else ""}</main>{footer()}{SCRIPT}'
+    inner = f'{nav(fname)}<main>{body}{close_band() if fname not in ("portal.html", "contact.html") else ""}</main>{footer()}{SCRIPT}'
     bare = PREVIEW and fname == "index.html"
     if bare:
         return head + inner
@@ -458,7 +490,7 @@ def home():
         "Back-office and education services for growing companies and schools across the Southeast.",
         hero("Capacity for today. A stronger tomorrow.", 'A Bolder <span class="it">Solution.</span>',
              "Back-office and education services that take the weight off growing organizations and schools, so leaders can lead.",
-             "bo-team.jpg", f'<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=Discovery%20call%20request">Book a discovery call</a><a class="btn btn--line" href="portal.html">Client portal</a></div>', "72% center") +
+             "bo-team.jpg", f'<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Discovery%20call%20request">Book a discovery call</a><a class="btn btn--line" href="portal.html">Client portal</a></div>', "72% center") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we do</div>
 <h2 class="h2">Two practices. <span class="it">One standard.</span></h2>
 <p class="lede">Elevate is the managed services arm of a family of multi-million dollar companies spanning two states in the Southeast. We partner with organizations and schools at any level to simplify operations, strengthen outcomes and build thriving communities.</p></div>
@@ -498,7 +530,7 @@ def services():
     return page("services.html", "Business Services", "Financial management, compliance, operations, people, marketing and business intelligence.",
         hero("Business services", 'Take the whole back office. <span class="it">Or the part that is breaking.</span>',
              "Every service runs on the same execution layer, so a client who starts with one can add another without rebuilding their reporting.",
-             "bo-papers.jpg", f'<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=Business%20services">Talk to us</a></div>', "center 30%", "page-hero") +
+             "bo-papers.jpg", f'<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Business%20services">Talk to us</a></div>', "center 30%", "page-hero") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run</div>
 <h2 class="h2">Six services. <span class="it">One team accountable.</span></h2></div>
 <div class="grid g3">{svc_cards(BIZ)}</div></div></section>
@@ -523,7 +555,7 @@ def education():
     return page("education.html", "Elevate Education", "The complete back office for charter and private schools.",
         hero("Education services", 'Built around <span class="it">your school.</span>',
              "The complete back office for charter and private schools, built around each school's stage, priorities and staff, from the first planning year to every audit after.",
-             "q3-017.jpg", f'<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=Education%20services">Talk to our education team</a><a class="btn btn--line" href="#launch">Starting a new school?</a></div>', "center", "page-hero") +
+             "q3-017.jpg", f'<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Education%20services">Talk to our education team</a><a class="btn btn--line" href="#launch">Starting a new school?</a></div>', "center", "page-hero") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run for schools</div>
 <h2 class="h2">The money, <span class="it">handled.</span> Every review, <span class="it">ready.</span></h2>
 <p class="lede">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div>
@@ -535,7 +567,7 @@ def education():
 <section class="band deep" id="launch">{swoosh(.45)}<div class="shell split"><div style="display:grid;gap:20px;min-width:0"><div class="eyebrow">Starting a new school?</div>
 <h2 class="h2">From charter to <span class="it">opening day.</span></h2>
 <p class="lede">Our family of companies has built and opened schools. We set up the books, payroll, policies and opening budget during the planning year, so founders can focus on students.</p>
-<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=New%20school%20launch">Plan your launch with us</a></div></div>
+<div class="btns"><a class="btn btn--gold" href="contact.html?topic=New%20school%20launch">Plan your launch with us</a></div></div>
 <div class="frame" style="background-image:url(img/q3-020.jpg)" role="img" aria-label="Aerial view of a newly built charter school campus"></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Three schools. <span class="it">Opened on time.</span></h2>
@@ -596,10 +628,60 @@ else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.rep
 </div></div></section>{js}'''
     return page("portal.html", "Elevate Client Portal", "Sign in to your Elevate BI Dashboard, or explore the demo.", body)
 
+
+# Form delivery: FormSubmit (formsubmit.co) emails each submission to EMAIL. The first
+# submission sends a one-time activation email to that inbox; once its link is clicked,
+# every later submission arrives as a normal email with the visitor as reply-to.
+FORM_URL = "https://formsubmit.co/ajax/" + EMAIL
+
+def contact():
+    import json
+    topics = ["Discovery call request", "Business services", "Education services", "New school launch", "Business Intelligence dashboard", "Something else"]
+    opts = "".join(f'<option>{t}</option>' for t in topics)
+    js = """<script>
+(function(){var URL=%s,E=%s,f=document.getElementById('contactForm'),st=document.getElementById('formStatus');
+var q=new URLSearchParams(location.search).get('topic');if(q){var sel=document.getElementById('topic');for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===q){sel.selectedIndex=i;}}}
+f.addEventListener('submit',function(ev){ev.preventDefault();
+var d={};new FormData(f).forEach(function(v,k){d[k]=String(v).trim();});
+if(d.botcheck){return;}
+var miss=[];if(!d.name)miss.push('your name');if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(d.email||''))miss.push('a valid email');if(!d.message)miss.push('a short message');
+if(miss.length){st.className='msg bad';st.textContent='Please add '+miss.join(', ')+'.';return;}
+var subj=d.topic+' from '+d.name+(d.organization?' ('+d.organization+')':'');
+var btn=f.querySelector('button[type=submit]');
+btn.disabled=true;btn.textContent='Sending\\u2026';
+fetch(URL,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+body:JSON.stringify({_subject:'Website inquiry: '+subj,_template:'table',_captcha:'false',_replyto:d.email,name:d.name,email:d.email,phone:d.phone||'',organization:d.organization||'',topic:d.topic,message:d.message})})
+.then(function(r){return r.json();}).then(function(j){if(!(j.success===true||j.success==='true'))throw 0;f.hidden=true;document.getElementById('formDone').hidden=false;})
+.catch(function(){st.className='msg bad';st.textContent='Something went wrong sending your message. Please try again in a moment.';btn.disabled=false;btn.textContent='Send message';});
+});})();
+</script>""" % (json.dumps(FORM_URL), json.dumps(EMAIL))
+    body = f'''<section class="band"><div class="shell contact-wrap">
+<div class="contact-intro"><div class="eyebrow">Contact</div>
+<h1 class="h2">Let's start a <span class="it">conversation.</span></h1>
+<p class="lede">Tell us a little about your organization and what you need. We reply within one business day to set up a 45 to 60 minute discovery call.</p>
+<p class="note">Prefer email? Write to <span class="copy">{EMAIL}</span></p></div>
+<div class="card contact-card">
+<form id="contactForm" novalidate>
+<div class="fgrid">
+<div class="field"><label for="name">Name</label><input id="name" name="name" autocomplete="name" required></div>
+<div class="field"><label for="email">Work email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+<div class="field"><label for="phone">Phone <small>optional</small></label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+<div class="field"><label for="organization">Company or school</label><input id="organization" name="organization" autocomplete="organization"></div>
+<div class="field full"><label for="topic">What can we help with?</label><select id="topic" name="topic">{opts}</select></div>
+<div class="field full"><label for="message">Message</label><textarea id="message" name="message" rows="5" placeholder="A few lines about your entities or campuses and what is not closing today." required></textarea></div>
+<input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+</div>
+<button class="btn btn--gold" type="submit">Send message</button>
+<p id="formStatus" class="msg" role="status" aria-live="polite"></p>
+</form>
+<div id="formDone" class="done" hidden><div class="eyebrow">Thank you</div><h2>Your inquiry <span class="it">is in.</span></h2><p>Your message has been sent to the Elevate team. We will be in touch within one business day.</p></div>
+</div></div></section>{js}'''
+    return page("contact.html", "Contact Elevate", "Book a discovery call with Elevate Managed Services.", body)
+
 def build():
     OUT.mkdir(exist_ok=True)
     for fn, html in [("index.html", home()), ("about.html", about()), ("services.html", services()),
-                     ("education.html", education()), ("portal.html", portal())]:
+                     ("education.html", education()), ("portal.html", portal()), ("contact.html", contact())]:
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
     # the sign-in page now lives at portal.html; keep old links working
