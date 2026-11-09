@@ -202,7 +202,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-card p { color: var(--on-deep2) }
 .demo-card .eyebrow { color: var(--gold); margin: 0 }
 .demo-card .chips { gap: 8px }
-.demo-card .chip { font-size: 13.5px; padding: 7px 13px }
+.demo-card .chip { font-size: 13.5px; padding: 7px 13px; text-decoration: none; transition: background .2s ease, border-color .2s ease }
+.demo-card .chip:hover { background: rgba(230,192,104,.16); border-color: var(--gold) }
 .featured .btns .btn--line { color: #fff }
 /* closing band and footer */
 .close { text-align: left }
