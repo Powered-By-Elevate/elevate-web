@@ -122,6 +122,17 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 }
 .stat { padding: 34px 26px; border-left: 1px solid rgba(255,255,255,.14) }
 .stat:first-child { border-left: 0 }
+/* client cards */
+.client { border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; background: var(--deep); box-shadow: 0 40px 80px -36px rgba(5,42,51,.6), 0 0 0 1px rgba(255,255,255,.35) }
+.client__logo { height: 260px; display: grid; place-items: center; padding: 34px; background: radial-gradient(120% 90% at 50% 0%, #fff, #f1f5f6) }
+.client__logo img { display: block; max-width: 100%; max-height: 190px; object-fit: contain }
+.client__logo--wide img { width: 82% }
+.client__logo--tall img { height: 190px; width: auto }
+.client__body { flex: 1; padding: 26px 30px 30px; color: #fff; background: radial-gradient(600px 240px at 90% -20%, rgba(47,157,168,.25), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 75%) }
+.client__body b { display: block; font: 500 clamp(40px, 3.6vw, 54px)/1 var(--display); color: var(--gold) }
+.client__body h3 { margin-top: 14px; font-size: 24px; color: #fff }
+.client__body p { margin-top: 8px; font: 400 15px/1.55 var(--body); color: var(--on-deep2) }
+.stat em { display: block; margin-top: 8px; font: 400 15px/1.5 var(--body); font-style: normal; color: var(--on-deep2) }
 .stat b { display: block; font: 500 clamp(48px, 6vw, 72px)/1 var(--display); color: var(--gold) }
 .stat span { display: block; margin-top: 12px; font: 600 12.5px/1.45 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--on-deep2) }
 @media (max-width: 700px) { .stat { border-left: 0; border-top: 1px solid rgba(255,255,255,.14) } .stat:first-child { border-top: 0 } }
@@ -488,6 +499,18 @@ SCHOOLS = [("q3-017.jpg", "Cogito Academy", "Lancaster, SC", "1,000 students"), 
 BUILDS = [("tnc-nova.jpg", "Nova River District", "Rome, GA", "250 homes &middot; completed 2025"), ("tnc-gs.jpg", "Student housing at Georgia Southern", "Statesboro, GA", "82 residences &middot; completed 2026"),
           ("tnc-gt.jpg", "Student housing at Georgia Tech", "Atlanta, GA", "55 residences &middot; underway")]
 
+OUR_CLIENTS = [("client-tnc.png", "True North Companies logo", "tall", "3 years", "True North Companies", "Development, construction and real estate"),
+               ("client-tnk12.png", "TNK12 shield", "tall", "2 years", "TNK12", "School development across South Carolina"),
+               ("client-belton.png", "Belton Preparatory Academy seal", "tall", "Since 2026", "Belton Preparatory Academy", "Public charter school, Belton, SC")]
+
+def clients_band():
+    cards = "".join(f'''<article class="client"><div class="client__logo client__logo--{shape}"><img src="img/{img}" alt="{alt}" loading="lazy"></div>
+<div class="client__body"><b>{yrs}</b><h3>{name}</h3><p>{desc}</p></div></article>''' for img, alt, shape, yrs, name, desc in OUR_CLIENTS)
+    return f'''<section class="band clients"><div class="shell"><div class="head"><div class="eyebrow">Who we serve</div>
+<h2 class="h2">Partners who stay. <span class="it">Year after year.</span></h2>
+<p class="lede">The organizations that trust Elevate with their books, payroll and reporting.</p></div>
+<div class="grid g3">{cards}</div></div></section>'''
+
 def steps(items):
     return '<div class="steps">' + "".join(f'<div class="step"><small>{a}</small><h3>{b}</h3><p>{c}</p></div>' for a, b, c in items) + "</div>"
 
@@ -511,6 +534,7 @@ def home():
 <h2 class="h2">Two practices. <span class="it">One standard.</span></h2>
 <p class="lede">Elevate is the managed services arm of a family of multi-million dollar companies spanning two states in the Southeast. We partner with organizations and schools at any level to simplify operations, strengthen outcomes and build thriving communities.</p></div>
 <div class="grid g3">{t}</div></div></section>
+{clients_band()}
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Schools and communities, <span class="it">built.</span></h2>
 <p class="lede">Our partner companies build and open schools and communities. Elevate keeps the books, the payroll and the reporting behind that work.</p></div>
@@ -537,6 +561,7 @@ def about():
 <section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">What we believe</div>
 <h2 class="h2">How we show up <span class="it">for you.</span></h2></div>
 <div class="beliefs">{bl}</div></div></section>
+{clients_band()}
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Meet the team</div>
 <h2 class="h2">The people you will <span class="it">actually talk to.</span></h2>
 <p class="lede">When you call Elevate, you get one of us. Joseph Fawole leads Elevate and our business services. Amanda C. Tucker leads our work with schools.</p></div>{people()}</div></section>''')

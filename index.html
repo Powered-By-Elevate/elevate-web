@@ -103,6 +103,17 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 }
 .stat { padding: 34px 26px; border-left: 1px solid rgba(255,255,255,.14) }
 .stat:first-child { border-left: 0 }
+/* client cards */
+.client { border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; background: var(--deep); box-shadow: 0 40px 80px -36px rgba(5,42,51,.6), 0 0 0 1px rgba(255,255,255,.35) }
+.client__logo { height: 260px; display: grid; place-items: center; padding: 34px; background: radial-gradient(120% 90% at 50% 0%, #fff, #f1f5f6) }
+.client__logo img { display: block; max-width: 100%; max-height: 190px; object-fit: contain }
+.client__logo--wide img { width: 82% }
+.client__logo--tall img { height: 190px; width: auto }
+.client__body { flex: 1; padding: 26px 30px 30px; color: #fff; background: radial-gradient(600px 240px at 90% -20%, rgba(47,157,168,.25), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 75%) }
+.client__body b { display: block; font: 500 clamp(40px, 3.6vw, 54px)/1 var(--display); color: var(--gold) }
+.client__body h3 { margin-top: 14px; font-size: 24px; color: #fff }
+.client__body p { margin-top: 8px; font: 400 15px/1.55 var(--body); color: var(--on-deep2) }
+.stat em { display: block; margin-top: 8px; font: 400 15px/1.5 var(--body); font-style: normal; color: var(--on-deep2) }
 .stat b { display: block; font: 500 clamp(48px, 6vw, 72px)/1 var(--display); color: var(--gold) }
 .stat span { display: block; margin-top: 12px; font: 600 12.5px/1.45 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--on-deep2) }
 @media (max-width: 700px) { .stat { border-left: 0; border-top: 1px solid rgba(255,255,255,.14) } .stat:first-child { border-top: 0 } }
@@ -320,6 +331,13 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <h2 class="h2">Two practices. <span class="it">One standard.</span></h2>
 <p class="lede">Elevate is the managed services arm of a family of multi-million dollar companies spanning two states in the Southeast. We partner with organizations and schools at any level to simplify operations, strengthen outcomes and build thriving communities.</p></div>
 <div class="grid g3"><a class="tile" href="/services" style="background-image:url(img/bo-desk.jpg);background-position:center"><div><h3>Business Services</h3><p>Take the whole back office, or take the part that is breaking.</p><span class="go">Learn more</span></div></a><a class="tile" href="/education" style="background-image:url(img/q3-017.jpg);background-position:center"><div><h3>Education Services</h3><p>The complete back office for charter and private schools.</p><span class="go">Learn more</span></div></a><a class="tile" href="/services#bi" style="background-image:url(img/dashboard.png);background-position:60% 30%;background-size:150%"><div><h3>Business Intelligence</h3><p>One live financial dashboard for every entity, cut to each role.</p><span class="go">Learn more</span></div></a></div></div></section>
+<section class="band clients"><div class="shell"><div class="head"><div class="eyebrow">Who we serve</div>
+<h2 class="h2">Partners who stay. <span class="it">Year after year.</span></h2>
+<p class="lede">The organizations that trust Elevate with their books, payroll and reporting.</p></div>
+<div class="grid g3"><article class="client"><div class="client__logo client__logo--tall"><img src="img/client-tnc.png" alt="True North Companies logo" loading="lazy"></div>
+<div class="client__body"><b>3 years</b><h3>True North Companies</h3><p>Development, construction and real estate</p></div></article><article class="client"><div class="client__logo client__logo--tall"><img src="img/client-tnk12.png" alt="TNK12 shield" loading="lazy"></div>
+<div class="client__body"><b>2 years</b><h3>TNK12</h3><p>School development across South Carolina</p></div></article><article class="client"><div class="client__logo client__logo--tall"><img src="img/client-belton.png" alt="Belton Preparatory Academy seal" loading="lazy"></div>
+<div class="client__body"><b>Since 2026</b><h3>Belton Preparatory Academy</h3><p>Public charter school, Belton, SC</p></div></article></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Schools and communities, <span class="it">built.</span></h2>
 <p class="lede">Our partner companies build and open schools and communities. Elevate keeps the books, the payroll and the reporting behind that work.</p></div>
