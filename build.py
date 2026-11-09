@@ -190,6 +190,16 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .note { font-size: 15px; color: var(--ink2) }
 .copy { display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); font: 500 15px var(--body); color: var(--ink); user-select: all }
 
+/* portal systems */
+.sysgrp { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; align-items: center; padding: 24px 26px }
+.sysgrp h3 { font-size: 24px }
+.sysgrp .chips { grid-column: 1 / -1; gap: 8px }
+.sysgrp .chip { font-size: 13.5px; padding: 7px 13px }
+.sysintro { display: grid; gap: 10px; padding: 24px 26px }
+.sysintro .eyebrow { margin: 0 }
+.sysintro h3 { font-size: 24px }
+.sysintro p { color: var(--ink2); font-size: 15.5px }
+.sysintro .copy { justify-self: start }
 /* closing band and footer */
 .close { text-align: left }
 .close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
@@ -509,21 +519,24 @@ def education():
 <div class="grid g3">{proof_cards(SCHOOLS)}</div></div></section>''')
 
 def portal():
-    tools = [("doc", "Financial Reports", "Your books and statements in Sage Intacct.", "https://www.intacct.com/ia/acct/login.phtml"),
-             ("pay", "Payroll", "Pay statements, time off and tax forms in ADP.", "https://workforcenow.adp.com"),
-             ("folder", "Documents", "Shared files from your Elevate team in Microsoft 365.", "https://www.office.com"),
-             ("mail", "Support", "Questions, access or a new request for your Elevate team.", f"mailto:{EMAIL}?subject=Client%20support")]
-    tl = "".join(f'<a class="card tool" href="{u}" target="_blank" rel="noopener">{icon(i)}<div><h3>{t}</h3><p>{d}</p></div><span class="arrow" aria-hidden="true">&rarr;</span></a>' for i, t, d, u in tools)
-    return page("portal.html", "Elevate Client Portal", "One place for Elevate clients to sign in to their dashboard, reports, payroll and documents.",
+    groups = [("ledger", "Accounting", ["QuickBooks Online", "Sage Intacct", "Xero", "NetSuite", "Sage 100", "Others on request"]),
+              ("pay", "Payroll and HR", ["ADP", "QuickBooks Payroll", "Rippling", "Gusto", "Paychex", "Paylocity"]),
+              ("folder", "Operations", ["Procore", "Bill.com", "Microsoft 365", "Google Workspace", "Monday.com", "Spreadsheets"])]
+    def chips(names):
+        return "".join(f'<span class="chip">{n}</span>' for n in names)
+    gl = "".join(f'<div class="card sysgrp">{icon(i)}<h3>{t}</h3><div class="chips">{chips(names)}</div></div>' for i, t, names in groups)
+    return page("portal.html", "Elevate Client Portal", "Where Elevate clients sign in to their BI Dashboard.",
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">Client portal</div>
 <h1 class="h2" style="font-size:clamp(44px,6vw,72px)">Everything we run for you, <span class="it">in one place.</span></h1>
-<p class="lede">Sign in to your dashboard, reports, payroll and documents from here. Each tool opens in a new tab with your own sign-in.</p></div>
+<p class="lede">Sign in to your BI Dashboard to see your numbers, your reports and the work behind them. It reads from the systems you already use, so nothing changes for your team.</p></div>
 <div class="portal-hero"><a class="featured deep" href="https://powered-by-elevate.github.io/hub/" target="_blank" rel="noopener">
 <div class="eyebrow">Business Intelligence</div><h2>Your BI <span class="it">Dashboard.</span></h2>
-<p>Your live financial dashboard, read straight from your books and cut to your role. Revenue, margin, cash and the work behind them, every day.</p>
-<span class="btn btn--gold" style="justify-self:start">Open the dashboard &rarr;</span>
+<p>Your live financial dashboard, cut to your role. Revenue, margin, cash, payroll and the work behind them, updated every day.</p>
+<span class="btn btn--gold" style="justify-self:start">Sign in &rarr;</span>
 <img src="img/dashboard.png" alt="" width="1400" height="945" loading="lazy"></a>
-<div class="tools">{tl}<p class="note">New client, or need access? Email <span class="copy">{EMAIL}</span> and your Elevate team will set you up.</p></div></div></div></section>''')
+<div class="tools"><div class="card sysintro"><div class="eyebrow">Works with your systems</div>
+<p>Keep your accounting, payroll and project software. Your dashboard connects to it, whichever one you use.</p></div>{gl}
+<div class="card sysintro"><h3>New client, or need access?</h3><p>Email your Elevate team and we will set you up.</p><span class="copy">{EMAIL}</span></div></div></div></div></section>''')
 
 def build():
     OUT.mkdir(exist_ok=True)
