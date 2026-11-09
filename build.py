@@ -200,6 +200,29 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .sysintro h3 { font-size: 24px }
 .sysintro p { color: var(--ink2); font-size: 15.5px }
 .sysintro .copy { justify-self: start }
+
+/* sign-in */
+.signin { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; align-items: stretch }
+.signin__card { display: grid; gap: 18px; align-content: start; padding: clamp(28px, 4vw, 48px) }
+.signin__card h1 { font-size: clamp(38px, 4.6vw, 58px) }
+.signin__card .eyebrow { margin: 0 }
+.signin form { display: grid; gap: 10px; margin-top: 6px }
+.signin label { font: 600 13px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2) }
+.signin input { font: 400 17px/1.3 var(--body); padding: 16px 18px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); width: 100% }
+.signin input:focus { outline: none; border-color: var(--teal2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal2) 22%, transparent) }
+.signin button { justify-self: start; border: 0; cursor: pointer; margin-top: 6px }
+.msg { font-size: 15.5px; color: var(--ink2); min-height: 1.5em }
+.msg.bad { color: #b3261e }
+.msg.ok { color: var(--teal) }
+.msg .copy { padding: 4px 8px; font-size: 14px }
+.demo-card { position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 18px; align-content: center; border-radius: 26px; padding: clamp(28px, 4vw, 48px); text-decoration: none; color: var(--on-deep); box-shadow: var(--shadow) }
+.demo-card::before { content: ""; position: absolute; inset: 0; background: url(img/grain-dark.png); opacity: .5; z-index: -1 }
+.demo-card h2 { color: #fff; font-size: clamp(32px, 4vw, 46px) }
+.demo-card p { color: var(--on-deep2) }
+.demo-card .eyebrow { color: var(--gold); margin: 0 }
+.demo-card .chips { gap: 8px }
+.demo-card .chip { font-size: 13.5px; padding: 7px 13px }
+.featured .btns .btn--line { color: #fff }
 /* closing band and footer */
 .close { text-align: left }
 .close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
@@ -344,7 +367,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
 def page(fname, title, desc, body):
     head = (f'<title>{title}</title><meta name="description" content="{desc}">'
             '<meta name="claude:viewport-fit-sides" content="cover">' + FONTS + f'<style>{CSS}</style>')
-    inner = f'{nav(fname)}<main>{body}{close_band() if fname != "portal.html" else ""}</main>{footer()}{SCRIPT}'
+    inner = f'{nav("portal.html" if fname == "signin.html" else fname)}<main>{body}{close_band() if fname not in ("portal.html", "signin.html") else ""}</main>{footer()}{SCRIPT}'
     bare = PREVIEW and fname == "index.html"
     if bare:
         return head + inner
@@ -482,7 +505,7 @@ def services():
 <div class="eyebrow">Featured: Business Intelligence</div><h2 class="h2">Every number, <span class="it">live.</span></h2>
 <p class="lede">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click. Clients sign in through the client portal.</p>
 <div class="chips">{"".join(f'<span class="chip">{i}</span>' for i in inds)}</div>
-<div class="btns"><a class="btn btn--gold" href="portal.html">Go to the client portal</a></div></div>
+<div class="btns"><a class="btn btn--gold" href="signin.html">Sign in to your dashboard</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div></div>
 <img src="img/dashboard.png" alt="The Elevate BI Dashboard showing a sample construction company" width="1400" height="945" loading="lazy"></div></section>
 ''')
 
@@ -529,19 +552,58 @@ def portal():
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">Client portal</div>
 <h1 class="h2" style="font-size:clamp(44px,6vw,72px)">Everything we run for you, <span class="it">in one place.</span></h1>
 <p class="lede">Sign in to your BI Dashboard to see your numbers, your reports and the work behind them. It reads from the systems you already use, so nothing changes for your team.</p></div>
-<div class="portal-hero"><a class="featured deep" href="https://powered-by-elevate.github.io/hub/" target="_blank" rel="noopener">
+<div class="portal-hero"><div class="featured deep">
 <div class="eyebrow">Business Intelligence</div><h2>Your BI <span class="it">Dashboard.</span></h2>
 <p>Your live financial dashboard, cut to your role. Revenue, margin, cash, payroll and the work behind them, updated every day.</p>
-<span class="btn btn--gold" style="justify-self:start">Sign in &rarr;</span>
-<img src="img/dashboard.png" alt="" width="1400" height="945" loading="lazy"></a>
+<div class="btns"><a class="btn btn--gold" href="signin.html">Sign in &rarr;</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div>
+<a href="signin.html" aria-label="Sign in to your dashboard"><img src="img/dashboard.png" alt="" width="1400" height="945" loading="lazy"></a></div>
 <div class="tools"><div class="card sysintro"><div class="eyebrow">Works with your systems</div>
 <p>Keep your accounting, payroll and project software. Your dashboard connects to it, whichever one you use.</p></div>{gl}
 <div class="card sysintro"><h3>New client, or need access?</h3><p>Email your Elevate team and we will set you up.</p><span class="copy">{EMAIL}</span></div></div></div></div></section>''')
 
+
+# Client dashboards by email domain. Add one line per client when their dashboard goes live,
+# e.g. "acmebuilders.com": "https://dashboards.elevatemanagedservices.com/acme/".
+# This only routes people to the right page. The dashboard itself does the real sign-in.
+CLIENTS = {}
+DEMO = "https://powered-by-elevate.github.io/hub/"
+
+def signin():
+    import json
+    js = """<script>
+(function(){var C=%s;var f=document.getElementById('signinForm'),e=document.getElementById('email'),m=document.getElementById('msg');
+if(!f)return;f.addEventListener('submit',function(ev){ev.preventDefault();var v=(e.value||'').trim().toLowerCase();
+if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v)){m.className='msg bad';m.textContent='Enter the email address you use for work, like name@company.com.';e.focus();return;}
+var d=v.split('@')[1];var url=C[d];
+if(url){m.className='msg ok';m.textContent='Taking you to your dashboard\\u2026';window.location.href=url;}
+else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.replace(/[<>&]/g,'')+'</b> yet. If you are an Elevate client, email <span class="copy">%s</span> and we will get you set up. In the meantime you can explore the demo.';}
+});})();
+</script>""" % (json.dumps(CLIENTS), EMAIL)
+    body = f'''<section class="band signin-band"><div class="shell"><div class="signin">
+<div class="signin__card card">
+<div class="eyebrow">Client sign-in</div>
+<h1>Sign in to your <span class="it">dashboard.</span></h1>
+<p class="lede">Enter your work email and we will take you to your company's BI Dashboard.</p>
+<form id="signinForm" novalidate>
+<label for="email">Work email</label>
+<input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required>
+<button class="btn btn--teal" type="submit">Continue &rarr;</button>
+</form>
+<p id="msg" class="msg" role="status" aria-live="polite"></p>
+</div>
+<a class="demo-card deep" href="{DEMO}" target="_blank" rel="noopener">
+<div class="eyebrow">Not a client yet?</div>
+<h2>See it with <span class="it">a sample company.</span></h2>
+<p>Pick an industry and a sample company, and explore a live dashboard built the way that business is measured.</p>
+<div class="chips"><span class="chip">Construction</span><span class="chip">Schools</span><span class="chip">Retail</span><span class="chip">Food &amp; beverage</span><span class="chip">Manufacturing</span><span class="chip">Freight</span><span class="chip">Software</span></div>
+<span class="btn btn--gold" style="justify-self:start">View the demo &rarr;</span></a>
+</div></div></section>{js}'''
+    return page("signin.html", "Elevate Client Sign-in", "Sign in to your Elevate BI Dashboard, or explore the demo.", body)
+
 def build():
     OUT.mkdir(exist_ok=True)
     for fn, html in [("index.html", home()), ("about.html", about()), ("services.html", services()),
-                     ("education.html", education()), ("portal.html", portal())]:
+                     ("education.html", education()), ("portal.html", portal()), ("signin.html", signin())]:
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
 
