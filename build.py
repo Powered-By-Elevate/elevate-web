@@ -221,7 +221,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-card p { color: var(--on-deep2) }
 .demo-card .eyebrow { color: var(--gold); margin: 0 }
 .demo-card .chips { gap: 8px }
-.demo-card .chip { font-size: 13.5px; padding: 7px 13px }
+.demo-card .chip { font-size: 13.5px; padding: 7px 13px; text-decoration: none; transition: background .2s ease, border-color .2s ease }
+.demo-card .chip:hover { background: rgba(230,192,104,.16); border-color: var(--gold) }
 .featured .btns .btn--line { color: #fff }
 /* closing band and footer */
 .close { text-align: left }
@@ -558,7 +559,9 @@ def systems_band():
 # e.g. "acmebuilders.com": "https://dashboards.elevatemanagedservices.com/acme/".
 # This only routes people to the right page. The dashboard itself does the real sign-in.
 CLIENTS = {}
-DEMO = "https://powered-by-elevate.github.io/hub/"
+DEMO = "https://powered-by-elevate.github.io/hub/#/choose"
+INDUSTRY_DEMOS = [("Construction", "construction"), ("Schools", "education"), ("Retail", "retail"), ("Food &amp; beverage", "restaurants"),
+                  ("Manufacturing", "industrial"), ("Freight", "logistics"), ("Software", "tech")]
 
 def portal():
     import json
@@ -571,6 +574,7 @@ if(url){m.className='msg ok';m.textContent='Taking you to your dashboard\\u2026'
 else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.replace(/[<>&]/g,'')+'</b> yet. If you are an Elevate client, email <span class="copy">%s</span> and we will get you set up. In the meantime you can explore the demo.';}
 });})();
 </script>""" % (json.dumps(CLIENTS), EMAIL)
+    ind_chips = "".join(f'<a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/{i}" target="_blank" rel="noopener">{n}</a>' for n, i in INDUSTRY_DEMOS)
     body = f'''<section class="band signin-band"><div class="shell"><div class="signin">
 <div class="signin__card card">
 <div class="eyebrow">Client sign-in</div>
@@ -583,12 +587,12 @@ else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.rep
 </form>
 <p id="msg" class="msg" role="status" aria-live="polite"></p>
 </div>
-<a class="demo-card deep" href="{DEMO}" target="_blank" rel="noopener">
+<div class="demo-card deep">
 <div class="eyebrow">Not a client yet?</div>
 <h2>See it with <span class="it">a sample company.</span></h2>
 <p>Pick an industry and a sample company, and explore a live dashboard built the way that business is measured.</p>
-<div class="chips"><span class="chip">Construction</span><span class="chip">Schools</span><span class="chip">Retail</span><span class="chip">Food &amp; beverage</span><span class="chip">Manufacturing</span><span class="chip">Freight</span><span class="chip">Software</span></div>
-<span class="btn btn--gold" style="justify-self:start">View the demo &rarr;</span></a>
+<div class="chips">{ind_chips}</div>
+<a class="btn btn--gold" style="justify-self:start" href="{DEMO}" target="_blank" rel="noopener">View the demo &rarr;</a></div>
 </div></div></section>{js}'''
     return page("portal.html", "Elevate Client Portal", "Sign in to your Elevate BI Dashboard, or explore the demo.", body)
 

@@ -202,7 +202,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-card p { color: var(--on-deep2) }
 .demo-card .eyebrow { color: var(--gold); margin: 0 }
 .demo-card .chips { gap: 8px }
-.demo-card .chip { font-size: 13.5px; padding: 7px 13px }
+.demo-card .chip { font-size: 13.5px; padding: 7px 13px; text-decoration: none; transition: background .2s ease, border-color .2s ease }
+.demo-card .chip:hover { background: rgba(230,192,104,.16); border-color: var(--gold) }
 .featured .btns .btn--line { color: #fff }
 /* closing band and footer */
 .close { text-align: left }
@@ -286,7 +287,7 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <div class="eyebrow">Featured: Business Intelligence</div><h2 class="h2">Every number, <span class="it">live.</span></h2>
 <p class="lede">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click. Clients sign in through the client portal.</p>
 <div class="chips"><span class="chip">Construction</span><span class="chip">Retail</span><span class="chip">Food &amp; beverage</span><span class="chip">Industrial</span><span class="chip">Freight</span><span class="chip">Software</span><span class="chip">Schools</span></div>
-<div class="btns"><a class="btn btn--gold" href="portal.html">Sign in to your dashboard</a><a class="btn btn--line" href="https://powered-by-elevate.github.io/hub/" target="_blank" rel="noopener">View the demo</a></div></div>
+<div class="btns"><a class="btn btn--gold" href="portal.html">Sign in to your dashboard</a><a class="btn btn--line" href="https://powered-by-elevate.github.io/hub/#/choose" target="_blank" rel="noopener">View the demo</a></div></div>
 <img src="img/dashboard.png" alt="The Elevate BI Dashboard showing a sample construction company" width="1400" height="945" loading="lazy"></div></section><section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">Works with your systems</div>
 <h2 class="h2">Keep the software <span class="it">you already use.</span></h2>
 <p class="lede">Your dashboard connects to your accounting, payroll and project systems, whichever ones you run. Nothing changes for your team.</p></div>

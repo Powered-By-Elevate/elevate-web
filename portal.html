@@ -202,7 +202,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-card p { color: var(--on-deep2) }
 .demo-card .eyebrow { color: var(--gold); margin: 0 }
 .demo-card .chips { gap: 8px }
-.demo-card .chip { font-size: 13.5px; padding: 7px 13px }
+.demo-card .chip { font-size: 13.5px; padding: 7px 13px; text-decoration: none; transition: background .2s ease, border-color .2s ease }
+.demo-card .chip:hover { background: rgba(230,192,104,.16); border-color: var(--gold) }
 .featured .btns .btn--line { color: #fff }
 /* closing band and footer */
 .close { text-align: left }
@@ -290,12 +291,12 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 </form>
 <p id="msg" class="msg" role="status" aria-live="polite"></p>
 </div>
-<a class="demo-card deep" href="https://powered-by-elevate.github.io/hub/" target="_blank" rel="noopener">
+<div class="demo-card deep">
 <div class="eyebrow">Not a client yet?</div>
 <h2>See it with <span class="it">a sample company.</span></h2>
 <p>Pick an industry and a sample company, and explore a live dashboard built the way that business is measured.</p>
-<div class="chips"><span class="chip">Construction</span><span class="chip">Schools</span><span class="chip">Retail</span><span class="chip">Food &amp; beverage</span><span class="chip">Manufacturing</span><span class="chip">Freight</span><span class="chip">Software</span></div>
-<span class="btn btn--gold" style="justify-self:start">View the demo &rarr;</span></a>
+<div class="chips"><a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/construction" target="_blank" rel="noopener">Construction</a><a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/education" target="_blank" rel="noopener">Schools</a><a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/retail" target="_blank" rel="noopener">Retail</a><a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/restaurants" target="_blank" rel="noopener">Food &amp; beverage</a><a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/industrial" target="_blank" rel="noopener">Manufacturing</a><a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/logistics" target="_blank" rel="noopener">Freight</a><a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/tech" target="_blank" rel="noopener">Software</a></div>
+<a class="btn btn--gold" style="justify-self:start" href="https://powered-by-elevate.github.io/hub/#/choose" target="_blank" rel="noopener">View the demo &rarr;</a></div>
 </div></div></section><script>
 (function(){var C={};var f=document.getElementById('signinForm'),e=document.getElementById('email'),m=document.getElementById('msg');
 if(!f)return;f.addEventListener('submit',function(ev){ev.preventDefault();var v=(e.value||'').trim().toLowerCase();
