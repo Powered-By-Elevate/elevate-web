@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hub</title>
+  <meta name="description" content="A configurable financial and operational dashboard: one build, any industry, any software stack, any brand.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="hub.css?v=cfc9ac23e4">
+  <link rel="stylesheet" href="world.css?v=cfc9ac23e4">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23176599'/%3E%3Cpath d='M7 17V9m5 8V7m5 10v-5' stroke='white' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body data-base="">
+  <!-- The world (world.css, world.js): the dot grid at a whisper, the part of it
+       that lights around the pointer, and the light trail with a bright segment
+       travelling it. Drawn once here, so a repaint never restarts it. -->
+  <div id="deco" aria-hidden="true">
+    <div class="dots"></div><div class="dots-lit"></div>
+    <svg class="trail" viewBox="0 0 960 430" preserveAspectRatio="xMaxYMid slice" focusable="false">
+      <defs>
+        <filter id="trBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+        <linearGradient id="trFade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="960" y2="0">
+          <stop offset="0" stop-color="#000"/><stop offset=".34" stop-color="#fff"/></linearGradient>
+        <mask id="trMask" maskUnits="userSpaceOnUse" x="-120" y="-60" width="1200" height="560">
+          <rect x="-120" y="-60" width="1200" height="560" fill="url(#trFade)"/></mask>
+      </defs>
+      <g mask="url(#trMask)">
+        <path class="tr-glow" d="M-20 460 C 170 410, 330 322, 470 240 S 760 68, 980 18" filter="url(#trBlur)"/>
+        <path class="tr-core" d="M-20 460 C 170 410, 330 322, 470 240 S 760 68, 980 18"/>
+        <path class="tr-spark-g" d="M-20 460 C 170 410, 330 322, 470 240 S 760 68, 980 18" pathLength="1000" filter="url(#trBlur)"/>
+        <path class="tr-spark" d="M-20 460 C 170 410, 330 322, 470 240 S 760 68, 980 18" pathLength="1000"/>
+      </g>
+    </svg>
+  </div>
+  <div id="shell">
+    <nav id="rail" aria-label="Modules"></nav>
+    <nav id="tabs" aria-label="Pages"></nav>
+    <main id="main">
+      <div id="bar" role="toolbar" aria-label="Scope"></div>
+      <div id="page">
+        <section class="panel"><div class="empty">Loading…</div></section>
+      </div>
+    </main>
+  </div>
+  <noscript>
+    <p style="padding:24px;max-width:60ch">This dashboard is built in the browser from a data
+    extract, so it needs JavaScript. The printed packs it generates do not.</p>
+  </noscript>
+  <script type="module" src="js/app.js?v=cfc9ac23e4"></script>
+</body>
+</html>

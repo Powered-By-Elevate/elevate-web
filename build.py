@@ -255,6 +255,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 [hidden] { display: none !important }
 .mast__end { display: flex; align-items: center; gap: 10px }
 @media (max-width: 860px) { .mast__end { flex-direction: row-reverse } }
+/* back to top */
+.to-top { position: fixed; right: calc(20px + env(safe-area-inset-right, 0px)); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 25; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border: 0; border-radius: 999px; background: var(--deep); color: #fff; font: 600 14px/1 var(--body); cursor: pointer; box-shadow: 0 14px 30px -12px rgba(5,42,51,.6); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s ease, transform .25s ease }
+.to-top.is-on { opacity: 1; transform: none; pointer-events: auto }
+.to-top svg { width: 16px; height: 16px; fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+@media (max-width: 600px) { .to-top span { display: none } .to-top { padding: 13px } }
+@media (prefers-reduced-motion: reduce) { .to-top { transition: none } }
 /* closing band and footer */
 .close { text-align: left }
 .close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
@@ -389,11 +395,17 @@ def footer():
 
 
 
+TOTOP = '<button class="to-top" id="toTop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>Back to top</span></button>'
+
 SCRIPT = """<script>
 (function(){try{history.scrollRestoration='manual';}catch(e){}
 function top(){if(!location.hash){window.scrollTo(0,0);var se=document.scrollingElement||document.documentElement;se.scrollTop=0;document.body.scrollTop=0;}}
 top();window.addEventListener('load',top);window.addEventListener('pageshow',top);
 })();
+(function(){var t=document.getElementById('toTop');if(!t)return;var q=false;
+function u(){var se=document.scrollingElement||document.documentElement;var m=se.scrollHeight-se.clientHeight;t.classList.toggle('is-on',m>0&&(window.scrollY||se.scrollTop)/m>0.35);q=false;}
+addEventListener('scroll',function(){if(!q){q=true;requestAnimationFrame(u);}},{passive:true});addEventListener('resize',u,{passive:true});u();
+t.addEventListener('click',function(){window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});})();
 (function(){var b=document.getElementById('menuBtn'),n=document.getElementById('nav');
 if(b&&n){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});}})();
 </script>"""
@@ -404,7 +416,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
 def page(fname, title, desc, body):
     head = (f'<title>{title}</title><meta name="description" content="{desc}">'
             '<meta name="claude:viewport-fit-sides" content="cover">' + FONTS + f'<style>{CSS}</style>')
-    inner = f'{nav(fname)}<main>{body}{close_band() if fname not in ("portal.html", "contact.html") else ""}</main>{footer()}{SCRIPT}'
+    inner = f'{nav(fname)}<main>{body}{close_band() if fname not in ("portal.html", "contact.html") else ""}</main>{footer()}{TOTOP}{SCRIPT}'
     bare = PREVIEW and fname == "index.html"
     if bare:
         return head + inner
@@ -542,7 +554,7 @@ def services():
 <div class="eyebrow">Featured: Business Intelligence</div><h2 class="h2">Every number, <span class="it">live.</span></h2>
 <p class="lede">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click. Clients sign in through the client portal.</p>
 <div class="chips">{"".join(f'<span class="chip">{i}</span>' for i in inds)}</div>
-<div class="btns"><a class="btn btn--gold" href="/portal">Sign in to your dashboard</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div></div>
+<div class="btns"><a class="btn btn--gold" href="/portal">Sign in to your dashboard</a><a class="btn btn--line" href="{DEMO}" >View the demo</a></div></div>
 <img src="img/dashboard.png" alt="The Elevate BI Dashboard showing a sample construction company" width="1400" height="945" loading="lazy"></div></section>{systems_band()}
 ''')
 
@@ -595,7 +607,7 @@ def systems_band():
 # e.g. "acmebuilders.com": "https://dashboards.elevatemanagedservices.com/acme/".
 # This only routes people to the right page. The dashboard itself does the real sign-in.
 CLIENTS = {}
-DEMO = "https://powered-by-elevate.github.io/hub/#/choose"
+DEMO = "/demo/#/choose"
 INDUSTRY_DEMOS = [("Construction", "construction"), ("Schools", "education"), ("Retail", "retail"), ("Food &amp; beverage", "restaurants"),
                   ("Manufacturing", "industrial"), ("Freight", "logistics"), ("Software", "tech")]
 
@@ -610,7 +622,7 @@ if(url){m.className='msg ok';m.textContent='Taking you to your dashboard\\u2026'
 else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.replace(/[<>&]/g,'')+'</b> yet. If you are an Elevate client, email <span class="copy">%s</span> and we will get you set up. In the meantime you can explore the demo.';}
 });})();
 </script>""" % (json.dumps(CLIENTS), EMAIL)
-    ind_chips = "".join(f'<a class="chip" href="https://powered-by-elevate.github.io/hub/#/demo/{i}" target="_blank" rel="noopener">{n}</a>' for n, i in INDUSTRY_DEMOS)
+    ind_chips = "".join(f'<a class="chip" href="/demo/#/demo/{i}">{n}</a>' for n, i in INDUSTRY_DEMOS)
     body = f'''<section class="band signin-band"><div class="shell"><div class="signin">
 <div class="signin__card card">
 <div class="eyebrow">Client sign-in</div>
@@ -628,7 +640,7 @@ else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.rep
 <h2>See it with <span class="it">a sample company.</span></h2>
 <p>Pick an industry and a sample company, and explore a live dashboard built the way that business is measured.</p>
 <div class="chips">{ind_chips}</div>
-<a class="btn btn--gold" style="justify-self:start" href="{DEMO}" target="_blank" rel="noopener">View the demo &rarr;</a></div>
+<a class="btn btn--gold" style="justify-self:start" href="{DEMO}" >View the demo &rarr;</a></div>
 </div></div></section>{js}'''
     return page("portal.html", "Elevate Client Portal", "Sign in to your Elevate BI Dashboard, or explore the demo.", body)
 
