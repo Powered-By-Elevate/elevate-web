@@ -653,17 +653,17 @@ else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.rep
     return page("portal.html", "Elevate Client Portal", "Sign in to your Elevate BI Dashboard, or explore the demo.", body)
 
 
-# Form delivery. Web3Forms sends each submission to the inbox its access key was made for
-# (hello@elevatemanagedservices.com). Paste the key here and rebuild. Until then the form
-# opens a pre-filled email instead, so nothing is lost.
-FORM_KEY = ""
+# Form delivery: FormSubmit (formsubmit.co) emails each submission to EMAIL. The first
+# submission sends a one-time activation email to that inbox; once its link is clicked,
+# every later submission arrives as a normal email with the visitor as reply-to.
+FORM_URL = "https://formsubmit.co/ajax/" + EMAIL
 
 def contact():
     import json
     topics = ["Discovery call request", "Business services", "Education services", "New school launch", "Business Intelligence dashboard", "Something else"]
     opts = "".join(f'<option>{t}</option>' for t in topics)
     js = """<script>
-(function(){var KEY=%s,E=%s,f=document.getElementById('contactForm'),st=document.getElementById('formStatus');
+(function(){var URL=%s,E=%s,f=document.getElementById('contactForm'),st=document.getElementById('formStatus');
 var q=new URLSearchParams(location.search).get('topic');if(q){var sel=document.getElementById('topic');for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===q){sel.selectedIndex=i;}}}
 f.addEventListener('submit',function(ev){ev.preventDefault();
 var d={};new FormData(f).forEach(function(v,k){d[k]=String(v).trim();});
@@ -671,16 +671,14 @@ if(d.botcheck){return;}
 var miss=[];if(!d.name)miss.push('your name');if(!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(d.email||''))miss.push('a valid email');if(!d.message)miss.push('a short message');
 if(miss.length){st.className='msg bad';st.textContent='Please add '+miss.join(', ')+'.';return;}
 var subj=d.topic+' from '+d.name+(d.organization?' ('+d.organization+')':'');
-var body='Name: '+d.name+'\\nEmail: '+d.email+'\\nPhone: '+(d.phone||'')+'\\nOrganization: '+(d.organization||'')+'\\nTopic: '+d.topic+'\\n\\n'+d.message;
 var btn=f.querySelector('button[type=submit]');
-if(!KEY){st.className='msg';st.innerHTML='Your message is ready. Send it with <a target="_blank" rel="noopener" href="https://outlook.office.com/mail/deeplink/compose?to='+E+'&subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Outlook</a>, <a target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to='+E+'&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Gmail</a> or <a href="mailto:'+E+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">your email app</a>.';return;}
 btn.disabled=true;btn.textContent='Sending\\u2026';
-fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
-body:JSON.stringify({access_key:KEY,subject:'Website: '+subj,from_name:'Elevate website',replyto:d.email,name:d.name,email:d.email,phone:d.phone,organization:d.organization,topic:d.topic,message:d.message})})
-.then(function(r){return r.json();}).then(function(j){if(!j.success)throw 0;f.hidden=true;document.getElementById('formDone').hidden=false;})
-.catch(function(){st.className='msg bad';st.innerHTML='That did not go through. Please try again, or email <b>'+E+'</b>.';btn.disabled=false;btn.textContent='Send message';});
+fetch(URL,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+body:JSON.stringify({_subject:'Website inquiry: '+subj,_template:'table',_captcha:'false',_replyto:d.email,name:d.name,email:d.email,phone:d.phone||'',organization:d.organization||'',topic:d.topic,message:d.message})})
+.then(function(r){return r.json();}).then(function(j){if(!(j.success===true||j.success==='true'))throw 0;f.hidden=true;document.getElementById('formDone').hidden=false;})
+.catch(function(){st.className='msg bad';st.textContent='Something went wrong sending your message. Please try again in a moment.';btn.disabled=false;btn.textContent='Send message';});
 });})();
-</script>""" % (json.dumps(FORM_KEY), json.dumps(EMAIL))
+</script>""" % (json.dumps(FORM_URL), json.dumps(EMAIL))
     body = f'''<section class="band"><div class="shell contact-wrap">
 <div class="contact-intro"><div class="eyebrow">Contact</div>
 <h1 class="h2">Let's start a <span class="it">conversation.</span></h1>
@@ -700,7 +698,7 @@ body:JSON.stringify({access_key:KEY,subject:'Website: '+subj,from_name:'Elevate 
 <button class="btn btn--gold" type="submit">Send message</button>
 <p id="formStatus" class="msg" role="status" aria-live="polite"></p>
 </form>
-<div id="formDone" class="done" hidden><div class="eyebrow">Thank you</div><h2>Your message is <span class="it">on its way.</span></h2><p>We will be in touch within one business day.</p></div>
+<div id="formDone" class="done" hidden><div class="eyebrow">Thank you</div><h2>Your inquiry <span class="it">is in.</span></h2><p>Your message has been sent to the Elevate team. We will be in touch within one business day.</p></div>
 </div></div></section>{js}'''
     return page("contact.html", "Contact Elevate", "Book a discovery call with Elevate Managed Services.", body)
 

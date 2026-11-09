@@ -348,9 +348,9 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <button class="btn btn--gold" type="submit">Send message</button>
 <p id="formStatus" class="msg" role="status" aria-live="polite"></p>
 </form>
-<div id="formDone" class="done" hidden><div class="eyebrow">Thank you</div><h2>Your message is <span class="it">on its way.</span></h2><p>We will be in touch within one business day.</p></div>
+<div id="formDone" class="done" hidden><div class="eyebrow">Thank you</div><h2>Your inquiry <span class="it">is in.</span></h2><p>Your message has been sent to the Elevate team. We will be in touch within one business day.</p></div>
 </div></div></section><script>
-(function(){var KEY="",E="hello@elevatemanagedservices.com",f=document.getElementById('contactForm'),st=document.getElementById('formStatus');
+(function(){var URL="https://formsubmit.co/ajax/hello@elevatemanagedservices.com",E="hello@elevatemanagedservices.com",f=document.getElementById('contactForm'),st=document.getElementById('formStatus');
 var q=new URLSearchParams(location.search).get('topic');if(q){var sel=document.getElementById('topic');for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===q){sel.selectedIndex=i;}}}
 f.addEventListener('submit',function(ev){ev.preventDefault();
 var d={};new FormData(f).forEach(function(v,k){d[k]=String(v).trim();});
@@ -358,14 +358,12 @@ if(d.botcheck){return;}
 var miss=[];if(!d.name)miss.push('your name');if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email||''))miss.push('a valid email');if(!d.message)miss.push('a short message');
 if(miss.length){st.className='msg bad';st.textContent='Please add '+miss.join(', ')+'.';return;}
 var subj=d.topic+' from '+d.name+(d.organization?' ('+d.organization+')':'');
-var body='Name: '+d.name+'\nEmail: '+d.email+'\nPhone: '+(d.phone||'')+'\nOrganization: '+(d.organization||'')+'\nTopic: '+d.topic+'\n\n'+d.message;
 var btn=f.querySelector('button[type=submit]');
-if(!KEY){st.className='msg';st.innerHTML='Your message is ready. Send it with <a target="_blank" rel="noopener" href="https://outlook.office.com/mail/deeplink/compose?to='+E+'&subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Outlook</a>, <a target="_blank" rel="noopener" href="https://mail.google.com/mail/?view=cm&fs=1&to='+E+'&su='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">Gmail</a> or <a href="mailto:'+E+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body)+'">your email app</a>.';return;}
 btn.disabled=true;btn.textContent='Sending\u2026';
-fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
-body:JSON.stringify({access_key:KEY,subject:'Website: '+subj,from_name:'Elevate website',replyto:d.email,name:d.name,email:d.email,phone:d.phone,organization:d.organization,topic:d.topic,message:d.message})})
-.then(function(r){return r.json();}).then(function(j){if(!j.success)throw 0;f.hidden=true;document.getElementById('formDone').hidden=false;})
-.catch(function(){st.className='msg bad';st.innerHTML='That did not go through. Please try again, or email <b>'+E+'</b>.';btn.disabled=false;btn.textContent='Send message';});
+fetch(URL,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+body:JSON.stringify({_subject:'Website inquiry: '+subj,_template:'table',_captcha:'false',_replyto:d.email,name:d.name,email:d.email,phone:d.phone||'',organization:d.organization||'',topic:d.topic,message:d.message})})
+.then(function(r){return r.json();}).then(function(j){if(!(j.success===true||j.success==='true'))throw 0;f.hidden=true;document.getElementById('formDone').hidden=false;})
+.catch(function(){st.className='msg bad';st.textContent='Something went wrong sending your message. Please try again in a moment.';btn.disabled=false;btn.textContent='Send message';});
 });})();
 </script></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m23" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
