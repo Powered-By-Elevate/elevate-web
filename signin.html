@@ -1,0 +1,318 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" href="favicon.svg" type="image/svg+xml"><title>Elevate Client Sign-in</title><meta name="description" content="Sign in to your Elevate BI Dashboard, or explore the demo."><meta name="claude:viewport-fit-sides" content="cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"><style>
+/* layout: a sticky light masthead over alternating paper and deep-teal bands, photography in rounded frames */
+:root {
+  --bg: #f8f6f0; --card: #ffffff; --ink: #2e2e2e; --ink2: #56615f; --line: #dfe5e3;
+  --teal: #0c6980; --teal2: #2f9da8; --gold: #e6c068; --gold2: #a9822f;
+  --deep: #052a33; --deep2: #0d4a58; --on-deep: #eef4f4; --on-deep2: #a9c2c7;
+  --shadow: 0 1px 2px rgba(5,42,51,.06), 0 18px 40px -18px rgba(5,42,51,.28);
+  --display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
+  --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  --shell: 1240px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
+  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
+  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
+  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
+  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
+  color-scheme: dark }
+*, *::before, *::after { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.65 var(--body); -webkit-font-smoothing: antialiased }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-family: var(--display); font-weight: 500; letter-spacing: -.01em; line-height: 1.08 }
+p { margin: 0 }
+a { color: var(--teal) }
+img { max-width: 100%; height: auto; display: block }
+:focus-visible { outline: 2px solid var(--teal2); outline-offset: 3px; border-radius: 4px }
+.shell { max-width: var(--shell); margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+@media (min-width: 900px) { .shell { padding-left: max(40px, env(safe-area-inset-left, 0px)); padding-right: max(40px, env(safe-area-inset-right, 0px)) } }
+.it { font-style: italic; color: var(--teal) }
+.deep .it, .hero .it { color: var(--gold) }
+.eyebrow { font: 600 12px/1 var(--body); letter-spacing: .26em; text-transform: uppercase; color: var(--teal); display: flex; align-items: center; gap: 14px; margin-bottom: 20px }
+.eyebrow::before { content: ""; width: 34px; height: 1.5px; background: var(--gold) }
+.deep .eyebrow { color: var(--teal2) }
+.lede { font-size: 19px; color: var(--ink2); max-width: 62ch }
+.deep .lede { color: var(--on-deep2) }
+.band { padding-block: clamp(64px, 9vw, 112px) }
+.band--card { background: var(--card) }
+.deep { background: radial-gradient(1200px 500px at 85% -10%, rgba(47,157,168,.22), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 70%); color: var(--on-deep) }
+.h2 { font-size: clamp(34px, 4.6vw, 56px) }
+.head { display: grid; gap: 18px; margin-bottom: 48px; max-width: 760px }
+
+/* masthead */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--card) }
+.mast { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+.mast__row { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 76px }
+.lockup { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink) }
+.lockup svg { width: 40px; height: 32px; flex: none }
+.lockup b { display: block; font: 500 24px/1 var(--display); letter-spacing: .08em }
+.lockup small { display: block; font: 600 9.5px/1 var(--body); letter-spacing: .32em; color: var(--ink2); margin-top: 5px }
+.nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end }
+.nav a { font: 500 15px/1 var(--body); color: var(--ink); text-decoration: none; padding: 10px 12px; border-radius: 999px }
+.nav a:hover { color: var(--teal) }
+.nav a[aria-current="page"] { color: var(--teal); box-shadow: inset 0 -2px 0 var(--gold); border-radius: 0 }
+.nav a.portal { background: var(--deep); color: #fff; padding: 11px 18px; margin-left: 6px; border-radius: 999px; box-shadow: none }
+.nav a.portal[aria-current="page"] { background: var(--teal) }
+.menu { display: none }
+@media (max-width: 860px) {
+  .menu { display: inline-flex; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; font: 500 14px var(--body); color: var(--ink) }
+  .nav { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--card); border-bottom: 1px solid var(--line); flex-direction: column; align-items: stretch; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 18px max(16px, env(safe-area-inset-left, 0px)) }
+  .nav.open { display: flex }
+  .nav a { padding: 14px 6px } .nav a.portal { margin: 8px 0 0; text-align: center }
+}
+
+/* buttons */
+.btns { display: flex; flex-wrap: wrap; gap: 12px }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 15px 24px; border-radius: 999px; font: 600 15px/1 var(--body); text-decoration: none; transition: transform .2s ease, box-shadow .2s ease }
+.btn:hover { transform: translateY(-1px) }
+.btn--gold { background: var(--gold); color: #1d1a12; box-shadow: 0 12px 24px -12px rgba(230,192,104,.8) }
+.btn--teal { background: var(--teal); color: #fff }
+.btn--line { border: 1.5px solid currentColor; color: inherit }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none } .btn:hover { transform: none } }
+
+/* hero */
+.hero { position: relative; overflow: hidden; background: var(--deep); color: var(--on-deep) }
+.hero__photo { position: absolute; inset: 0 0 0 42%; background-size: cover; background-position: center }
+.hero__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--deep) 0%, rgba(5,42,51,.55) 26%, rgba(5,42,51,.05) 70%) }
+.hero__in { position: relative; padding-block: clamp(72px, 10vw, 132px); max-width: 640px; display: grid; gap: 26px }
+.hero h1 { font-size: clamp(46px, 7vw, 92px); color: #fff; line-height: 1.0 }
+.hero .lede { color: var(--on-deep2) }
+@media (max-width: 760px) { .hero__photo { inset: 0; opacity: .35 } .hero__photo::after { background: var(--deep); opacity: .6 } }
+.page-hero .hero__in { padding-block: clamp(56px, 8vw, 104px) }
+.page-hero h1 { font-size: clamp(42px, 6vw, 76px) }
+
+/* grids and cards */
+.grid { display: grid; gap: 24px }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)) }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) }
+.g4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)) }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 30px; box-shadow: var(--shadow); min-width: 0 }
+.deep .card { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); box-shadow: none }
+.tile { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 380px; border-radius: 22px; overflow: hidden; color: #fff; text-decoration: none; background: var(--deep) center/cover; box-shadow: var(--shadow) }
+.tile::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(5,42,51,.94)) }
+.tile > div { position: relative; padding: 28px; display: grid; gap: 10px }
+.tile h3 { font-size: 32px; color: #fff }
+.tile p { color: #d7e4e6; font-size: 15.5px }
+.tile .go { font: 600 13px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--gold) }
+.tile:hover .go { text-decoration: underline }
+.icon { width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(160deg, var(--teal2), var(--teal)); color: #fff; flex: none }
+.icon.goldi { background: linear-gradient(160deg, #f0d083, #c9a24a); color: #1d1a12 }
+.icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
+.svc { display: grid; gap: 14px; align-content: start }
+.svc h3 { font-size: 27px }
+.svc p { color: var(--ink2); font-size: 16px }
+.svc ul { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 8px }
+.svc li { position: relative; padding-left: 20px; font-size: 15.5px; color: var(--ink) }
+.svc li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--gold) }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 }
+.stat { padding: 34px 26px; border-left: 1px solid rgba(255,255,255,.14) }
+.stat:first-child { border-left: 0 }
+.stat b { display: block; font: 500 clamp(48px, 6vw, 72px)/1 var(--display); color: var(--gold) }
+.stat span { display: block; margin-top: 12px; font: 600 12.5px/1.45 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--on-deep2) }
+@media (max-width: 700px) { .stat { border-left: 0; border-top: 1px solid rgba(255,255,255,.14) } .stat:first-child { border-top: 0 } }
+
+/* steps */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 24px; counter-reset: s }
+.step { display: grid; gap: 10px; padding-top: 22px; border-top: 2px solid var(--gold) }
+.step small { font: 600 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--teal) }
+.step h3 { font-size: 28px }
+.step p { color: var(--ink2); font-size: 16px }
+.deep .step p { color: var(--on-deep2) }
+.deep .step small { color: var(--teal2) }
+
+/* split feature */
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: clamp(32px, 6vw, 80px); align-items: center }
+.frame { border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 4 / 3; background: var(--deep) center/cover; max-width: 100% }
+.chips { display: flex; flex-wrap: wrap; gap: 10px }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; font: 500 14.5px/1.2 var(--body); border: 1px solid var(--line); background: var(--card) }
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold) }
+.deep .chip { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.16); color: var(--on-deep) }
+
+/* compare table */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px }
+.cmp th, .cmp td { text-align: left; padding: 18px 20px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 16px }
+.cmp th { font: 600 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--ink2) }
+.cmp td:first-child { font-family: var(--display); font-size: 20px; width: 18% }
+.cmp td:last-child { color: var(--teal); font-weight: 500 }
+.scroll { overflow-x: auto; border-radius: 22px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow) }
+
+/* people */
+.people { display: flex; flex-wrap: wrap; justify-content: center; gap: 36px 24px }
+.people .person { width: 190px; max-width: 100% }
+.person { display: grid; justify-items: center; text-align: center; gap: 8px }
+.person .ph { width: 156px; height: 156px; border-radius: 50%; background: var(--deep) center/cover; box-shadow: 0 0 0 4px var(--card), 0 0 0 5.5px var(--gold), var(--shadow); margin-bottom: 10px }
+.person h3 { font-size: 22px }
+.person p { font: 600 11.5px/1.45 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--gold2) }
+
+/* proof cards */
+.proof { position: relative; min-height: 420px; border-radius: 22px; overflow: hidden; display: flex; align-items: flex-end; background: var(--deep) center/cover; box-shadow: var(--shadow) }
+.proof::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(5,42,51,.94)) }
+.proof > div { position: relative; padding: 26px 28px; color: #fff; display: grid; gap: 8px }
+.proof h3 { font-size: 28px; color: #fff }
+.proof small { font: 600 12px/1.5 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--gold) }
+
+/* portal */
+.portal-hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; align-items: stretch }
+.featured { display: grid; gap: 22px; align-content: start; border-radius: 26px; padding: clamp(28px, 4vw, 44px); color: var(--on-deep); text-decoration: none;
+  background: radial-gradient(700px 300px at 90% 0%, rgba(230,192,104,.18), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep)); box-shadow: var(--shadow) }
+.featured h2 { color: #fff; font-size: clamp(32px, 4vw, 46px) }
+.featured p { color: var(--on-deep2) }
+.featured img { border-radius: 14px; margin-top: 6px }
+.tool { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; text-decoration: none; color: var(--ink); padding: 24px 26px }
+.tool h3 { font-size: 24px }
+.tool p { color: var(--ink2); font-size: 15px; margin-top: 4px }
+.tool .arrow { font: 600 22px/1 var(--body); color: var(--teal); transition: transform .2s ease }
+.tool:hover .arrow { transform: translateX(4px) }
+.tools { display: grid; gap: 16px; align-content: start }
+.note { font-size: 15px; color: var(--ink2) }
+.copy { display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); font: 500 15px var(--body); color: var(--ink); user-select: all }
+
+/* portal systems */
+.sysgrp { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; align-items: center; padding: 24px 26px }
+.sysgrp h3 { font-size: 24px }
+.sysgrp .chips { grid-column: 1 / -1; gap: 8px }
+.sysgrp .chip { font-size: 13.5px; padding: 7px 13px }
+.sysintro { display: grid; gap: 10px; padding: 24px 26px }
+.sysintro .eyebrow { margin: 0 }
+.sysintro h3 { font-size: 24px }
+.sysintro p { color: var(--ink2); font-size: 15.5px }
+.sysintro .copy { justify-self: start }
+
+/* sign-in */
+.signin { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; align-items: stretch }
+.signin__card { display: grid; gap: 18px; align-content: start; padding: clamp(28px, 4vw, 48px) }
+.signin__card h1 { font-size: clamp(38px, 4.6vw, 58px) }
+.signin__card .eyebrow { margin: 0 }
+.signin form { display: grid; gap: 10px; margin-top: 6px }
+.signin label { font: 600 13px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2) }
+.signin input { font: 400 17px/1.3 var(--body); padding: 16px 18px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); width: 100% }
+.signin input:focus { outline: none; border-color: var(--teal2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal2) 22%, transparent) }
+.signin button { justify-self: start; border: 0; cursor: pointer; margin-top: 6px }
+.msg { font-size: 15.5px; color: var(--ink2); min-height: 1.5em }
+.msg.bad { color: #b3261e }
+.msg.ok { color: var(--teal) }
+.msg .copy { padding: 4px 8px; font-size: 14px }
+.demo-card { position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 18px; align-content: center; border-radius: 26px; padding: clamp(28px, 4vw, 48px); text-decoration: none; color: var(--on-deep); box-shadow: var(--shadow) }
+.demo-card::before { content: ""; position: absolute; inset: 0; background: url(img/grain-dark.png); opacity: .5; z-index: -1 }
+.demo-card h2 { color: #fff; font-size: clamp(32px, 4vw, 46px) }
+.demo-card p { color: var(--on-deep2) }
+.demo-card .eyebrow { color: var(--gold); margin: 0 }
+.demo-card .chips { gap: 8px }
+.demo-card .chip { font-size: 13.5px; padding: 7px 13px }
+.featured .btns .btn--line { color: #fff }
+/* closing band and footer */
+.close { text-align: left }
+.close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
+.close .lede { margin-block: 18px 30px }
+.foot { padding-block: 40px; border-top: 1px solid var(--line); background: var(--card) }
+.foot__row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between }
+.foot nav { display: flex; flex-wrap: wrap; gap: 6px 18px }
+.foot nav a { color: var(--ink2); text-decoration: none; font-size: 14.5px }
+.foot nav a:hover { color: var(--teal) }
+.foot small { display: block; margin-top: 18px; color: var(--ink2); font-size: 13.5px }
+
+
+/* about page story */
+.story { display: grid; gap: 20px; min-width: 0 }
+.story p { color: var(--ink2); font-size: 18px; max-width: 60ch }
+.story .lead-p { font: 400 clamp(21px, 2.2vw, 25px)/1.5 var(--display); color: var(--ink); font-variation-settings: "opsz" 14 }
+.frame.tall { aspect-ratio: 4 / 5 }
+.pull { font: italic 400 clamp(32px, 4.4vw, 58px)/1.18 var(--display); color: #fff; max-width: 22ch; font-variation-settings: "opsz" 48 }
+.pull .it { color: var(--gold) }
+.beliefs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 36px }
+.belief { display: grid; gap: 12px; align-content: start; padding-top: 24px; border-top: 2px solid var(--gold) }
+.belief h3 { font-size: 30px }
+.belief p { color: var(--ink2); font-size: 17px }
+
+/* ---------- depth layer, carried over from the decks ---------- */
+h1, h2 { font-variation-settings: "opsz" 48 }
+h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
+.eyebrow { font-size: 12.5px; letter-spacing: .32em; gap: 16px }
+.eyebrow::before { width: 48px; height: 2px }
+.h2 { font-size: clamp(40px, 5.4vw, 72px); line-height: 1.02 }
+.band, .hero, .stats-band { position: relative; isolation: isolate }
+.band > .shell, .hero > .shell, .stats-band > .shell { position: relative; z-index: 2 }
+/* paper bands: soft teal and gold light with a faint dot grid */
+.band:not(.deep):not(.band--card)::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(900px 520px at 100% 0%, rgba(47,157,168,.12), transparent 62%), radial-gradient(760px 520px at 0% 100%, rgba(230,192,104,.13), transparent 62%) }
+.band:not(.deep)::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image: radial-gradient(rgba(12,105,128,.16) 1px, transparent 1.5px); background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(70% 60% at 85% 10%, #000, transparent 70%); mask-image: radial-gradient(70% 60% at 85% 10%, #000, transparent 70%) }
+.band--card::after { -webkit-mask-image: radial-gradient(60% 60% at 10% 90%, #000, transparent 70%); mask-image: radial-gradient(60% 60% at 10% 90%, #000, transparent 70%) }
+/* deep bands: film grain, a teal glow and the gold swoosh */
+.deep::before, .hero::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url(img/grain-dark.png); opacity: .55 }
+.deep { background: radial-gradient(900px 460px at 88% -8%, rgba(47,157,168,.30), transparent 62%), radial-gradient(700px 420px at 0% 110%, rgba(230,192,104,.10), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 72%) }
+.swoosh { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 70%; z-index: 1; pointer-events: none }
+.hero h1 { font-size: clamp(50px, 7.6vw, 108px) }
+.hero .eyebrow { color: var(--gold) }
+.hero__photo::after { background: linear-gradient(90deg, var(--deep) 0%, rgba(5,42,51,.72) 24%, rgba(5,42,51,.08) 68%), linear-gradient(0deg, rgba(5,42,51,.55), transparent 40%) }
+/* cards as lifted paper */
+.card { border-radius: 26px; border: 1px solid color-mix(in srgb, var(--card) 70%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 30px 60px -32px rgba(5,42,51,.38), 0 6px 14px -8px rgba(5,42,51,.12); transition: transform .25s ease, box-shadow .25s ease }
+.card:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 40px 70px -32px rgba(5,42,51,.45), 0 8px 16px -8px rgba(5,42,51,.14) }
+.deep .card { background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.035)); border-color: rgba(255,255,255,.14); box-shadow: 0 1px 0 rgba(255,255,255,.16) inset, 0 24px 40px -24px rgba(0,0,0,.5) }
+.icon { width: 58px; height: 58px; border-radius: 17px; background: linear-gradient(145deg, #0e7b95, #0a5466); box-shadow: 0 10px 22px -8px rgba(12,105,128,.6), inset 0 1px 0 rgba(255,255,255,.25) }
+.icon svg { width: 28px; height: 28px }
+.icon.goldi { background: linear-gradient(145deg, #f0d083, #c9a24a); color: #3a2e0e; box-shadow: 0 10px 22px -8px rgba(201,162,74,.7), inset 0 1px 0 rgba(255,255,255,.4) }
+.svc h3 { font-size: 29px }
+.tile, .proof, .frame { border-radius: 28px; box-shadow: 0 40px 80px -36px rgba(5,42,51,.6), 0 0 0 1px rgba(255,255,255,.35) }
+.tile { min-height: 440px; transition: transform .3s ease }
+.tile::after { content: ""; position: absolute; inset: 0; background: inherit; background-size: inherit; z-index: -1 }
+.tile:hover { transform: translateY(-4px) }
+.tile h3 { font-size: 36px }
+.stat b { font-size: clamp(56px, 7vw, 96px) }
+.chip { padding: 10px 18px; background: rgba(12,105,128,.07); border-color: rgba(12,105,128,.18); color: var(--teal) }
+.featured { position: relative; overflow: hidden; isolation: isolate }
+.featured::before { content: ""; position: absolute; inset: 0; background: url(img/grain-dark.png); opacity: .5; z-index: -1 }
+.featured .eyebrow { color: var(--gold) }
+.featured .it { color: var(--gold) }
+.person .ph { width: 168px; height: 168px }
+.close h2 { font-size: clamp(42px, 6vw, 84px) }
+@media (prefers-reduced-motion: reduce) { .card, .tile { transition: none } .card:hover, .tile:hover { transform: none } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .band:not(.deep)::after { background-image: radial-gradient(rgba(100,198,220,.12) 1px, transparent 1.5px) } }
+</style></head><body><header class="mast"><div class="shell mast__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m22" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m22)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
+<button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
+<nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html" class="portal" aria-current="page">Client Portal</a></nav></div></header><main><section class="band signin-band"><div class="shell"><div class="signin">
+<div class="signin__card card">
+<div class="eyebrow">Client sign-in</div>
+<h1>Sign in to your <span class="it">dashboard.</span></h1>
+<p class="lede">Enter your work email and we will take you to your company's BI Dashboard.</p>
+<form id="signinForm" novalidate>
+<label for="email">Work email</label>
+<input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required>
+<button class="btn btn--teal" type="submit">Continue &rarr;</button>
+</form>
+<p id="msg" class="msg" role="status" aria-live="polite"></p>
+</div>
+<a class="demo-card deep" href="https://powered-by-elevate.github.io/hub/" target="_blank" rel="noopener">
+<div class="eyebrow">Not a client yet?</div>
+<h2>See it with <span class="it">a sample company.</span></h2>
+<p>Pick an industry and a sample company, and explore a live dashboard built the way that business is measured.</p>
+<div class="chips"><span class="chip">Construction</span><span class="chip">Schools</span><span class="chip">Retail</span><span class="chip">Food &amp; beverage</span><span class="chip">Manufacturing</span><span class="chip">Freight</span><span class="chip">Software</span></div>
+<span class="btn btn--gold" style="justify-self:start">View the demo &rarr;</span></a>
+</div></div></section><script>
+(function(){var C={};var f=document.getElementById('signinForm'),e=document.getElementById('email'),m=document.getElementById('msg');
+if(!f)return;f.addEventListener('submit',function(ev){ev.preventDefault();var v=(e.value||'').trim().toLowerCase();
+if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.className='msg bad';m.textContent='Enter the email address you use for work, like name@company.com.';e.focus();return;}
+var d=v.split('@')[1];var url=C[d];
+if(url){m.className='msg ok';m.textContent='Taking you to your dashboard\u2026';window.location.href=url;}
+else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.replace(/[<>&]/g,'')+'</b> yet. If you are an Elevate client, email <span class="copy">hello@elevatemanagedservices.com</span> and we will get you set up. In the meantime you can explore the demo.';}
+});})();
+</script></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m23" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m23)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html">Client Portal</a></nav></div>
+<small>&copy; 2026 Elevate Managed Services. Thoughtful solutions. Brighter tomorrows.</small></div></footer><script>
+(function(){try{history.scrollRestoration='manual';}catch(e){}
+function top(){if(!location.hash){window.scrollTo(0,0);var se=document.scrollingElement||document.documentElement;se.scrollTop=0;document.body.scrollTop=0;}}
+top();window.addEventListener('load',top);window.addEventListener('pageshow',top);
+})();
+(function(){var b=document.getElementById('menuBtn'),n=document.getElementById('nav');
+if(b&&n){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});}})();
+</script></body></html>
