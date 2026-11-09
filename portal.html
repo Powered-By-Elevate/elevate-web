@@ -103,6 +103,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 }
 .stat { padding: 34px 26px; border-left: 1px solid rgba(255,255,255,.14) }
 .stat:first-child { border-left: 0 }
+.stat em { display: block; margin-top: 8px; font: 400 15px/1.5 var(--body); font-style: normal; color: var(--on-deep2) }
+.clients .stat span { color: var(--on-deep); font-size: 13.5px }
+.clients .stat b { font-size: clamp(48px, 4.4vw, 64px); white-space: nowrap }
 .stat b { display: block; font: 500 clamp(48px, 6vw, 72px)/1 var(--display); color: var(--gold) }
 .stat span { display: block; margin-top: 12px; font: 600 12.5px/1.45 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--on-deep2) }
 @media (max-width: 700px) { .stat { border-left: 0; border-top: 1px solid rgba(255,255,255,.14) } .stat:first-child { border-top: 0 } }
@@ -310,9 +313,9 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 .person .ph { width: 168px; height: 168px }
 .close h2 { font-size: clamp(42px, 6vw, 84px) }
 @media (prefers-reduced-motion: reduce) { .card, .tile { transition: none } .card:hover, .tile:hover { transform: none } }
-</style></head><body><header class="mast"><div class="shell mast__row"><a class="lockup" href="/" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m20" x1="0" y1="1" x2="1" y2="0">
+</style></head><body><header class="mast"><div class="shell mast__row"><a class="lockup" href="/" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m22" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
-<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m20)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m22)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
 <div class="mast__end"><nav class="nav" id="nav" aria-label="Main"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/education">Education</a><a href="/portal" aria-current="page">Client Portal</a></nav></div></div></header><main><section class="band signin-band"><div class="shell"><div class="signin">
@@ -341,9 +344,9 @@ var d=v.split('@')[1];var url=C[d];
 if(url){m.className='msg ok';m.textContent='Taking you to your dashboard\u2026';window.location.href=url;}
 else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.replace(/[<>&]/g,'')+'</b> yet. If you are an Elevate client, email <span class="copy">hello@elevatemanagedservices.com</span> and we will get you set up. In the meantime you can explore the demo.';}
 });})();
-</script></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="/" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m21" x1="0" y1="1" x2="1" y2="0">
+</script></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="/" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m23" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
-<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m21)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m23)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><nav aria-label="Footer"><a href="/">Home</a><a href="/about">About</a><a href="/services">Services</a><a href="/education">Education</a><a href="/portal">Client Portal</a></nav></div>
 <small>&copy; 2026 Elevate Managed Services. Thoughtful solutions. Brighter tomorrows.</small></div></footer><button class="to-top" id="toTop" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>Back to top</span></button><script>
 (function(){try{history.scrollRestoration='manual';}catch(e){}
