@@ -632,14 +632,16 @@ else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.rep
 # Form delivery: FormSubmit (formsubmit.co) emails each submission to EMAIL. The first
 # submission sends a one-time activation email to that inbox; once its link is clicked,
 # every later submission arrives as a normal email with the visitor as reply-to.
-FORM_URL = "https://formsubmit.co/ajax/" + EMAIL
+FORM_TO = "mknowles@true-north-companies.com"   # receives the activation email; swap for the FormSubmit alias once activated
+FORM_CC = EMAIL
+FORM_URL = "https://formsubmit.co/ajax/" + FORM_TO
 
 def contact():
     import json
     topics = ["Discovery call request", "Business services", "Education services", "New school launch", "Business Intelligence dashboard", "Something else"]
     opts = "".join(f'<option>{t}</option>' for t in topics)
     js = """<script>
-(function(){var URL=%s,E=%s,f=document.getElementById('contactForm'),st=document.getElementById('formStatus');
+(function(){var URL=%s,CC=%s,E=%s,f=document.getElementById('contactForm'),st=document.getElementById('formStatus');
 var q=new URLSearchParams(location.search).get('topic');if(q){var sel=document.getElementById('topic');for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===q){sel.selectedIndex=i;}}}
 f.addEventListener('submit',function(ev){ev.preventDefault();
 var d={};new FormData(f).forEach(function(v,k){d[k]=String(v).trim();});
@@ -650,11 +652,11 @@ var subj=d.topic+' from '+d.name+(d.organization?' ('+d.organization+')':'');
 var btn=f.querySelector('button[type=submit]');
 btn.disabled=true;btn.textContent='Sending\\u2026';
 fetch(URL,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
-body:JSON.stringify({_subject:'Website inquiry: '+subj,_template:'table',_captcha:'false',_replyto:d.email,name:d.name,email:d.email,phone:d.phone||'',organization:d.organization||'',topic:d.topic,message:d.message})})
+body:JSON.stringify({_cc:CC,_subject:'Website inquiry: '+subj,_template:'table',_captcha:'false',_replyto:d.email,name:d.name,email:d.email,phone:d.phone||'',organization:d.organization||'',topic:d.topic,message:d.message})})
 .then(function(r){return r.json();}).then(function(j){if(!(j.success===true||j.success==='true'))throw 0;f.hidden=true;document.getElementById('formDone').hidden=false;})
 .catch(function(){st.className='msg bad';st.textContent='Something went wrong sending your message. Please try again in a moment.';btn.disabled=false;btn.textContent='Send message';});
 });})();
-</script>""" % (json.dumps(FORM_URL), json.dumps(EMAIL))
+</script>""" % (json.dumps(FORM_URL), json.dumps(FORM_CC), json.dumps(EMAIL))
     body = f'''<section class="band"><div class="shell contact-wrap">
 <div class="contact-intro"><div class="eyebrow">Contact</div>
 <h1 class="h2">Let's start a <span class="it">conversation.</span></h1>
