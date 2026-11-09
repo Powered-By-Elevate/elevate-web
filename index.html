@@ -1,854 +1,306 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Elevate Managed Services</title>
-<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 54"%3E%3ClinearGradient id="g" x1="0" y1="1" x2="1" y2="0"%3E%3Cstop offset="0%25" stop-color="%230C6980"/%3E%3Cstop offset="55%25" stop-color="%232F9DA8"/%3E%3Cstop offset="100%25" stop-color="%23E6C068"/%3E%3C/linearGradient%3E%3Cpath d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(%23g)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/%3E%3Cpath d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="%23E6C068"/%3E%3C/svg%3E'>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap">
-
-<style>
-  /* ---------- tokens: light (bare :root defines the complete palette) ---------- */
-  :root {
-    --teal:        #0C6980;
-    --teal-deep:   #08404F;
-    --teal-lift:   #128CA8;
-    --gold:        #E6C068;
-    --gold-deep:   #B8913C;
-
-    --ink:         #2E2E2E;
-    --ink-soft:    #55605F;
-    --ink-faint:   #7C8785;
-
-    --ground:      #FFFFFF;
-    --ground-alt:  #F4F6F6;
-    --ground-deep: #0E2A31;
-    --rule:        #DDE4E4;
-    --rule-soft:   #EAEFEF;
-
-    --on-deep:        #EEF4F4;
-    --on-deep-soft:   #A9C2C7;
-    --card:           #FFFFFF;
-    --card-shadow:    0 1px 2px rgba(12,105,128,.06), 0 12px 32px rgba(12,105,128,.09);
-
-    --display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, "Times New Roman", serif;
-    --body:    "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
-    --mono:    "IBM Plex Mono", "SF Mono", Consolas, monospace;
-
-    --measure: 64ch;
-    --shell:   1680px;
-  }
-
-  /* ---------- tokens: dark (system default, unless an explicit light choice) ---------- */
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --teal:        #3AA6C0;
-      --teal-deep:   #041E26;
-      --teal-lift:   #64C6DC;
-      --gold:        #E9C97E;
-      --gold-deep:   #C9A459;
-
-      --ink:         #E7EEEE;
-      --ink-soft:    #A8BCBF;
-      --ink-faint:   #7C9599;
-
-      --ground:      #0B1416;
-      --ground-alt:  #111D20;
-      --ground-deep: #071216;
-      --rule:        #22343A;
-      --rule-soft:   #1A2A2F;
-
-      --on-deep:        #E7EEEE;
-      --on-deep-soft:   #93AEB3;
-      --card:           #121F22;
-      --card-shadow:    0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.34);
-    }
-  }
-
-  /* ---------- tokens: dark (explicit choice wins over a light OS) ---------- */
-  :root[data-theme="dark"] {
-    --teal:        #3AA6C0;
-    --teal-deep:   #041E26;
-    --teal-lift:   #64C6DC;
-    --gold:        #E9C97E;
-    --gold-deep:   #C9A459;
-
-    --ink:         #E7EEEE;
-    --ink-soft:    #A8BCBF;
-    --ink-faint:   #7C9599;
-
-    --ground:      #0B1416;
-    --ground-alt:  #111D20;
-    --ground-deep: #071216;
-    --rule:        #22343A;
-    --rule-soft:   #1A2A2F;
-
-    --on-deep:        #E7EEEE;
-    --on-deep-soft:   #93AEB3;
-    --card:           #121F22;
-    --card-shadow:    0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.34);
-  }
-
-  /* ---------- base ---------- */
-  *, *::before, *::after { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    background: var(--ground);
-    color: var(--ink);
-    font-family: var(--body);
-    font-size: 17px;
-    line-height: 1.62;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  h1, h2, h3 { text-wrap: balance; margin: 0; }
-  p { margin: 0; }
-  img, svg { max-width: 100%; }
-
-  a { color: var(--teal); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-
-  :focus-visible {
-    outline: 2px solid var(--teal-lift);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
-
-  .shell {
-    width: 100%;
-    max-width: var(--shell);
-    margin-inline: auto;
-    padding-inline: 24px;
-  }
-  @media (min-width: 1200px) { .shell { padding-inline: 44px; } }
-
-  .band { padding-block: 92px; }
-  .band--alt { background: var(--ground-alt); }
-
-  /* eyebrow label, used once per band */
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 11.5px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin: 0 0 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .eyebrow::before {
-    content: "";
-    width: 26px; height: 2px;
-    background: linear-gradient(90deg, var(--teal), var(--gold));
-    flex: none;
-  }
-
-  .band-title {
-    font-family: var(--display);
-    font-weight: 500;
-    font-size: clamp(30px, 3.4vw, 50px);
-    line-height: 1.12;
-    letter-spacing: -.01em;
-    margin: 0 0 18px;
-  }
-
-  .lede {
-    color: var(--ink-soft);
-    max-width: var(--measure);
-    font-size: 18px;
-  }
-
-  /* ---------- brand lockup ---------- */
-  .lockup { display: flex; align-items: center; gap: 12px; min-width: 0; text-decoration: none; color: inherit; }
-  .lockup__mark { width: 36px; height: 28px; flex: none; }
-  .lockup__word {
-    font-family: var(--display);
-    font-weight: 600;
-    font-size: 21px;
-    letter-spacing: .17em;
-    line-height: 1;
-    text-transform: uppercase;
-  }
-  .lockup__sub {
-    font-family: var(--body);
-    font-size: 9.5px;
-    font-weight: 500;
-    letter-spacing: .24em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-top: 5px;
-  }
-
-  /* ---------- header ---------- */
-  .masthead {
-    position: sticky; top: 0; z-index: 50;
-    background: color-mix(in srgb, var(--ground) 88%, transparent);
-    backdrop-filter: saturate(1.4) blur(10px);
-    border-bottom: 1px solid var(--rule-soft);
-  }
-  .masthead__row {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 24px;
-    padding-block: 16px;
-  }
-  .masthead__actions { display: flex; align-items: center; gap: 12px; }
-
-  .btn {
-    display: inline-block;
-    font-family: var(--body);
-    font-size: 14.5px; font-weight: 500;
-    padding: 11px 20px;
-    border-radius: 2px;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: background .18s ease, color .18s ease, border-color .18s ease;
-  }
-  .btn--solid { background: var(--teal); color: #fff; border: 1px solid var(--teal); }
-  .btn--solid:hover { background: var(--teal-deep); border-color: var(--teal-deep); }
-  :root[data-theme="dark"] .btn--solid,
-  .btn--solid { color: #fff; }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .btn--solid { color: #06171C; }
-  }
-  :root[data-theme="dark"] .btn--solid { color: #06171C; }
-
-  .btn--ghost { border: 1px solid var(--rule); color: var(--ink); }
-  .btn--ghost:hover { border-color: var(--teal); color: var(--teal); }
-
-  .btn--gold { background: var(--gold); color: #2E2308; border: 1px solid var(--gold); }
-  .btn--gold:hover { background: var(--gold-deep); border-color: var(--gold-deep); }
-
-  /* ---------- hero ---------- */
-  .hero { position: relative; overflow: hidden; padding-block: 104px 84px; }
-  .hero__arc {
-    position: absolute;
-    left: 50%; transform: translateX(-50%);
-    bottom: -86px;
-    width: min(1500px, 160%);
-    height: 300px;
-    opacity: .55;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .hero__inner { position: relative; z-index: 1; }
-
-  .hero__grid { display: grid; gap: 40px; }
-  @media (min-width: 1100px) {
-    .hero__grid {
-      grid-template-columns: 1.35fr 1fr;
-      gap: 72px;
-      align-items: end;
-    }
-    .hero__aside { padding-bottom: 10px; }
-  }
-
-  .hero h1 {
-    font-family: var(--display);
-    font-weight: 500;
-    font-size: clamp(40px, 6.2vw, 84px);
-    line-height: 1.04;
-    letter-spacing: -.022em;
-    max-width: 15ch;
-    margin: 0;
-  }
-  .hero h1 em {
-    font-style: italic;
-    background: linear-gradient(96deg, var(--teal-lift), var(--gold));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .hero__sub { font-size: 19px; color: var(--ink-soft); max-width: 52ch; }
-  .hero__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
-
-  .tagline {
-    font-family: var(--display);
-    font-style: italic;
-    font-size: 15.5px;
-    color: var(--ink-faint);
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid var(--rule-soft);
-    max-width: var(--measure);
-  }
-
-  /* ---------- thesis (the characteristic Elevate line) ---------- */
-  .thesis { background: var(--ground-deep); color: var(--on-deep); padding-block: 74px; }
-  .thesis__line {
-    font-family: var(--display);
-    font-weight: 400;
-    font-size: clamp(24px, 2.9vw, 46px);
-    line-height: 1.26;
-    max-width: 26ch;
-    margin: 0;
-  }
-  .thesis__line span { display: block; }
-  .thesis__line span:nth-child(2) { color: var(--on-deep-soft); padding-left: 1.2em; }
-  .thesis__line span:nth-child(3) {
-    padding-left: 2.4em;
-    background: linear-gradient(92deg, var(--gold), var(--teal-lift));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .thesis__grid {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: 56px;
-    align-items: center;
-  }
-  .thesis__body { color: var(--on-deep-soft); max-width: 46ch; }
-  .thesis__body strong { color: var(--on-deep); font-weight: 500; }
-
-  /* ---------- mechanics list ---------- */
-  .mechanics { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 0; }
-  .mechanics li {
-    display: flex; gap: 14px; align-items: baseline;
-    padding-block: 12px;
-    border-top: 1px solid rgba(169,194,199,.18);
-    color: var(--on-deep-soft);
-    font-size: 15.5px;
-  }
-  .mechanics li:last-child { border-bottom: 1px solid rgba(169,194,199,.18); }
-  .mechanics b { color: var(--gold); font-family: var(--mono); font-size: 12px; font-weight: 500; flex: none; }
-
-  /* ---------- pillars ---------- */
-  .pillars {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 1px;
-    background: var(--rule);
-    border: 1px solid var(--rule);
-    margin-top: 46px;
-  }
-  .pillar {
-    grid-column: span 3;
-    background: var(--ground);
-    padding: 26px 22px 28px;
-    display: flex; flex-direction: column; gap: 9px;
-    min-height: 196px;
-  }
-  .pillar:nth-child(n+5) { grid-column: span 4; }
-  .pillar__n {
-    font-family: var(--mono); font-size: 12px; font-weight: 500;
-    color: var(--teal); letter-spacing: .06em;
-  }
-  .pillar h3 {
-    font-family: var(--body); font-size: 16px; font-weight: 600;
-    line-height: 1.3; letter-spacing: -.005em;
-  }
-  .pillar p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.55; }
-  .pillar--lead { background: var(--card); box-shadow: inset 3px 0 0 var(--gold); }
-  .pillar__flag {
-    font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
-    text-transform: uppercase; color: var(--gold-deep); margin-top: auto; padding-top: 10px;
-  }
-
-  /* ---------- verticals ---------- */
-  .verticals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; margin-top: 44px; }
-  .vertical { border-top: 2px solid var(--teal); padding-top: 18px; }
-  .vertical h3 { font-family: var(--display); font-size: 24px; font-weight: 500; margin-bottom: 8px; line-height: 1.15; }
-  .vertical p { font-size: 15px; color: var(--ink-soft); }
-
-  /* ---------- process (a true sequence, so it is numbered) ---------- */
-  .process { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 46px; }
-  .step { padding: 0 26px; border-left: 1px solid var(--rule); }
-  .step:first-child { padding-left: 0; border-left: 0; }
-  .step__n {
-    font-family: var(--mono); font-size: 12px; color: var(--teal);
-    letter-spacing: .08em; display: block; margin-bottom: 10px;
-  }
-  .step h3 { font-family: var(--body); font-size: 17px; font-weight: 600; margin-bottom: 7px; }
-  .step p { font-size: 15px; color: var(--ink-soft); }
-  .step__when {
-    font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
-    letter-spacing: .05em; margin-top: 12px; display: block;
-  }
-
-  /* ---------- leadership ---------- */
-  /* FIVE people, and five is prime, so no column grid divides it: every tier
-     would strand an orphan hard left. A centred flex row is the answer instead -
-     whatever does not fill the last line centres itself. Percentage bases, not
-     pixel ones, so the wrap math scales with the shell rather than guessing at it. */
-  .people { display: flex; flex-wrap: wrap; justify-content: center;
-            gap: 34px clamp(16px, 2vw, 28px); margin-top: 44px; }
-  .person { flex: 0 1 17.5%; min-width: 0;
-            display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0; }
-  /* Capped at 190px because the smallest source headshot is 197px square. Nothing on
-     this page is ever asked to upscale - the blur law carried over from the K-12 build. */
-  .person__disc {
-    width: 100%; max-width: 190px; aspect-ratio: 1; border-radius: 50%;
-    margin-inline: auto; overflow: hidden; position: relative; background: var(--rule-soft);
-  }
-  .person__disc img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  /* Joseph and Will are circle-masked thumbnails, so the soft mask edge stops a hair
-     inside the disc and the monogram behind leaks as a thin ring at the rim. A small
-     overfill covers it. Keep zoom >= 1 + 2*|lift|, and lift is 0 on both. */
-  .person__disc--masked img { transform: scale(1.045); }
-  /* zoom must stay >= 1 + 2*|lift| or a crescent shows at the bottom of the disc */
-  .person__disc--tucker img { transform: scale(1.22) translateY(-7.7%); }
-  /* Matthew carries NO transform: his source is cropped square at build time from the
-     2000x1600 original to head = 51% of the frame and eyeline = 42%, which is what
-     Russell and Davis measure. A CSS zoom on top of that is what made him read as
-     leaning out of the disc. Reframe the source, never fight it with scale(). */
-  /* The monogram is pinned to the light-theme teal ramp in BOTH themes: white on the
-     dark-theme --teal (#3AA6C0) measures 2.6:1 and fails even the large-text floor,
-     where white on #0C6980 measures 6.27:1. */
-  .person__mono {
-    position: absolute; inset: 0; display: grid; place-items: center;
-    background: linear-gradient(150deg, #0C6980 0%, #08404F 100%);
-    color: #FFFFFF; font-family: var(--display);
-    font-size: clamp(24px, 2.6vw, 34px); font-weight: 500; letter-spacing: .04em;
-  }
-  .person__rule { height: 2px; width: 34px; background: linear-gradient(90deg, var(--teal), var(--gold)); margin: 18px 0 8px; }
-  .person h3 { font-family: var(--display); font-size: 20px; font-weight: 500; line-height: 1.15; }
-  .person p { font-size: 13.5px; color: var(--ink-faint); letter-spacing: .01em; line-height: 1.45; margin-top: 4px; }
-
-  /* ---------- closing ---------- */
-  .close { background: var(--ground-deep); color: var(--on-deep); padding-block: 84px; }
-  .close h2 {
-    font-family: var(--display); font-weight: 500;
-    font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; max-width: 18ch; margin: 0 0 18px;
-  }
-  .close p { color: var(--on-deep-soft); max-width: 52ch; font-size: 17.5px; }
-  .close__cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 30px; }
-  .close__mail {
-    font-family: var(--mono); font-size: 15px; color: var(--gold);
-    text-decoration: none; border-bottom: 1px solid rgba(233,201,126,.4); padding-bottom: 2px;
-  }
-  .close__mail:hover { border-bottom-color: var(--gold); }
-
-  /* ---------- footer ---------- */
-  .foot { background: var(--ground); border-top: 1px solid var(--rule-soft); padding-block: 40px 48px; }
-  .foot__row { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; }
-  .foot__legal { font-size: 13px; color: var(--ink-faint); margin-top: 26px; }
-
-
-  /* ---------- theme toggle: icon follows the RENDERED theme, pure CSS ---------- */
-  .theme-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 38px; height: 38px; padding: 0;
-    border: 1px solid var(--rule);
-    background: transparent;
-    color: var(--ink-soft);
-    border-radius: 2px;
-    cursor: pointer;
-    transition: border-color .18s ease, color .18s ease;
-  }
-  .theme-btn:hover { border-color: var(--teal); color: var(--teal); }
-  .theme-btn svg { width: 17px; height: 17px; display: block; }
-  .theme-btn .i-sun  { display: none; }
-  .theme-btn .i-moon { display: block; }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .theme-btn .i-sun  { display: block; }
-    :root:not([data-theme="light"]) .theme-btn .i-moon { display: none; }
-  }
-  :root[data-theme="dark"]  .theme-btn .i-sun  { display: block; }
-  :root[data-theme="dark"]  .theme-btn .i-moon { display: none; }
-  :root[data-theme="light"] .theme-btn .i-sun  { display: none; }
-  :root[data-theme="light"] .theme-btn .i-moon { display: block; }
-
-  /* ---------- back to top ---------- */
-  .to-top {
-    position: fixed; right: 24px; bottom: 24px; z-index: 60;
-    height: 44px; padding: 0 16px;
-    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-    font-family: var(--body); font-size: 14px; font-weight: 500;
-    white-space: nowrap;
-    border: 1px solid var(--rule);
-    background: var(--card);
-    color: var(--teal);
-    border-radius: 2px;
-    cursor: pointer;
-    box-shadow: var(--card-shadow);
-    opacity: 0; visibility: hidden; transform: translateY(10px);
-    transition: opacity .22s ease, transform .22s ease, visibility .22s, border-color .18s ease;
-  }
-  .to-top.is-on { opacity: 1; visibility: visible; transform: none; }
-  .to-top:hover { border-color: var(--teal); }
-  .to-top svg { width: 18px; height: 18px; display: block; }
-  @media (max-width: 640px) { .to-top { right: 16px; bottom: 16px; } }
-
-  /* ---------- responsive ---------- */
-  @media (max-width: 940px) {
-    .pillars { grid-template-columns: repeat(2, 1fr); }
-    .pillar, .pillar:nth-child(n+5) { grid-column: auto; }
-    .pillar:last-child { grid-column: span 2; }
-    .person { flex-basis: 30%; }
-    .thesis__grid { grid-template-columns: 1fr; gap: 36px; }
-  }
-  @media (max-width: 640px) {
-    body { font-size: 16px; }
-    .band { padding-block: 64px; }
-    .hero { padding-block: 68px 58px; }
-    .pillars, .verticals { grid-template-columns: 1fr; }
-    .person { flex-basis: 42%; }
-    .people { gap: 30px 16px; }
-    .pillar, .pillar:nth-child(n+5), .pillar:last-child { grid-column: auto; }
-    .process { grid-template-columns: 1fr; gap: 28px; }
-    .step { padding: 0 0 0 18px; border-left: 2px solid var(--rule); }
-    .step:first-child { padding-left: 18px; border-left: 2px solid var(--rule); }
-    .masthead .btn { display: none; }
-    .lockup__word { font-size: 18px; letter-spacing: .14em; }
-    .lockup__sub { font-size: 8.5px; letter-spacing: .2em; }
-    .thesis__line span:nth-child(2) { padding-left: .6em; }
-    .thesis__line span:nth-child(3) { padding-left: 1.2em; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
-  }
-</style>
-
-<!-- shared gradient definitions for the brand arc -->
-<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-  <defs>
-    <linearGradient id="elv-grad" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0%"   stop-color="#0C6980"/>
-      <stop offset="55%"  stop-color="#2F9DA8"/>
-      <stop offset="100%" stop-color="#E6C068"/>
-    </linearGradient>
-    <linearGradient id="elv-grad-soft" x1="0" y1="1" x2="1" y2="0">
-      <stop offset="0%"   stop-color="#0C6980" stop-opacity=".0"/>
-      <stop offset="35%"  stop-color="#0C6980" stop-opacity=".55"/>
-      <stop offset="72%"  stop-color="#2F9DA8" stop-opacity=".5"/>
-      <stop offset="100%" stop-color="#E6C068" stop-opacity=".0"/>
-    </linearGradient>
-  </defs>
-</svg>
-
-<header class="masthead">
-  <div class="shell masthead__row">
-    <a class="lockup" href="#top" aria-label="Elevate Managed Services, home">
-      <svg class="lockup__mark" viewBox="0 0 70 54" aria-hidden="true" focusable="false">
-        <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#elv-grad)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/>
-      </svg>
-      <span>
-        <span class="lockup__word">Elevate</span>
-        <span class="lockup__sub" style="display:block">Managed Services</span>
-      </span>
-    </a>
-
-    <div class="masthead__actions">
-      <button class="theme-btn" id="themeToggle" type="button" aria-label="Switch between light and dark mode">
-        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
-      </button>
-      <a class="btn btn--solid" href="#contact">Book a discovery call</a>
-    </div>
-  </div>
-</header>
-
-<main id="top">
-
-  <!-- ============ HERO ============ -->
-  <section class="hero">
-    <svg class="hero__arc" viewBox="0 0 1400 300" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <path d="M-40 292 C 340 252, 820 206, 1440 166" fill="none" stroke="url(#elv-grad-soft)" stroke-width="3"/>
-      <path d="M-40 304 C 360 270, 840 228, 1440 192" fill="none" stroke="url(#elv-grad-soft)" stroke-width="1.5" opacity=".6"/>
-    </svg>
-
-    <div class="shell hero__inner">
-      <div class="hero__grid">
-        <div>
-          <p class="eyebrow">The Execution Platform</p>
-          <h1>Managed execution for companies that cannot afford <em>open loops</em>.</h1>
-        </div>
-
-        <div class="hero__aside">
-          <p class="hero__sub">
-            Elevate runs finance, compliance, people operations, and business intelligence for a
-            family of operating companies in construction, development, and education. The same
-            team and the same system are now open to outside clients.
-          </p>
-          <div class="hero__cta">
-            <a class="btn btn--solid" href="#contact">Book a discovery call</a>
-            <a class="btn btn--ghost" href="#platform">See how it works</a>
-          </div>
-          <p class="tagline">Strategic Solutions. Personalized Support. Elevated Success.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ THE CENTRAL EXECUTION LAYER ============ -->
-  <section class="thesis" id="platform">
-    <div class="shell thesis__grid">
-      <div>
-        <p class="eyebrow" style="color:var(--gold)">The Central Execution Layer</p>
-        <p class="thesis__line">
-          <span>Decisions become tasks.</span>
-          <span>Tasks become outcomes.</span>
-          <span>Outcomes become metrics.</span>
-        </p>
-      </div>
-      <div>
-        <p class="thesis__body">
-          Traditional outsourcing hands you a vendor. Elevate embeds a team inside your
-          operation and holds it to your numbers. <strong>One scorecard, one source of
-          truth,</strong> and a standing record of what was decided and whether it actually
-          happened.
-        </p>
-        <ul class="mechanics">
-          <li><b>01</b> Agreements turned into operating workflows</li>
-          <li><b>02</b> Decisions tracked through to completion</li>
-          <li><b>03</b> Repeatable workflows instead of heroics</li>
-          <li><b>04</b> Risks surfaced early, while they are still cheap</li>
-          <li><b>05</b> Clear owners and a clear path of escalation</li>
-          <li><b>06</b> Reporting that reconciles to one set of books</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PILLARS ============ -->
-  <section class="band" id="pillars">
-    <div class="shell">
-      <p class="eyebrow">Seven service pillars</p>
-      <h2 class="band-title">Take the whole back office, or take the part that is breaking.</h2>
-      <p class="lede">
-        Every pillar runs on the same execution layer, so a client who starts with one can add
-        another without rebuilding their reporting.
-      </p>
-
-      <div class="pillars">
-        <article class="pillar pillar--lead">
-          <span class="pillar__n">01</span>
-          <h3>Financial Management</h3>
-          <p>Month-end close, reporting packages, budgets and forecasts, and lender-facing materials.</p>
-          <span class="pillar__flag">Lead product</span>
-        </article>
-
-        <article class="pillar">
-          <span class="pillar__n">02</span>
-          <h3>Compliance</h3>
-          <p>Filings, policy, and audit readiness held to a calendar rather than a scramble.</p>
-        </article>
-
-        <article class="pillar">
-          <span class="pillar__n">03</span>
-          <h3>Operations &amp; Execution</h3>
-          <p>Meeting cadence and action tracking, so what gets committed in a room survives the week.</p>
-        </article>
-
-        <article class="pillar pillar--lead">
-          <span class="pillar__n">04</span>
-          <h3>HR, Payroll &amp; People</h3>
-          <p>Onboarding, documents, and manager tooling in one employee home base.</p>
-          <span class="pillar__flag">The Hub, powered by Elevate</span>
-        </article>
-
-        <article class="pillar">
-          <span class="pillar__n">05</span>
-          <h3>Education Management</h3>
-          <p>Full-scale back office built for charter and private K-12 operators.</p>
-        </article>
-
-        <article class="pillar">
-          <span class="pillar__n">06</span>
-          <h3>Marketing</h3>
-          <p>Brand, collateral, and campaign execution held to the same delivery cadence.</p>
-        </article>
-
-
-        <article class="pillar">
-          <span class="pillar__n">07</span>
-          <h3>Business Intelligence</h3>
-          <p>Entity-level scorecards and the reporting layer that sits above them.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ WHO WE SERVE ============ -->
-  <section class="band band--alt" id="who">
-    <div class="shell">
-      <p class="eyebrow">Who we serve</p>
-      <h2 class="band-title">Built inside an operating company, not a consultancy.</h2>
-      <p class="lede">
-        Elevate was built to run the back office of a working portfolio, and every entity in that
-        portfolio is a client. What goes to market is proven capacity, not a pitch deck.
-      </p>
-
-      <div class="verticals">
-        <article class="vertical">
-          <h3>Education</h3>
-          <p>Charter and private K-12 operators who need a finance and compliance function that can stand up to an authorizer.</p>
-        </article>
-        <article class="vertical">
-          <h3>Real estate</h3>
-          <p>Operating companies and sponsors carrying development pipelines, lender reporting, and entity-level books.</p>
-        </article>
-        <article class="vertical">
-          <h3>Family offices</h3>
-          <p>Holding companies with several entities under one roof and no appetite for several back offices.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PROCESS ============ -->
-  <section class="band">
-    <div class="shell">
-      <p class="eyebrow">Getting started</p>
-      <h2 class="band-title">Operational by day 31.</h2>
-      <p class="lede">
-        The path from first conversation to a running engagement is deliberately short, because a
-        back office that is half-installed helps nobody.
-      </p>
-
-      <div class="process">
-        <article class="step">
-          <span class="step__n">01</span>
-          <h3>Discovery</h3>
-          <p>A working session to map what you run today, where the loops stay open, and which pillar is costing you the most.</p>
-          <span class="step__when">45 to 60 minutes</span>
-        </article>
-        <article class="step">
-          <span class="step__n">02</span>
-          <h3>Scoped proposal</h3>
-          <p>A tier or an à la carte scope, priced against your operation, with a 90-day roadmap attached.</p>
-          <span class="step__when">Within one week</span>
-        </article>
-        <article class="step">
-          <span class="step__n">03</span>
-          <h3>Onboarding</h3>
-          <p>Systems, cadence, and owners put in place while your current process keeps running underneath.</p>
-          <span class="step__when">30 days</span>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ LEADERSHIP ============ -->
-  <section class="band band--alt" id="leadership">
-    <div class="shell">
-      <p class="eyebrow">Leadership</p>
-      <h2 class="band-title">The people accountable for the work.</h2>
-
-      <div class="people">
-        <article class="person">
-          <div class="person__disc person__disc--masked person__disc--tucker"><div class="person__mono">AT</div><img src="assets/team-tucker.png" alt="Amanda C. Tucker" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
-          <span class="person__rule"></span>
-          <h3>Amanda C. Tucker</h3>
-          <p>Director of Education &amp; Workforce Development</p>
-        </article>
-        <article class="person">
-          <div class="person__disc"><div class="person__mono">AR</div><img src="assets/team-russell.png" alt="Anita Russell" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
-          <span class="person__rule"></span>
-          <h3>Anita Russell</h3>
-          <p>Vice President of Finance</p>
-        </article>
-        <article class="person">
-          <div class="person__disc"><div class="person__mono">MD</div><img src="assets/team-davis.png" alt="Marc Davis" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
-          <span class="person__rule"></span>
-          <h3>Marc Davis</h3>
-          <p>Chief Financial Officer</p>
-        </article>
-        <article class="person">
-          <div class="person__disc"><div class="person__mono">MK</div><img src="assets/team-knowles.png" alt="Matthew Knowles" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
-          <span class="person__rule"></span>
-          <h3>Matthew Knowles</h3>
-          <p>Financial Analyst</p>
-        </article>
-        <article class="person">
-          <div class="person__disc person__disc--masked"><div class="person__mono">WM</div><img src="assets/team-mcdonald.png" alt="Will McDonald" width="190" height="190" loading="lazy" decoding="async" onerror="this.remove()"></div>
-          <span class="person__rule"></span>
-          <h3>Will McDonald</h3>
-          <p>Education Project Director</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ CLOSE ============ -->
-  <section class="close" id="contact">
-    <div class="shell">
-      <h2>Start with one conversation about what is not closing.</h2>
-      <p>
-        Bring the part of the operation that keeps slipping. We will tell you what it would take
-        to run it properly, and what that costs, before you commit to anything.
-      </p>
-      <div class="close__cta">
-        <a class="btn btn--gold" href="mailto:hello@elevatemanagedservices.com?subject=Discovery%20call%20request">Book a discovery call</a>
-        <a class="close__mail" href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer class="foot">
-  <div class="shell">
-    <div class="foot__row">
-      <a class="lockup" href="#top" aria-label="Elevate Managed Services, home">
-        <svg class="lockup__mark" viewBox="0 0 70 54" aria-hidden="true" focusable="false">
-          <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#elv-grad)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/>
-        </svg>
-        <span>
-          <span class="lockup__word">Elevate</span>
-          <span class="lockup__sub" style="display:block">Managed Services</span>
-        </span>
-      </a>
-
-    </div>
-
-    <p class="foot__legal">
-      &copy; 2026 Elevate Managed Services. All rights reserved.
-      <a href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a>
-    </p>
-  </div>
-</footer>
-
-<button class="to-top" id="toTop" type="button" aria-label="Back to top">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
-  <span>Back to top</span>
-</button>
-
-<script>
-(function () {
-  var root = document.documentElement;
-  var KEY = "elv-theme";
-
-  // Respect the browser's setting by default: only stamp when the visitor chose.
-  var stored = null;
-  try { stored = localStorage.getItem(KEY); } catch (e) {}
-  if (stored === "dark" || stored === "light") root.setAttribute("data-theme", stored);
-
-  var toggle = document.getElementById("themeToggle");
-  if (toggle) {
-    toggle.addEventListener("click", function () {
-      var set = root.getAttribute("data-theme");
-      var isDark = set ? set === "dark"
-        : window.matchMedia("(prefers-color-scheme: dark)").matches;
-      var next = isDark ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem(KEY, next); } catch (e) {}
-    });
-  }
-
-  var top = document.getElementById("toTop");
-  if (top) {
-    var queued = false;
-    function update() {
-      // scrollingElement is correct in both standards and quirks mode
-      var se = document.scrollingElement || document.documentElement;
-      var max = se.scrollHeight - se.clientHeight;
-      var y = window.scrollY || window.pageYOffset || se.scrollTop || 0;
-      top.classList.toggle("is-on", max > 0 && (y / max) > 0.72);
-      queued = false;
-    }
-    window.addEventListener("scroll", function () {
-      if (!queued) { queued = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
-    update();
-    top.addEventListener("click", function () {
-      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
-    });
-  }
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" href="favicon.svg" type="image/svg+xml"><title>Elevate Managed Services</title><meta name="description" content="Back-office and education services for growing companies and schools across the Southeast."><meta name="claude:viewport-fit-sides" content="cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"><style>
+/* layout: a sticky light masthead over alternating paper and deep-teal bands, photography in rounded frames */
+:root {
+  --bg: #f8f6f0; --card: #ffffff; --ink: #2e2e2e; --ink2: #56615f; --line: #dfe5e3;
+  --teal: #0c6980; --teal2: #2f9da8; --gold: #e6c068; --gold2: #a9822f;
+  --deep: #052a33; --deep2: #0d4a58; --on-deep: #eef4f4; --on-deep2: #a9c2c7;
+  --shadow: 0 1px 2px rgba(5,42,51,.06), 0 18px 40px -18px rgba(5,42,51,.28);
+  --display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
+  --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  --shell: 1240px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
+  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
+  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
+  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
+  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
+  color-scheme: dark }
+*, *::before, *::after { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.65 var(--body); -webkit-font-smoothing: antialiased }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-family: var(--display); font-weight: 500; letter-spacing: -.01em; line-height: 1.08 }
+p { margin: 0 }
+a { color: var(--teal) }
+img { max-width: 100%; height: auto; display: block }
+:focus-visible { outline: 2px solid var(--teal2); outline-offset: 3px; border-radius: 4px }
+.shell { max-width: var(--shell); margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+@media (min-width: 900px) { .shell { padding-left: max(40px, env(safe-area-inset-left, 0px)); padding-right: max(40px, env(safe-area-inset-right, 0px)) } }
+.it { font-style: italic; color: var(--teal) }
+.deep .it, .hero .it { color: var(--gold) }
+.eyebrow { font: 600 12px/1 var(--body); letter-spacing: .26em; text-transform: uppercase; color: var(--teal); display: flex; align-items: center; gap: 14px; margin-bottom: 20px }
+.eyebrow::before { content: ""; width: 34px; height: 1.5px; background: var(--gold) }
+.deep .eyebrow { color: var(--teal2) }
+.lede { font-size: 19px; color: var(--ink2); max-width: 62ch }
+.deep .lede { color: var(--on-deep2) }
+.band { padding-block: clamp(64px, 9vw, 112px) }
+.band--card { background: var(--card) }
+.deep { background: radial-gradient(1200px 500px at 85% -10%, rgba(47,157,168,.22), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 70%); color: var(--on-deep) }
+.h2 { font-size: clamp(34px, 4.6vw, 56px) }
+.head { display: grid; gap: 18px; margin-bottom: 48px; max-width: 760px }
+
+/* masthead */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--card) }
+.mast { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--card) 92%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+.mast__row { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 76px }
+.lockup { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink) }
+.lockup svg { width: 40px; height: 32px; flex: none }
+.lockup b { display: block; font: 500 24px/1 var(--display); letter-spacing: .08em }
+.lockup small { display: block; font: 600 9.5px/1 var(--body); letter-spacing: .32em; color: var(--ink2); margin-top: 5px }
+.nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end }
+.nav a { font: 500 15px/1 var(--body); color: var(--ink); text-decoration: none; padding: 10px 12px; border-radius: 999px }
+.nav a:hover { color: var(--teal) }
+.nav a[aria-current="page"] { color: var(--teal); box-shadow: inset 0 -2px 0 var(--gold); border-radius: 0 }
+.nav a.portal { background: var(--deep); color: #fff; padding: 11px 18px; margin-left: 6px; border-radius: 999px; box-shadow: none }
+.nav a.portal[aria-current="page"] { background: var(--teal) }
+.menu { display: none }
+@media (max-width: 860px) {
+  .menu { display: inline-flex; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; font: 500 14px var(--body); color: var(--ink) }
+  .nav { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--card); border-bottom: 1px solid var(--line); flex-direction: column; align-items: stretch; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 18px max(16px, env(safe-area-inset-left, 0px)) }
+  .nav.open { display: flex }
+  .nav a { padding: 14px 6px } .nav a.portal { margin: 8px 0 0; text-align: center }
+}
+
+/* buttons */
+.btns { display: flex; flex-wrap: wrap; gap: 12px }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 15px 24px; border-radius: 999px; font: 600 15px/1 var(--body); text-decoration: none; transition: transform .2s ease, box-shadow .2s ease }
+.btn:hover { transform: translateY(-1px) }
+.btn--gold { background: var(--gold); color: #1d1a12; box-shadow: 0 12px 24px -12px rgba(230,192,104,.8) }
+.btn--teal { background: var(--teal); color: #fff }
+.btn--line { border: 1.5px solid currentColor; color: inherit }
+@media (prefers-reduced-motion: reduce) { .btn { transition: none } .btn:hover { transform: none } }
+
+/* hero */
+.hero { position: relative; overflow: hidden; background: var(--deep); color: var(--on-deep) }
+.hero__photo { position: absolute; inset: 0 0 0 42%; background-size: cover; background-position: center }
+.hero__photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--deep) 0%, rgba(5,42,51,.55) 26%, rgba(5,42,51,.05) 70%) }
+.hero__in { position: relative; padding-block: clamp(72px, 10vw, 132px); max-width: 640px; display: grid; gap: 26px }
+.hero h1 { font-size: clamp(46px, 7vw, 92px); color: #fff; line-height: 1.0 }
+.hero .lede { color: var(--on-deep2) }
+@media (max-width: 760px) { .hero__photo { inset: 0; opacity: .35 } .hero__photo::after { background: var(--deep); opacity: .6 } }
+.page-hero .hero__in { padding-block: clamp(56px, 8vw, 104px) }
+.page-hero h1 { font-size: clamp(42px, 6vw, 76px) }
+
+/* grids and cards */
+.grid { display: grid; gap: 24px }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)) }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) }
+.g4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)) }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 30px; box-shadow: var(--shadow); min-width: 0 }
+.deep .card { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.12); box-shadow: none }
+.tile { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 380px; border-radius: 22px; overflow: hidden; color: #fff; text-decoration: none; background: var(--deep) center/cover; box-shadow: var(--shadow) }
+.tile::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(5,42,51,.94)) }
+.tile > div { position: relative; padding: 28px; display: grid; gap: 10px }
+.tile h3 { font-size: 32px; color: #fff }
+.tile p { color: #d7e4e6; font-size: 15.5px }
+.tile .go { font: 600 13px/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--gold) }
+.tile:hover .go { text-decoration: underline }
+.icon { width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(160deg, var(--teal2), var(--teal)); color: #fff; flex: none }
+.icon.goldi { background: linear-gradient(160deg, #f0d083, #c9a24a); color: #1d1a12 }
+.icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
+.svc { display: grid; gap: 14px; align-content: start }
+.svc h3 { font-size: 27px }
+.svc p { color: var(--ink2); font-size: 16px }
+.svc ul { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 8px }
+.svc li { position: relative; padding-left: 20px; font-size: 15.5px; color: var(--ink) }
+.svc li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--gold) }
+
+/* stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 }
+.stat { padding: 34px 26px; border-left: 1px solid rgba(255,255,255,.14) }
+.stat:first-child { border-left: 0 }
+.stat b { display: block; font: 500 clamp(48px, 6vw, 72px)/1 var(--display); color: var(--gold) }
+.stat span { display: block; margin-top: 12px; font: 600 12.5px/1.45 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--on-deep2) }
+@media (max-width: 700px) { .stat { border-left: 0; border-top: 1px solid rgba(255,255,255,.14) } .stat:first-child { border-top: 0 } }
+
+/* steps */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 24px; counter-reset: s }
+.step { display: grid; gap: 10px; padding-top: 22px; border-top: 2px solid var(--gold) }
+.step small { font: 600 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--teal) }
+.step h3 { font-size: 28px }
+.step p { color: var(--ink2); font-size: 16px }
+.deep .step p { color: var(--on-deep2) }
+.deep .step small { color: var(--teal2) }
+
+/* split feature */
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: clamp(32px, 6vw, 80px); align-items: center }
+.frame { border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 4 / 3; background: var(--deep) center/cover; max-width: 100% }
+.chips { display: flex; flex-wrap: wrap; gap: 10px }
+.chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; font: 500 14.5px/1.2 var(--body); border: 1px solid var(--line); background: var(--card) }
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold) }
+.deep .chip { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.16); color: var(--on-deep) }
+
+/* compare table */
+.cmp { width: 100%; border-collapse: collapse; min-width: 640px }
+.cmp th, .cmp td { text-align: left; padding: 18px 20px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 16px }
+.cmp th { font: 600 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--ink2) }
+.cmp td:first-child { font-family: var(--display); font-size: 20px; width: 18% }
+.cmp td:last-child { color: var(--teal); font-weight: 500 }
+.scroll { overflow-x: auto; border-radius: 22px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow) }
+
+/* people */
+.people { display: flex; flex-wrap: wrap; justify-content: center; gap: 36px 24px }
+.people .person { width: 190px; max-width: 100% }
+.person { display: grid; justify-items: center; text-align: center; gap: 8px }
+.person .ph { width: 156px; height: 156px; border-radius: 50%; background: var(--deep) center/cover; box-shadow: 0 0 0 4px var(--card), 0 0 0 5.5px var(--gold), var(--shadow); margin-bottom: 10px }
+.person h3 { font-size: 22px }
+.person p { font: 600 11.5px/1.45 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--gold2) }
+
+/* proof cards */
+.proof { position: relative; min-height: 420px; border-radius: 22px; overflow: hidden; display: flex; align-items: flex-end; background: var(--deep) center/cover; box-shadow: var(--shadow) }
+.proof::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(5,42,51,.94)) }
+.proof > div { position: relative; padding: 26px 28px; color: #fff; display: grid; gap: 8px }
+.proof h3 { font-size: 28px; color: #fff }
+.proof small { font: 600 12px/1.5 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--gold) }
+
+/* portal */
+.portal-hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; align-items: stretch }
+.featured { display: grid; gap: 22px; align-content: start; border-radius: 26px; padding: clamp(28px, 4vw, 44px); color: var(--on-deep); text-decoration: none;
+  background: radial-gradient(700px 300px at 90% 0%, rgba(230,192,104,.18), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep)); box-shadow: var(--shadow) }
+.featured h2 { color: #fff; font-size: clamp(32px, 4vw, 46px) }
+.featured p { color: var(--on-deep2) }
+.featured img { border-radius: 14px; margin-top: 6px }
+.tool { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; text-decoration: none; color: var(--ink); padding: 24px 26px }
+.tool h3 { font-size: 24px }
+.tool p { color: var(--ink2); font-size: 15px; margin-top: 4px }
+.tool .arrow { font: 600 22px/1 var(--body); color: var(--teal); transition: transform .2s ease }
+.tool:hover .arrow { transform: translateX(4px) }
+.tools { display: grid; gap: 16px; align-content: start }
+.note { font-size: 15px; color: var(--ink2) }
+.copy { display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); font: 500 15px var(--body); color: var(--ink); user-select: all }
+
+/* portal systems */
+.sysgrp { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; align-items: center; padding: 24px 26px }
+.sysgrp h3 { font-size: 24px }
+.sysgrp .chips { grid-column: 1 / -1; gap: 8px }
+.sysgrp .chip { font-size: 13.5px; padding: 7px 13px }
+.sysintro { display: grid; gap: 10px; padding: 24px 26px }
+.sysintro .eyebrow { margin: 0 }
+.sysintro h3 { font-size: 24px }
+.sysintro p { color: var(--ink2); font-size: 15.5px }
+.sysintro .copy { justify-self: start }
+
+/* sign-in */
+.signin { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 28px; align-items: stretch }
+.signin__card { display: grid; gap: 18px; align-content: start; padding: clamp(28px, 4vw, 48px) }
+.signin__card h1 { font-size: clamp(38px, 4.6vw, 58px) }
+.signin__card .eyebrow { margin: 0 }
+.signin form { display: grid; gap: 10px; margin-top: 6px }
+.signin label { font: 600 13px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2) }
+.signin input { font: 400 17px/1.3 var(--body); padding: 16px 18px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); width: 100% }
+.signin input:focus { outline: none; border-color: var(--teal2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal2) 22%, transparent) }
+.signin button { justify-self: start; border: 0; cursor: pointer; margin-top: 6px }
+.msg { font-size: 15.5px; color: var(--ink2); min-height: 1.5em }
+.msg.bad { color: #b3261e }
+.msg.ok { color: var(--teal) }
+.msg .copy { padding: 4px 8px; font-size: 14px }
+.demo-card { position: relative; overflow: hidden; isolation: isolate; display: grid; gap: 18px; align-content: center; border-radius: 26px; padding: clamp(28px, 4vw, 48px); text-decoration: none; color: var(--on-deep); box-shadow: var(--shadow) }
+.demo-card::before { content: ""; position: absolute; inset: 0; background: url(img/grain-dark.png); opacity: .5; z-index: -1 }
+.demo-card h2 { color: #fff; font-size: clamp(32px, 4vw, 46px) }
+.demo-card p { color: var(--on-deep2) }
+.demo-card .eyebrow { color: var(--gold); margin: 0 }
+.demo-card .chips { gap: 8px }
+.demo-card .chip { font-size: 13.5px; padding: 7px 13px }
+.featured .btns .btn--line { color: #fff }
+/* closing band and footer */
+.close { text-align: left }
+.close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
+.close .lede { margin-block: 18px 30px }
+.foot { padding-block: 40px; border-top: 1px solid var(--line); background: var(--card) }
+.foot__row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between }
+.foot nav { display: flex; flex-wrap: wrap; gap: 6px 18px }
+.foot nav a { color: var(--ink2); text-decoration: none; font-size: 14.5px }
+.foot nav a:hover { color: var(--teal) }
+.foot small { display: block; margin-top: 18px; color: var(--ink2); font-size: 13.5px }
+
+
+/* about page story */
+.story { display: grid; gap: 20px; min-width: 0 }
+.story p { color: var(--ink2); font-size: 18px; max-width: 60ch }
+.story .lead-p { font: 400 clamp(21px, 2.2vw, 25px)/1.5 var(--display); color: var(--ink); font-variation-settings: "opsz" 14 }
+.frame.tall { aspect-ratio: 4 / 5 }
+.pull { font: italic 400 clamp(32px, 4.4vw, 58px)/1.18 var(--display); color: #fff; max-width: 22ch; font-variation-settings: "opsz" 48 }
+.pull .it { color: var(--gold) }
+.beliefs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 36px }
+.belief { display: grid; gap: 12px; align-content: start; padding-top: 24px; border-top: 2px solid var(--gold) }
+.belief h3 { font-size: 30px }
+.belief p { color: var(--ink2); font-size: 17px }
+
+/* ---------- depth layer, carried over from the decks ---------- */
+h1, h2 { font-variation-settings: "opsz" 48 }
+h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
+.eyebrow { font-size: 12.5px; letter-spacing: .32em; gap: 16px }
+.eyebrow::before { width: 48px; height: 2px }
+.h2 { font-size: clamp(40px, 5.4vw, 72px); line-height: 1.02 }
+.band, .hero, .stats-band { position: relative; isolation: isolate }
+.band > .shell, .hero > .shell, .stats-band > .shell { position: relative; z-index: 2 }
+/* paper bands: soft teal and gold light with a faint dot grid */
+.band:not(.deep):not(.band--card)::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(900px 520px at 100% 0%, rgba(47,157,168,.12), transparent 62%), radial-gradient(760px 520px at 0% 100%, rgba(230,192,104,.13), transparent 62%) }
+.band:not(.deep)::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image: radial-gradient(rgba(12,105,128,.16) 1px, transparent 1.5px); background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(70% 60% at 85% 10%, #000, transparent 70%); mask-image: radial-gradient(70% 60% at 85% 10%, #000, transparent 70%) }
+.band--card::after { -webkit-mask-image: radial-gradient(60% 60% at 10% 90%, #000, transparent 70%); mask-image: radial-gradient(60% 60% at 10% 90%, #000, transparent 70%) }
+/* deep bands: film grain, a teal glow and the gold swoosh */
+.deep::before, .hero::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: url(img/grain-dark.png); opacity: .55 }
+.deep { background: radial-gradient(900px 460px at 88% -8%, rgba(47,157,168,.30), transparent 62%), radial-gradient(700px 420px at 0% 110%, rgba(230,192,104,.10), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 72%) }
+.swoosh { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 70%; z-index: 1; pointer-events: none }
+.hero h1 { font-size: clamp(50px, 7.6vw, 108px) }
+.hero .eyebrow { color: var(--gold) }
+.hero__photo::after { background: linear-gradient(90deg, var(--deep) 0%, rgba(5,42,51,.72) 24%, rgba(5,42,51,.08) 68%), linear-gradient(0deg, rgba(5,42,51,.55), transparent 40%) }
+/* cards as lifted paper */
+.card { border-radius: 26px; border: 1px solid color-mix(in srgb, var(--card) 70%, var(--line)); box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 30px 60px -32px rgba(5,42,51,.38), 0 6px 14px -8px rgba(5,42,51,.12); transition: transform .25s ease, box-shadow .25s ease }
+.card:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 40px 70px -32px rgba(5,42,51,.45), 0 8px 16px -8px rgba(5,42,51,.14) }
+.deep .card { background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.035)); border-color: rgba(255,255,255,.14); box-shadow: 0 1px 0 rgba(255,255,255,.16) inset, 0 24px 40px -24px rgba(0,0,0,.5) }
+.icon { width: 58px; height: 58px; border-radius: 17px; background: linear-gradient(145deg, #0e7b95, #0a5466); box-shadow: 0 10px 22px -8px rgba(12,105,128,.6), inset 0 1px 0 rgba(255,255,255,.25) }
+.icon svg { width: 28px; height: 28px }
+.icon.goldi { background: linear-gradient(145deg, #f0d083, #c9a24a); color: #3a2e0e; box-shadow: 0 10px 22px -8px rgba(201,162,74,.7), inset 0 1px 0 rgba(255,255,255,.4) }
+.svc h3 { font-size: 29px }
+.tile, .proof, .frame { border-radius: 28px; box-shadow: 0 40px 80px -36px rgba(5,42,51,.6), 0 0 0 1px rgba(255,255,255,.35) }
+.tile { min-height: 440px; transition: transform .3s ease }
+.tile::after { content: ""; position: absolute; inset: 0; background: inherit; background-size: inherit; z-index: -1 }
+.tile:hover { transform: translateY(-4px) }
+.tile h3 { font-size: 36px }
+.stat b { font-size: clamp(56px, 7vw, 96px) }
+.chip { padding: 10px 18px; background: rgba(12,105,128,.07); border-color: rgba(12,105,128,.18); color: var(--teal) }
+.featured { position: relative; overflow: hidden; isolation: isolate }
+.featured::before { content: ""; position: absolute; inset: 0; background: url(img/grain-dark.png); opacity: .5; z-index: -1 }
+.featured .eyebrow { color: var(--gold) }
+.featured .it { color: var(--gold) }
+.person .ph { width: 168px; height: 168px }
+.close h2 { font-size: clamp(42px, 6vw, 84px) }
+@media (prefers-reduced-motion: reduce) { .card, .tile { transition: none } .card:hover, .tile:hover { transform: none } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .band:not(.deep)::after { background-image: radial-gradient(rgba(100,198,220,.12) 1px, transparent 1.5px) } }
+</style></head><body><header class="mast"><div class="shell mast__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m2" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m2)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
+<button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
+<nav class="nav" id="nav" aria-label="Main"><a href="index.html" aria-current="page">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html" class="portal">Client Portal</a></nav></div></header><main><section class="hero "><svg class="swoosh" viewBox="0 0 1440 500" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sw1" x1="0" x2="1"><stop offset="0" stop-color="#2F9DA8" stop-opacity="0"/><stop offset=".55" stop-color="#2F9DA8" stop-opacity="0.55"/><stop offset="1" stop-color="#E6C068" stop-opacity="0.8"/></linearGradient></defs><path d="M-40 470 C 400 430, 860 300, 1480 70" fill="none" stroke="url(#sw1)" stroke-width="2.4" vector-effect="non-scaling-stroke"/><path d="M-40 500 C 430 466, 900 340, 1480 120" fill="none" stroke="url(#sw1)" stroke-width="1.3" opacity=".7" vector-effect="non-scaling-stroke"/></svg><div class="hero__photo" style="background-image:url(img/bo-team.jpg);background-position:72% center"></div>
+<div class="shell"><div class="hero__in"><div class="eyebrow">Capacity for today. A stronger tomorrow.</div><h1>A Bolder <span class="it">Solution.</span></h1><p class="lede">Back-office and education services that take the weight off growing organizations and schools, so leaders can lead.</p><div class="btns"><a class="btn btn--gold" href="mailto:hello@elevatemanagedservices.com?subject=Discovery%20call%20request">Book a discovery call</a><a class="btn btn--line" href="portal.html">Client portal</a></div></div></div></section><section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we do</div>
+<h2 class="h2">Two practices. <span class="it">One standard.</span></h2>
+<p class="lede">Elevate is the managed services arm of a family of multi-million dollar companies spanning two states in the Southeast. We partner with organizations and schools at any level to simplify operations, strengthen outcomes and build thriving communities.</p></div>
+<div class="grid g3"><a class="tile" href="services.html" style="background-image:url(img/bo-desk.jpg);background-position:center"><div><h3>Business Services</h3><p>Take the whole back office, or take the part that is breaking.</p><span class="go">Learn more</span></div></a><a class="tile" href="education.html" style="background-image:url(img/q3-017.jpg);background-position:center"><div><h3>Education Services</h3><p>The complete back office for charter and private schools.</p><span class="go">Learn more</span></div></a><a class="tile" href="services.html#bi" style="background-image:url(img/dashboard.png);background-position:60% 30%;background-size:150%"><div><h3>Business Intelligence</h3><p>One live financial dashboard for every entity, cut to each role.</p><span class="go">Learn more</span></div></a></div></div></section>
+<section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
+<h2 class="h2">Schools and communities, <span class="it">built.</span></h2>
+<p class="lede">Our partner companies build and open schools and communities. Elevate keeps the books, the payroll and the reporting behind that work.</p></div>
+<div class="grid g3"><div class="proof" style="background-image:url(img/q3-017.jpg)"><div><h3>Cogito Academy</h3><small>Lancaster, SC<br>1,000 students</small></div></div><div class="proof" style="background-image:url(img/tnc-nova.jpg)"><div><h3>Nova River District</h3><small>Rome, GA<br>250 homes &middot; completed 2025</small></div></div><div class="proof" style="background-image:url(img/tnc-gs.jpg)"><div><h3>Student housing at Georgia Southern</h3><small>Statesboro, GA<br>82 residences &middot; completed 2026</small></div></div></div></div></section>
+<section class="band deep close"><svg class="swoosh" viewBox="0 0 1440 500" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sw3" x1="0" x2="1"><stop offset="0" stop-color="#2F9DA8" stop-opacity="0"/><stop offset=".55" stop-color="#2F9DA8" stop-opacity="0.6"/><stop offset="1" stop-color="#E6C068" stop-opacity="0.85"/></linearGradient></defs><path d="M-40 470 C 400 430, 860 300, 1480 70" fill="none" stroke="url(#sw3)" stroke-width="2.4" vector-effect="non-scaling-stroke"/><path d="M-40 500 C 430 466, 900 340, 1480 120" fill="none" stroke="url(#sw3)" stroke-width="1.3" opacity=".7" vector-effect="non-scaling-stroke"/></svg><div class="shell">
+<div class="eyebrow">Ready to partner?</div>
+<h2>Let's start a <span class="it">conversation.</span></h2>
+<p class="lede">Bring the part of the operation that keeps slipping. We will tell you what it would take to run it properly, and what that costs, before you commit to anything.</p>
+<div class="btns"><a class="btn btn--gold" href="mailto:hello@elevatemanagedservices.com?subject=Discovery%20call%20request">Book a discovery call</a>
+<span class="copy" aria-label="Email address">hello@elevatemanagedservices.com</span></div></div></section></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m4" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m4)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html">Client Portal</a></nav></div>
+<small>&copy; 2026 Elevate Managed Services. Thoughtful solutions. Brighter tomorrows.</small></div></footer><script>
+(function(){try{history.scrollRestoration='manual';}catch(e){}
+function top(){if(!location.hash){window.scrollTo(0,0);var se=document.scrollingElement||document.documentElement;se.scrollTop=0;document.body.scrollTop=0;}}
+top();window.addEventListener('load',top);window.addEventListener('pageshow',top);
 })();
-</script>
+(function(){var b=document.getElementById('menuBtn'),n=document.getElementById('nav');
+if(b&&n){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});}})();
+</script></body></html>
