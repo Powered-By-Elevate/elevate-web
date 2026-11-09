@@ -386,7 +386,7 @@ TEAM = [("fawole", "Joseph Fawole", "President", "background-size:125%;backgroun
         ("russell", "Anita Russell", "Vice President of Finance", ""),
         ("provencher", "Vicki Provencher", "Controller", "background-size:118%;background-position:50% 18%"),
         ("mcdonald", "Will McDonald", "Education Project Director", "background-size:150%;background-position:56% 14%"),
-        ("ltucker", "Lynette Tucker", "Director of Community Engagement", "background-size:112%;background-position:50% 8%"),
+        ("ltucker", "Lynette Tucker", "Director of Community Engagement", "background-size:122%;background-position:50% 30%"),
         ("gander", "Christie Gander", "Office Manager", "background-size:120%;background-position:50% 16%")]
 
 def people():
