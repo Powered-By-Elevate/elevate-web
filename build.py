@@ -201,6 +201,19 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .foot nav a:hover { color: var(--teal) }
 .foot small { display: block; margin-top: 18px; color: var(--ink2); font-size: 13.5px }
 
+
+/* about page story */
+.story { display: grid; gap: 20px; min-width: 0 }
+.story p { color: var(--ink2); font-size: 18px; max-width: 60ch }
+.story .lead-p { font: 400 clamp(21px, 2.2vw, 25px)/1.5 var(--display); color: var(--ink); font-variation-settings: "opsz" 14 }
+.frame.tall { aspect-ratio: 4 / 5 }
+.pull { font: italic 400 clamp(32px, 4.4vw, 58px)/1.18 var(--display); color: #fff; max-width: 22ch; font-variation-settings: "opsz" 48 }
+.pull .it { color: var(--gold) }
+.beliefs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 36px }
+.belief { display: grid; gap: 12px; align-content: start; padding-top: 24px; border-top: 2px solid var(--gold) }
+.belief h3 { font-size: 30px }
+.belief p { color: var(--ink2); font-size: 17px }
+
 /* ---------- depth layer, carried over from the decks ---------- */
 h1, h2 { font-variation-settings: "opsz" 48 }
 h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
@@ -373,7 +386,7 @@ TEAM = [("fawole", "Joseph Fawole", "President", "background-size:125%;backgroun
         ("russell", "Anita Russell", "Vice President of Finance", ""),
         ("provencher", "Vicki Provencher", "Controller", "background-size:118%;background-position:50% 18%"),
         ("mcdonald", "Will McDonald", "Education Project Director", "background-size:150%;background-position:56% 14%"),
-        ("ltucker", "Lynette Tucker", "Director of Community Engagement", "background-size:120%;background-position:50% 14%"),
+        ("ltucker", "Lynette Tucker", "Director of Community Engagement", "background-size:112%;background-position:50% 8%"),
         ("gander", "Christie Gander", "Office Manager", "background-size:120%;background-position:50% 16%")]
 
 def people():
@@ -419,29 +432,28 @@ def home():
 ''')
 
 def about():
-    rows = [("Scope", "Accounting and payroll only", "The whole back office, plus enrollment, facilities and growth"),
-            ("Reporting", "Monthly spreadsheets", "A live dashboard for leaders and the board"),
-            ("People", "A rotating bookkeeper", "Senior finance and education leaders on every account"),
-            ("Experience", "Back-office specialists", "Operators who build, finance and run schools and companies"),
-            ("Governance", "Reports when asked", "A signed monthly reconciliation review and a close you can set a clock by")]
-    trs = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>" for a, b, c in rows)
-    probs = [("The close slips", "Month-end runs into the next month, and decisions get made on old numbers."),
-             ("Compliance by scramble", "Filings, audits and grant reports arrive as emergencies instead of calendar items."),
-             ("Knowledge walks out", "Critical process lives in one person's head. When they leave, so does the process."),
-             ("Leaders pulled into admin", "The people who should be growing the organization spend their week coordinating the back office.")]
-    pc = "".join(f'<div class="card svc"><h3>{a}</h3><p>{b}</p></div>' for a, b in probs)
-    return page("about.html", "About Elevate", "Who we are and the leaders behind Elevate Managed Services.",
-        hero("Who we are", 'Built inside the work, <span class="it">not beside it.</span>',
-             "Elevate grew up running the back office for a family of multi-million dollar companies spanning two states in the Southeast. The same team and the same standard are now open to outside companies and schools.",
+    beliefs = [("Relationships before reports", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them."),
+               ("The same people, every month", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting."),
+               ("Give leaders their time back", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.")]
+    bl = "".join(f'<div class="belief"><h3>{a}</h3><p>{b}</p></div>' for a, b in beliefs)
+    return page("about.html", "About Elevate", "The story and the people behind Elevate Managed Services.",
+        hero("About Elevate", 'Real people. <span class="it">Real partnership.</span>',
+             "We are a small team of finance, people and education professionals who would rather know you by name than by account number.",
              "bo-desk.jpg", "", "right center", "page-hero") +
-        f'''<section class="band"><div class="shell split"><div style="display:grid;gap:20px;min-width:0"><div class="eyebrow">Our story</div>
-<h2 class="h2">Built by operators, <span class="it">for operators.</span></h2>
-<p class="lede">Elevate started as the back office for our own family of companies, which build and run schools, communities and businesses across the Southeast. Running finance, payroll, compliance and reporting for that portfolio is how we learned to do it well. Today we bring the same team and the same standard to outside companies and schools.</p>
-<p class="lede">Our purpose is simple. Leaders should spend their time leading, teaching and growing, not chasing the back office. We keep the books closed on time, the reports clear and every deadline on a calendar, so they can.</p></div>
-<div class="frame" style="background-image:url(img/bo-review.jpg)" role="img" aria-label="An Elevate team member reviewing financial binders with a client"></div></div></section>
-<section class="band"><div class="shell"><div class="head"><div class="eyebrow">The team</div>
-<h2 class="h2">Senior leaders, <span class="it">on every engagement.</span></h2>
-<p class="lede">Every client gets senior oversight from the leaders who already run finance and education for a multi-million dollar portfolio across the Southeast.</p></div>{people()}</div></section>''')
+        f'''<section class="band"><div class="shell split"><div class="story">
+<div class="eyebrow">Our story</div>
+<h2 class="h2">We started by taking care of <span class="it">our own.</span></h2>
+<p class="lead-p">Elevate did not begin as a consulting firm. It began as the people keeping the lights on for our own family of companies, which build and run schools, communities and businesses across the Southeast.</p>
+<p>Some weeks that meant closing the books for a construction company on a Friday and running payroll for a brand new charter school on Monday. Other weeks it meant helping a first-year school leader get ready for a board meeting, or making sure a growing company had a clear set of numbers to take to the bank.</p>
+<p>Doing that work up close taught us what leaders actually need: someone who picks up, knows the history and gets it right the first time. Today we bring that same team and that same care to companies and schools outside our family.</p></div>
+<div class="frame tall" style="background-image:url(img/bo-review.jpg)" role="img" aria-label="An Elevate team member reviewing financial binders with a school leader"></div></div></section>
+<section class="band deep">{swoosh(.45)}<div class="shell"><p class="pull">Leaders should spend their time teaching, leading and growing. <span class="it">We will take care of the rest.</span></p></div></section>
+<section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">What we believe</div>
+<h2 class="h2">How we show up <span class="it">for you.</span></h2></div>
+<div class="beliefs">{bl}</div></div></section>
+<section class="band"><div class="shell"><div class="head"><div class="eyebrow">Meet the team</div>
+<h2 class="h2">The people you will <span class="it">actually talk to.</span></h2>
+<p class="lede">When you call Elevate, you get one of us. Joseph Fawole leads Elevate and our business services. Amanda C. Tucker leads our work with schools.</p></div>{people()}</div></section>''')
 
 def services():
     inds = ["Construction", "Retail", "Food &amp; beverage", "Industrial", "Freight", "Software", "Schools"]
