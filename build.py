@@ -320,6 +320,10 @@ def footer():
 <small>&copy; 2026 Elevate Managed Services. Thoughtful solutions. Brighter tomorrows.</small></div></footer>'''
 
 SCRIPT = """<script>
+(function(){try{history.scrollRestoration='manual';}catch(e){}
+function top(){if(!location.hash){window.scrollTo(0,0);var se=document.scrollingElement||document.documentElement;se.scrollTop=0;document.body.scrollTop=0;}}
+top();window.addEventListener('load',top);window.addEventListener('pageshow',top);
+})();
 (function(){var b=document.getElementById('menuBtn'),n=document.getElementById('nav');
 if(b&&n){b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false');});}})();
 </script>"""
