@@ -1,0 +1,325 @@
+/* ===========================================================================
+   The world (Matt, 2026-10-31).
+
+   *"why dsoesnt it have the moving background and texture and the visuals that
+   the core bi and launchpad have? yours is so flat while the true north bulid
+   feels so alive....why is that?"* — because it was never ported. Core BI's
+   system look (core-bi/src/look-system.css) and the Launchpad concept are one
+   world: a sky ground lit rather than colored, a dot grid at a whisper behind
+   the page head with the part of it near the pointer lit, a light trail with a
+   bright segment travelling it, panels lifted on shadows tinted with the navy,
+   and a page that arrives rather than appearing.
+
+   Hub was built with a flat stylesheet, so the MATERIAL rule in the brain
+   (*"never ship a look without that material"*) had nothing to act on here.
+   This file is that material, and it is the whole difference between a page
+   that reads as a product and one that reads as a report.
+
+   Two differences from Core BI's copy, both deliberate:
+
+   1. Every color is derived from the client's brand, not from the house navy.
+      Core BI has one company. Hub has whoever bought it, so the sky is a mix of
+      their tint, the rail is their navy and the light is their accent lifted to
+      something that reads on it. A brand hex is never used as a chart color
+      (hub.css says why), and it is not used as a text color here either: the
+      world is light and shadow, and color stays signal.
+
+   2. Nothing here moves content. The pointer light writes two custom
+      properties on one element and the entrance animates opacity and transform
+      only, so a repaint mid-animation cannot reflow the page under the reader.
+
+   Honoured: prefers-reduced-motion (the trail stops, the entrance does not
+   run, sections do not settle), print (the whole world steps aside), and
+   navigator.webdriver (world.js never arms the entrance for a robot, so the
+   gate measures the settled page).
+   ========================================================================== */
+
+/* --- tokens ------------------------------------------------------------------
+   Opaque mixes rather than alpha, so every text color sits on one measurable
+   background and the contrast sweep can read it. */
+:root {
+  --sky-0: color-mix(in srgb, var(--tint) 34%, #fff);
+  --sky-1: color-mix(in srgb, var(--tint) 76%, #fff);
+  --sky-2: var(--tint);
+  --lit: color-mix(in srgb, var(--accent-lift) 72%, #fff);
+  --ring: 0 0 0 1px color-mix(in srgb, var(--navy) 7%, transparent);
+  --lift: inset 0 1px 0 #fff, var(--ring),
+    0 1px 3px color-mix(in srgb, var(--navy) 6%, transparent),
+    0 12px 32px -8px color-mix(in srgb, var(--navy) 12%, transparent);
+  --lift-up: inset 0 1px 0 #fff, var(--ring),
+    0 2px 8px color-mix(in srgb, var(--navy) 7%, transparent),
+    0 18px 38px -8px color-mix(in srgb, var(--navy) 17%, transparent);
+  --out: cubic-bezier(.16, 1, .3, 1);
+  --hov: cubic-bezier(.25, 1, .5, 1);
+}
+:root[data-theme="dark"] {
+  --sky-0: color-mix(in srgb, var(--navy) 44%, #0a1322);
+  --sky-1: color-mix(in srgb, var(--navy) 28%, #091120);
+  --sky-2: color-mix(in srgb, var(--navy) 16%, #08101c);
+  --lit: color-mix(in srgb, var(--accent-lift) 80%, #cfe6f5);
+  --ring: 0 0 0 1px color-mix(in srgb, var(--accent-lift) 16%, transparent);
+  --lift: inset 0 1px 0 rgba(255, 255, 255, .04), var(--ring), 0 14px 34px -10px rgba(0, 0, 0, .55);
+  --lift-up: inset 0 1px 0 rgba(255, 255, 255, .07), var(--ring), 0 18px 40px -10px rgba(0, 0, 0, .62);
+}
+
+/* --- the ground --------------------------------------------------------------
+   The sky by the window's height, then the sky itself, so the first screen is
+   the gradient and nothing seams on a page longer than the window. */
+body {
+  background: var(--sky-2) linear-gradient(180deg, var(--sky-0) 0, var(--sky-1) 46vh, var(--sky-2) 100vh) no-repeat;
+  background-size: 100% 100vh;
+  background-attachment: fixed;
+}
+#main { position: relative; z-index: 1; }
+/* Air at the top of every page, so the ground has somewhere to be seen. Claude
+   in Chrome, 2026-10-31: "most of the curve sits behind the toolbar and the big
+   green banner". A world nothing ever shows is a world that was not built. */
+#page { padding-top: 10px; }
+#demo-note { margin-top: 2px; }
+#bar { background: none; }
+/* Once the page scrolls, the scope bar frosts rather than hiding the world
+   behind an opaque band. */
+#bar::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; pointer-events: none;
+  background: color-mix(in srgb, var(--sky-0) 72%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--navy) 7%, transparent);
+  transition: opacity .3s var(--hov);
+}
+body.scrolled #bar::before { opacity: 1; }
+
+/* --- the deco: texture, the pointer, the trail -------------------------------
+   Behind every page's head, drawn once in the shell so a repaint never
+   restarts it. The dots fade out by 460px because texture is an entrance, not
+   a wallpaper. The lit layer is the same grid in the brand's light, masked to a
+   circle around the pointer (vectrfl's wake, world.js). */
+#deco {
+  position: absolute; z-index: 0; top: 0; left: 0; right: 0; height: 560px;
+  overflow: hidden; pointer-events: none;
+}
+.dots, .dots-lit { position: absolute; inset: 0; background-position: 12px 12px; background-size: 24px 24px; }
+.dots {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--navy) 12%, transparent) 1px, transparent 1.5px);
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 150px, transparent 460px);
+  mask-image: linear-gradient(180deg, #000 0, #000 150px, transparent 460px);
+}
+.dots-lit {
+  opacity: 0;
+  background-image: radial-gradient(circle, var(--lit) 2.2px, transparent 3px);
+  transition: opacity .6s var(--hov);
+  -webkit-mask-image: radial-gradient(circle 260px at var(--mx, 70%) var(--my, 40%), #000 0%, rgba(0, 0, 0, .62) 48%, transparent 76%),
+    linear-gradient(180deg, #000 0, #000 260px, transparent 540px);
+  -webkit-mask-composite: source-in;
+  mask-image: radial-gradient(circle 260px at var(--mx, 70%) var(--my, 40%), #000 0%, rgba(0, 0, 0, .62) 48%, transparent 76%),
+    linear-gradient(180deg, #000 0, #000 260px, transparent 540px);
+  mask-composite: intersect;
+}
+#deco.is-lit .dots-lit { opacity: 1; transition-duration: .2s; }
+:root[data-theme="dark"] .dots {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--accent-lift) 18%, transparent) 1px, transparent 1.5px);
+}
+
+.trail { position: absolute; top: 0; right: 0; width: min(64%, 980px); height: 430px; overflow: visible; }
+.tr-glow { fill: none; stroke: var(--lit); stroke-width: 14; stroke-linecap: round; opacity: .5; }
+.tr-core { fill: none; stroke: var(--lit); stroke-width: 2.4; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.tr-spark, .tr-spark-g {
+  fill: none; stroke-linecap: round; stroke-dasharray: 64 936; stroke-dashoffset: 1000;
+  animation: travel 17s linear infinite;
+}
+.tr-spark { stroke: #f4fbff; stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.tr-spark-g { stroke: var(--lit); stroke-width: 16; }
+:root[data-theme="dark"] .tr-glow { opacity: .26; }
+@keyframes travel { to { stroke-dashoffset: 0; } }
+
+/* --- material ----------------------------------------------------------------
+   A panel is paper lifted off the sky, not a box drawn on it: a hairline ring
+   tinted with the navy, a white top edge, and two shadows so the near one
+   reads the edge and the far one reads the height. The border goes, because a
+   ring and a border at once is a double line at every corner. */
+.panel {
+  border: 0;
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: var(--lift);
+  transition: box-shadow .4s var(--hov), transform .4s var(--hov);
+}
+@media (hover: hover) {
+  .panel:hover { box-shadow: var(--lift-up); transform: translateY(-1px); }
+}
+.panel-foot {
+  border-top: 1px solid color-mix(in srgb, var(--navy) 7%, transparent);
+  background: color-mix(in srgb, var(--tint) 46%, var(--paper));
+}
+.strip-item, .verdict, .set-card, .conn-card {
+  border-radius: 16px;
+  box-shadow: var(--lift);
+}
+
+/* A panel head wears its icon on a tile, as Core BI's sys-tile does: the
+   accent at a tint, never the accent at full, because a tile is a signpost and
+   not a status. */
+.panel-head { align-items: center; }
+.p-tile {
+  display: grid; place-items: center; flex: 0 0 32px;
+  width: 32px; height: 32px; border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 11%, var(--paper));
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+:root[data-theme="dark"] .p-tile { background: color-mix(in srgb, var(--accent) 22%, var(--paper)); }
+.p-tile svg { display: block; }
+@media print { .p-tile { display: none; } }
+
+/* The rail's open place wears the light beside it, as the Launchpad's does. */
+#rail .place { position: relative; }
+#rail .place[aria-current="true"]::before {
+  content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--lit);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--lit) 85%, transparent);
+}
+#rail .rail-mark { transition: transform .5s var(--hov); }
+#rail .rail-head:hover .rail-mark { transform: rotate(-12deg); }
+
+/* The tab column floats, as the Library's Folders panel and Core BI's do: a
+   glass panel in the sky under the top bar, not a grey slab bolted to the
+   rail. It keeps its flex track's width and takes its margins on top, so the
+   page beside it does not move. */
+#tabs {
+  background: none;
+  border-right: 0;
+  padding: 0;
+  height: auto;
+  max-height: calc(100vh - 24px);
+  margin: 12px 0 20px 14px;
+  top: 12px;
+}
+#tabs::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  backdrop-filter: saturate(1.3) blur(8px);
+  box-shadow: var(--lift);
+}
+#tabs { position: sticky; isolation: isolate; padding: 16px 10px 14px; align-self: flex-start; }
+.tabs-title { padding: 0 10px 8px; }
+.tabs-title + .tab { margin-top: 2px; }
+#tabs .r { border: 0; border-top: 1px solid color-mix(in srgb, var(--navy) 8%, transparent); margin: 14px 4px 12px; }
+.tab[aria-current="true"] {
+  background: color-mix(in srgb, var(--accent) 10%, var(--paper));
+  box-shadow: inset 3px 0 0 var(--accent);
+  color: var(--ink);
+}
+
+/* The figure picks itself. The label is the control, so the card carries no
+   tool of its own: the caret appears only under the pointer or on focus, and
+   the whole card lifts a little to say it can be acted on. */
+.strip-item.pickable { position: relative; }
+.strip-label { display: flex; align-items: center; gap: 6px; }
+.fig-open {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin: -3px -6px; padding: 3px 6px; border: 0; border-radius: 7px;
+  background: none; color: inherit; font: inherit; letter-spacing: inherit;
+  text-transform: inherit; cursor: pointer;
+  transition: background-color .18s var(--hov), color .18s var(--hov);
+}
+.fig-open svg { opacity: 0; transition: opacity .18s var(--hov), transform .25s var(--hov); }
+.strip-item:hover .fig-open svg,
+.fig-open:focus-visible svg,
+.strip-item.open .fig-open svg { opacity: .65; }
+.strip-item.open .fig-open svg { transform: rotate(180deg); }
+.fig-open:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+.fig-open:focus-visible { outline: 2px solid var(--accent-lift); outline-offset: 1px; }
+
+/* While a figure is being previewed it reads as provisional, so nobody mistakes
+   the number under the cursor for the one that is saved. */
+.strip-item.previewing .strip-value { color: var(--accent); }
+.strip-item.previewing { box-shadow: var(--lift-up), inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent); }
+
+.fig-menu {
+  position: absolute; z-index: 60; top: calc(100% - 4px); left: 0; min-width: 100%;
+  width: max-content; max-width: 290px; max-height: 320px; overflow-y: auto;
+  padding: 5px; border-radius: 14px;
+  background: var(--paper); box-shadow: var(--lift-up);
+  animation: fig-in .16s var(--out) both;
+}
+@media (prefers-reduced-motion: reduce) { .fig-menu { animation: none; } }
+@keyframes fig-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.fig-opt {
+  display: flex; align-items: baseline; gap: 14px; width: 100%;
+  padding: 7px 10px; border: 0; border-radius: 9px; background: none;
+  text-align: left; font-size: 13px; color: var(--ink-soft); cursor: pointer;
+}
+.fig-opt .fo-n { flex: 1 1 auto; }
+.fig-opt .fo-v {
+  flex: 0 0 auto; font-family: var(--font-display); font-size: 13.5px;
+  color: var(--ink); font-variant-numeric: tabular-nums;
+}
+.fig-opt:hover, .fig-opt:focus-visible {
+  background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--ink); outline: 0;
+}
+.fig-opt[aria-selected="true"] { color: var(--ink); font-weight: 600; }
+.fig-opt[aria-selected="true"] .fo-n::after {
+  content: ""; display: inline-block; width: 5px; height: 5px; margin-left: 7px;
+  border-radius: 50%; background: var(--accent); vertical-align: middle;
+}
+/* the right-hand figures must not collide on a narrow card */
+@media (max-width: 560px) { .fig-menu { left: auto; right: 0; max-width: 260px; } }
+@media print { .fig-open svg, .fig-menu { display: none; } }
+
+/* --- the entrance ------------------------------------------------------------
+   On a page's first draw (world.js): the eyebrow, then the question word by
+   word, the answer, then the figure cards and the panels, each rising 16px
+   into place on the Launchpad's expo-out in a 60ms stagger. Opacity and
+   transform only. */
+.w { display: inline-block; }
+@media (prefers-reduced-motion: no-preference) {
+  .enter .page-eyebrow { animation: fade .6s var(--out) both; }
+  .enter :is(.page-title, .verdict h2) .w { animation: word .9s var(--out) both;
+    animation-delay: calc(60ms + var(--w, 0) * 70ms); }
+  .enter .page-answer { animation: rise .7s var(--out) both; animation-delay: 280ms; }
+  .enter .head-motif { animation: rise .8s var(--out) both; animation-delay: 160ms; }
+  .enter .verdict { animation: rise .7s var(--out) both; animation-delay: 120ms; }
+  .enter .strip > .strip-item { animation: rise .7s var(--out) both; animation-delay: calc(300ms + var(--i, 0) * 60ms); }
+  .enter .grid > * { animation: rise .7s var(--out) both; animation-delay: calc(420ms + var(--i, 0) * 60ms); }
+  .enter .chart .draw { stroke-dasharray: 1; animation: draw 1.2s var(--out) both; animation-delay: 640ms; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes word { from { opacity: 0; transform: translateY(.5em); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* Below the first screen, sections settle in once as they are scrolled to.
+   Armed only by a real scroll (world.js), never on load, so a page that opens
+   scrolled does not animate everything at once. */
+#page .grid > *.settle { opacity: .14; transform: translateY(18px); transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .tr-spark, .tr-spark-g { animation: none; opacity: 0; }
+  #page .grid > *.settle { opacity: 1; transform: none; }
+}
+
+/* --- a phone -----------------------------------------------------------------
+   The trail is a wide gesture and has no room, so it goes. The dots stay:
+   texture costs nothing and is most of what makes a small screen feel built. */
+@media (max-width: 900px) {
+  #deco { height: 400px; }
+  .trail { display: none; }
+  body { background-attachment: scroll; }
+}
+
+/* --- paper -------------------------------------------------------------------
+   Print is ink on white. The world steps aside, and a panel goes back to a
+   hairline so a table keeps its columns. */
+@media print {
+  body { background: #fff; }
+  #deco, #bar::before { display: none; }
+  .panel {
+    border: 1px solid #ddd; border-radius: 0; box-shadow: none; transform: none;
+    transition: none; break-inside: avoid;
+  }
+  .strip-item, .verdict, .set-card, .conn-card { box-shadow: none; }
+}
+
+/* Presentation mode is one panel at a time on a dark ground: the world would
+   be a second subject on the screen behind the first. */
+body.presenting #deco { display: none; }
