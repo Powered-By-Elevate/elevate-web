@@ -602,6 +602,9 @@ def build():
                      ("education.html", education()), ("portal.html", portal())]:
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
+    # the sign-in page now lives at portal.html; keep old links working
+    (OUT / "signin.html").write_text('<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=portal.html">'
+                                     '<link rel="canonical" href="portal.html"><title>Client Portal</title><a href="portal.html">Client Portal</a>')
 
 if __name__ == "__main__":
     build()
