@@ -205,6 +205,52 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .demo-card .chip { font-size: 13.5px; padding: 7px 13px; text-decoration: none; transition: background .2s ease, border-color .2s ease }
 .demo-card .chip:hover { background: rgba(230,192,104,.16); border-color: var(--gold) }
 .featured .btns .btn--line { color: #fff }
+
+/* contact panel */
+.contact { width: min(560px, calc(100% - 32px)); border: 0; border-radius: 26px; padding: clamp(26px, 4vw, 40px); background: var(--card); color: var(--ink); box-shadow: 0 40px 90px -30px rgba(5,42,51,.6) }
+.contact::backdrop { background: rgba(5,42,51,.55); backdrop-filter: blur(3px) }
+.contact[open] { display: grid; gap: 16px }
+.contact h2 { font-size: clamp(32px, 4vw, 44px) }
+.contact p { color: var(--ink2) }
+.contact .eyebrow { margin: 0 }
+.contact__x { position: absolute; top: 14px; right: 14px; margin: 0 }
+.contact__x button { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer }
+.contact__mail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); font: 500 17px var(--body); word-break: break-all }
+.contact__mail span { flex: 1; min-width: 0; user-select: all }
+.contact__mail .btn { padding: 10px 16px; font-size: 14px; cursor: pointer; background: transparent; color: var(--teal) }
+.contact__open { display: flex; flex-wrap: wrap; gap: 10px }
+.contact__open .btn--line { color: var(--teal) }
+
+/* contact page */
+.contact-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: clamp(32px, 5vw, 64px); align-items: start }
+.contact-intro { display: grid; gap: 20px; min-width: 0 }
+.contact-intro .note { color: var(--ink2) }
+.contact-card { padding: clamp(26px, 4vw, 42px) }
+.fgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px }
+.field { display: grid; gap: 8px; min-width: 0 }
+.field.full { grid-column: 1 / -1 }
+.field label { font: 600 12.5px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--ink2) }
+.field small { font-weight: 400; letter-spacing: 0; text-transform: none }
+.field input, .field select, .field textarea { font: 400 16.5px/1.4 var(--body); padding: 14px 16px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); width: 100% }
+.field textarea { resize: vertical }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--teal2); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal2) 22%, transparent) }
+.contact-card button[type=submit] { margin-top: 20px; border: 0; cursor: pointer }
+.contact-card button[disabled] { opacity: .6; cursor: default }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px }
+.done { display: grid; gap: 12px }
+.done h2 { font-size: clamp(30px, 3.6vw, 42px) }
+.done p { color: var(--ink2) }
+
+[hidden] { display: none !important }
+.mast__end { display: flex; align-items: center; gap: 10px }
+.theme-btn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 1px solid var(--line); background: transparent; color: var(--ink2); border-radius: 50%; cursor: pointer; flex: none; transition: border-color .18s ease, color .18s ease }
+.theme-btn:hover { border-color: var(--teal); color: var(--teal) }
+.theme-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
+.theme-btn .i-sun { display: none }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-btn .i-sun { display: block } :root:not([data-theme="light"]) .theme-btn .i-moon { display: none } }
+:root[data-theme="dark"] .theme-btn .i-sun { display: block }
+:root[data-theme="dark"] .theme-btn .i-moon { display: none }
+@media (max-width: 860px) { .mast__end { flex-direction: row-reverse } }
 /* closing band and footer */
 .close { text-align: left }
 .close h2 { font-size: clamp(36px, 5vw, 60px); color: #fff; max-width: 18ch }
@@ -279,8 +325,12 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m17)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
-<nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html" aria-current="page">Education</a><a href="portal.html" class="portal">Client Portal</a></nav></div></header><main><section class="hero page-hero"><svg class="swoosh" viewBox="0 0 1440 500" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sw15" x1="0" x2="1"><stop offset="0" stop-color="#2F9DA8" stop-opacity="0"/><stop offset=".55" stop-color="#2F9DA8" stop-opacity="0.55"/><stop offset="1" stop-color="#E6C068" stop-opacity="0.8"/></linearGradient></defs><path d="M-40 470 C 400 430, 860 300, 1480 70" fill="none" stroke="url(#sw15)" stroke-width="2.4" vector-effect="non-scaling-stroke"/><path d="M-40 500 C 430 466, 900 340, 1480 120" fill="none" stroke="url(#sw15)" stroke-width="1.3" opacity=".7" vector-effect="non-scaling-stroke"/></svg><div class="hero__photo" style="background-image:url(img/q3-017.jpg);background-position:center"></div>
-<div class="shell"><div class="hero__in"><div class="eyebrow">Education services</div><h1>Built around <span class="it">your school.</span></h1><p class="lede">The complete back office for charter and private schools, built around each school's stage, priorities and staff, from the first planning year to every audit after.</p><div class="btns"><a class="btn btn--gold" href="mailto:hello@elevatemanagedservices.com?subject=Education%20services">Talk to our education team</a><a class="btn btn--line" href="#launch">Starting a new school?</a></div></div></div></section><section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run for schools</div>
+<div class="mast__end"><nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html" aria-current="page">Education</a><a href="portal.html">Client Portal</a></nav>
+<button class="theme-btn" id="themeToggle" type="button" aria-label="Switch between light and dark mode">
+<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+</button></div></div></header><main><section class="hero page-hero"><svg class="swoosh" viewBox="0 0 1440 500" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sw15" x1="0" x2="1"><stop offset="0" stop-color="#2F9DA8" stop-opacity="0"/><stop offset=".55" stop-color="#2F9DA8" stop-opacity="0.55"/><stop offset="1" stop-color="#E6C068" stop-opacity="0.8"/></linearGradient></defs><path d="M-40 470 C 400 430, 860 300, 1480 70" fill="none" stroke="url(#sw15)" stroke-width="2.4" vector-effect="non-scaling-stroke"/><path d="M-40 500 C 430 466, 900 340, 1480 120" fill="none" stroke="url(#sw15)" stroke-width="1.3" opacity=".7" vector-effect="non-scaling-stroke"/></svg><div class="hero__photo" style="background-image:url(img/q3-017.jpg);background-position:center"></div>
+<div class="shell"><div class="hero__in"><div class="eyebrow">Education services</div><h1>Built around <span class="it">your school.</span></h1><p class="lede">The complete back office for charter and private schools, built around each school's stage, priorities and staff, from the first planning year to every audit after.</p><div class="btns"><a class="btn btn--gold" href="contact.html?topic=Education%20services">Talk to our education team</a><a class="btn btn--line" href="#launch">Starting a new school?</a></div></div></div></section><section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run for schools</div>
 <h2 class="h2">The money, <span class="it">handled.</span> Every review, <span class="it">ready.</span></h2>
 <p class="lede">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div>
 <div class="grid g3"><article class="card svc"><div class="icon goldi"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div><h3>Accounting & Financial Reporting</h3><p>Books your board can read and your auditor can trust.</p><ul><li>Monthly close and reconciliations</li><li>Budget development and tracking</li><li>Monthly board financial reports</li><li>A live dashboard for the board</li></ul></article><article class="card svc"><div class="icon goldi"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div><h3>Payroll & Accounts Payable</h3><p>Every paycheck and every vendor paid right and on time.</p><ul><li>Payroll processing and tax filings</li><li>Direct deposit, time and attendance</li><li>W-2 and ACA reporting</li><li>Invoice processing and vendor payments</li><li>Audit-ready payment records</li></ul></article><article class="card svc"><div class="icon goldi"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5"/><path d="M3 20c0-3.6 3-6 7-6s7 2.4 7 6"/><path d="M19 8v6M16 11h6"/></svg></div><h3>Human Resources</h3><p>The people side of a school, organized.</p><ul><li>Hiring workflow</li><li>Onboarding and offboarding</li><li>Personnel records and certifications</li><li>Benefits coordination</li><li>Handbook review</li></ul></article><article class="card svc"><div class="icon goldi"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div><h3>Audit & Board Readiness</h3><p>Audit-ready all year, not just in the fall.</p><ul><li>Year-round audit readiness</li><li>Auditor coordination through fieldwork</li><li>Fiscal training for board members</li></ul></article><article class="card svc"><div class="icon goldi"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"/></svg></div><h3>Grants & Compliance</h3><p>Every dollar of grant money tracked from application to report.</p><ul><li>Title I, II and IV</li><li>IDEA</li><li>Expenditure tracking and monitoring</li><li>Charter, state and federal deadlines on one calendar</li></ul></article><article class="card svc"><div class="icon goldi"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M10 21v-5h4v5"/></svg></div><h3>New School Launch</h3><p>From charter approval to opening day.</p><ul><li>Planning-year financial setup</li><li>Compliance documentation</li><li>Facilities readiness</li><li>Opening-day operations</li></ul></article></div></div></section>
@@ -291,7 +341,7 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <section class="band deep" id="launch"><svg class="swoosh" viewBox="0 0 1440 500" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sw16" x1="0" x2="1"><stop offset="0" stop-color="#2F9DA8" stop-opacity="0"/><stop offset=".55" stop-color="#2F9DA8" stop-opacity="0.45"/><stop offset="1" stop-color="#E6C068" stop-opacity="0.7"/></linearGradient></defs><path d="M-40 470 C 400 430, 860 300, 1480 70" fill="none" stroke="url(#sw16)" stroke-width="2.4" vector-effect="non-scaling-stroke"/><path d="M-40 500 C 430 466, 900 340, 1480 120" fill="none" stroke="url(#sw16)" stroke-width="1.3" opacity=".7" vector-effect="non-scaling-stroke"/></svg><div class="shell split"><div style="display:grid;gap:20px;min-width:0"><div class="eyebrow">Starting a new school?</div>
 <h2 class="h2">From charter to <span class="it">opening day.</span></h2>
 <p class="lede">Our family of companies has built and opened schools. We set up the books, payroll, policies and opening budget during the planning year, so founders can focus on students.</p>
-<div class="btns"><a class="btn btn--gold" href="mailto:hello@elevatemanagedservices.com?subject=New%20school%20launch">Plan your launch with us</a></div></div>
+<div class="btns"><a class="btn btn--gold" href="contact.html?topic=New%20school%20launch">Plan your launch with us</a></div></div>
 <div class="frame" style="background-image:url(img/q3-020.jpg)" role="img" aria-label="Aerial view of a newly built charter school campus"></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Three schools. <span class="it">Opened on time.</span></h2>
@@ -300,12 +350,16 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <div class="eyebrow">Ready to partner?</div>
 <h2>Let's start a <span class="it">conversation.</span></h2>
 <p class="lede">Bring the part of the operation that keeps slipping. We will tell you what it would take to run it properly, and what that costs, before you commit to anything.</p>
-<div class="btns"><a class="btn btn--gold" href="mailto:hello@elevatemanagedservices.com?subject=Discovery%20call%20request">Book a discovery call</a>
+<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Discovery%20call%20request">Book a discovery call</a>
 <span class="copy" aria-label="Email address">hello@elevatemanagedservices.com</span></div></div></section></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m19" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m19)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html">Client Portal</a></nav></div>
 <small>&copy; 2026 Elevate Managed Services. Thoughtful solutions. Brighter tomorrows.</small></div></footer><script>
+(function(){var r=document.documentElement,K='elv-theme',v=null;try{v=localStorage.getItem(K);}catch(e){}
+if(v==='dark'||v==='light')r.setAttribute('data-theme',v);
+var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var cur=r.getAttribute('data-theme');
+var dark=cur?cur==='dark':matchMedia('(prefers-color-scheme: dark)').matches;var n=dark?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(K,n);}catch(e){}});})();
 (function(){try{history.scrollRestoration='manual';}catch(e){}
 function top(){if(!location.hash){window.scrollTo(0,0);var se=document.scrollingElement||document.documentElement;se.scrollTop=0;document.body.scrollTop=0;}}
 top();window.addEventListener('load',top);window.addEventListener('pageshow',top);
