@@ -353,7 +353,7 @@ def icon(name, gold=False):
 _n = [0]
 def lockup():
     _n[0] += 1
-    return f'<a class="lockup" href="index.html" aria-label="Elevate Managed Services, home">{MARK.format(i=_n[0])}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>'
+    return f'<a class="lockup" href="/" aria-label="Elevate Managed Services, home">{MARK.format(i=_n[0])}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>'
 
 def swoosh(op=0.5):
     _n[0] += 1
@@ -363,9 +363,13 @@ def swoosh(op=0.5):
             f'<path d="M-40 470 C 400 430, 860 300, 1480 70" fill="none" stroke="url(#sw{i})" stroke-width="2.4" vector-effect="non-scaling-stroke"/>'
             f'<path d="M-40 500 C 430 466, 900 340, 1480 120" fill="none" stroke="url(#sw{i})" stroke-width="1.3" opacity=".7" vector-effect="non-scaling-stroke"/></svg>')
 
+def url(f):
+    """Clean addresses: GitHub Pages serves about.html at /about."""
+    return "/" if f == "index.html" else "/" + f[:-5]
+
 def nav(current):
     CUR = ' aria-current="page"'
-    links = "".join(f'<a href="{f}"{CUR if f == current else ""}>{t}</a>' for f, t in PAGES)
+    links = "".join(f'<a href="{url(f)}"{CUR if f == current else ""}>{t}</a>' for f, t in PAGES)
     return f'''<header class="mast"><div class="shell mast__row">{lockup()}
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
 <div class="mast__end"><nav class="nav" id="nav" aria-label="Main">{links}</nav></div></div></header>'''
@@ -375,11 +379,11 @@ def close_band():
 <div class="eyebrow">Ready to partner?</div>
 <h2>Let's start a <span class="it">conversation.</span></h2>
 <p class="lede">Bring the part of the operation that keeps slipping. We will tell you what it would take to run it properly, and what that costs, before you commit to anything.</p>
-<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Discovery%20call%20request">Book a discovery call</a>
+<div class="btns"><a class="btn btn--gold" href="/contact?topic=Discovery%20call%20request">Book a discovery call</a>
 <span class="copy" aria-label="Email address">{EMAIL}</span></div></div></section>'''
 
 def footer():
-    links = "".join(f'<a href="{f}">{t}</a>' for f, t in PAGES)
+    links = "".join(f'<a href="{url(f)}">{t}</a>' for f, t in PAGES)
     return f'''<footer class="foot"><div class="shell"><div class="foot__row">{lockup()}<nav aria-label="Footer">{links}</nav></div>
 <small>&copy; 2026 Elevate Managed Services. Thoughtful solutions. Brighter tomorrows.</small></div></footer>'''
 
@@ -482,15 +486,15 @@ HOW = [("Step one", "Discovery", "A 45 to 60 minute conversation about your enti
 
 # ------------------------------------------------------------------ pages
 def home():
-    tiles = [("services.html", "bo-desk.jpg", "Business Services", "Take the whole back office, or take the part that is breaking.", "center"),
-             ("education.html", "q3-017.jpg", "Education Services", "The complete back office for charter and private schools.", "center"),
-             ("services.html#bi", "dashboard.png", "Business Intelligence", "One live financial dashboard for every entity, cut to each role.", "60% 30%;background-size:150%")]
+    tiles = [("/services", "bo-desk.jpg", "Business Services", "Take the whole back office, or take the part that is breaking.", "center"),
+             ("/education", "q3-017.jpg", "Education Services", "The complete back office for charter and private schools.", "center"),
+             ("/services#bi", "dashboard.png", "Business Intelligence", "One live financial dashboard for every entity, cut to each role.", "60% 30%;background-size:150%")]
     t = "".join(f'<a class="tile" href="{h}" style="background-image:url(img/{i});background-position:{p}"><div><h3>{a}</h3><p>{b}</p><span class="go">Learn more</span></div></a>' for h, i, a, b, p in tiles)
     return page("index.html", "Elevate Managed Services",
         "Back-office and education services for growing companies and schools across the Southeast.",
         hero("Capacity for today. A stronger tomorrow.", 'A Bolder <span class="it">Solution.</span>',
              "Back-office and education services that take the weight off growing organizations and schools, so leaders can lead.",
-             "bo-team.jpg", f'<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Discovery%20call%20request">Book a discovery call</a><a class="btn btn--line" href="portal.html">Client portal</a></div>', "72% center") +
+             "bo-team.jpg", f'<div class="btns"><a class="btn btn--gold" href="/contact?topic=Discovery%20call%20request">Book a discovery call</a><a class="btn btn--line" href="/portal">Client portal</a></div>', "72% center") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we do</div>
 <h2 class="h2">Two practices. <span class="it">One standard.</span></h2>
 <p class="lede">Elevate is the managed services arm of a family of multi-million dollar companies spanning two states in the Southeast. We partner with organizations and schools at any level to simplify operations, strengthen outcomes and build thriving communities.</p></div>
@@ -530,7 +534,7 @@ def services():
     return page("services.html", "Business Services", "Financial management, compliance, operations, people, marketing and business intelligence.",
         hero("Business services", 'Take the whole back office. <span class="it">Or the part that is breaking.</span>',
              "Every service runs on the same execution layer, so a client who starts with one can add another without rebuilding their reporting.",
-             "bo-papers.jpg", f'<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Business%20services">Talk to us</a></div>', "center 30%", "page-hero") +
+             "bo-papers.jpg", f'<div class="btns"><a class="btn btn--gold" href="/contact?topic=Business%20services">Talk to us</a></div>', "center 30%", "page-hero") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run</div>
 <h2 class="h2">Six services. <span class="it">One team accountable.</span></h2></div>
 <div class="grid g3">{svc_cards(BIZ)}</div></div></section>
@@ -538,7 +542,7 @@ def services():
 <div class="eyebrow">Featured: Business Intelligence</div><h2 class="h2">Every number, <span class="it">live.</span></h2>
 <p class="lede">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click. Clients sign in through the client portal.</p>
 <div class="chips">{"".join(f'<span class="chip">{i}</span>' for i in inds)}</div>
-<div class="btns"><a class="btn btn--gold" href="portal.html">Sign in to your dashboard</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div></div>
+<div class="btns"><a class="btn btn--gold" href="/portal">Sign in to your dashboard</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div></div>
 <img src="img/dashboard.png" alt="The Elevate BI Dashboard showing a sample construction company" width="1400" height="945" loading="lazy"></div></section>{systems_band()}
 ''')
 
@@ -555,7 +559,7 @@ def education():
     return page("education.html", "Elevate Education", "The complete back office for charter and private schools.",
         hero("Education services", 'Built around <span class="it">your school.</span>',
              "The complete back office for charter and private schools, built around each school's stage, priorities and staff, from the first planning year to every audit after.",
-             "q3-017.jpg", f'<div class="btns"><a class="btn btn--gold" href="contact.html?topic=Education%20services">Talk to our education team</a><a class="btn btn--line" href="#launch">Starting a new school?</a></div>', "center", "page-hero") +
+             "q3-017.jpg", f'<div class="btns"><a class="btn btn--gold" href="/contact?topic=Education%20services">Talk to our education team</a><a class="btn btn--line" href="#launch">Starting a new school?</a></div>', "center", "page-hero") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run for schools</div>
 <h2 class="h2">The money, <span class="it">handled.</span> Every review, <span class="it">ready.</span></h2>
 <p class="lede">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div>
@@ -567,7 +571,7 @@ def education():
 <section class="band deep" id="launch">{swoosh(.45)}<div class="shell split"><div style="display:grid;gap:20px;min-width:0"><div class="eyebrow">Starting a new school?</div>
 <h2 class="h2">From charter to <span class="it">opening day.</span></h2>
 <p class="lede">Our family of companies has built and opened schools. We set up the books, payroll, policies and opening budget during the planning year, so founders can focus on students.</p>
-<div class="btns"><a class="btn btn--gold" href="contact.html?topic=New%20school%20launch">Plan your launch with us</a></div></div>
+<div class="btns"><a class="btn btn--gold" href="/contact?topic=New%20school%20launch">Plan your launch with us</a></div></div>
 <div class="frame" style="background-image:url(img/q3-020.jpg)" role="img" aria-label="Aerial view of a newly built charter school campus"></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Three schools. <span class="it">Opened on time.</span></h2>
@@ -687,8 +691,8 @@ def build():
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
     # the sign-in page now lives at portal.html; keep old links working
-    (OUT / "signin.html").write_text('<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=portal.html">'
-                                     '<link rel="canonical" href="portal.html"><title>Client Portal</title><a href="portal.html">Client Portal</a>')
+    (OUT / "signin.html").write_text('<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=/portal">'
+                                     '<link rel="canonical" href="/portal"><title>Client Portal</title><a href="/portal">Client Portal</a>')
 
 if __name__ == "__main__":
     build()
