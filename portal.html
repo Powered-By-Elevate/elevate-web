@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" href="favicon.svg" type="image/svg+xml"><title>Elevate Client Portal</title><meta name="description" content="Where Elevate clients sign in to their BI Dashboard."><meta name="claude:viewport-fit-sides" content="cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" href="favicon.svg" type="image/svg+xml"><title>Elevate Client Portal</title><meta name="description" content="Sign in to your Elevate BI Dashboard, or explore the demo."><meta name="claude:viewport-fit-sides" content="cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"><style>
 /* layout: a sticky light masthead over alternating paper and deep-teal bands, photography in rounded frames */
 :root {
   --bg: #f8f6f0; --card: #ffffff; --ink: #2e2e2e; --ink2: #56615f; --line: #dfe5e3;
@@ -174,7 +174,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* portal systems */
 .sysgrp { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; align-items: center; padding: 24px 26px }
 .sysgrp h3 { font-size: 24px }
-.sysgrp .chips { grid-column: 1 / -1; gap: 8px }
+.sysgrp .chips { grid-column: 1 / -1; gap: 8px; align-self: start }
 .sysgrp .chip { font-size: 13.5px; padding: 7px 13px }
 .sysintro { display: grid; gap: 10px; padding: 24px 26px }
 .sysintro .eyebrow { margin: 0 }
@@ -278,17 +278,33 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m20)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
-<nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html" class="portal" aria-current="page">Client Portal</a></nav></div></header><main><section class="band"><div class="shell"><div class="head"><div class="eyebrow">Client portal</div>
-<h1 class="h2" style="font-size:clamp(44px,6vw,72px)">Everything we run for you, <span class="it">in one place.</span></h1>
-<p class="lede">Sign in to your BI Dashboard to see your numbers, your reports and the work behind them. It reads from the systems you already use, so nothing changes for your team.</p></div>
-<div class="portal-hero"><div class="featured deep">
-<div class="eyebrow">Business Intelligence</div><h2>Your BI <span class="it">Dashboard.</span></h2>
-<p>Your live financial dashboard, cut to your role. Revenue, margin, cash, payroll and the work behind them, updated every day.</p>
-<div class="btns"><a class="btn btn--gold" href="signin.html">Sign in &rarr;</a><a class="btn btn--line" href="https://powered-by-elevate.github.io/hub/" target="_blank" rel="noopener">View the demo</a></div>
-<a href="signin.html" aria-label="Sign in to your dashboard"><img src="img/dashboard.png" alt="" width="1400" height="945" loading="lazy"></a></div>
-<div class="tools"><div class="card sysintro"><div class="eyebrow">Works with your systems</div>
-<p>Keep your accounting, payroll and project software. Your dashboard connects to it, whichever one you use.</p></div><div class="card sysgrp"><div class="icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div><h3>Accounting</h3><div class="chips"><span class="chip">QuickBooks Online</span><span class="chip">Sage Intacct</span><span class="chip">Xero</span><span class="chip">NetSuite</span><span class="chip">Sage 100</span><span class="chip">Others on request</span></div></div><div class="card sysgrp"><div class="icon"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div><h3>Payroll and HR</h3><div class="chips"><span class="chip">ADP</span><span class="chip">QuickBooks Payroll</span><span class="chip">Rippling</span><span class="chip">Gusto</span><span class="chip">Paychex</span><span class="chip">Paylocity</span></div></div><div class="card sysgrp"><div class="icon"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><h3>Operations</h3><div class="chips"><span class="chip">Procore</span><span class="chip">Bill.com</span><span class="chip">Microsoft 365</span><span class="chip">Google Workspace</span><span class="chip">Monday.com</span><span class="chip">Spreadsheets</span></div></div>
-<div class="card sysintro"><h3>New client, or need access?</h3><p>Email your Elevate team and we will set you up.</p><span class="copy">hello@elevatemanagedservices.com</span></div></div></div></div></section></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m21" x1="0" y1="1" x2="1" y2="0">
+<nav class="nav" id="nav" aria-label="Main"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html" class="portal" aria-current="page">Client Portal</a></nav></div></header><main><section class="band signin-band"><div class="shell"><div class="signin">
+<div class="signin__card card">
+<div class="eyebrow">Client sign-in</div>
+<h1>Sign in to your <span class="it">dashboard.</span></h1>
+<p class="lede">Enter your work email and we will take you to your company's BI Dashboard.</p>
+<form id="signinForm" novalidate>
+<label for="email">Work email</label>
+<input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required>
+<button class="btn btn--teal" type="submit">Continue &rarr;</button>
+</form>
+<p id="msg" class="msg" role="status" aria-live="polite"></p>
+</div>
+<a class="demo-card deep" href="https://powered-by-elevate.github.io/hub/" target="_blank" rel="noopener">
+<div class="eyebrow">Not a client yet?</div>
+<h2>See it with <span class="it">a sample company.</span></h2>
+<p>Pick an industry and a sample company, and explore a live dashboard built the way that business is measured.</p>
+<div class="chips"><span class="chip">Construction</span><span class="chip">Schools</span><span class="chip">Retail</span><span class="chip">Food &amp; beverage</span><span class="chip">Manufacturing</span><span class="chip">Freight</span><span class="chip">Software</span></div>
+<span class="btn btn--gold" style="justify-self:start">View the demo &rarr;</span></a>
+</div></div></section><script>
+(function(){var C={};var f=document.getElementById('signinForm'),e=document.getElementById('email'),m=document.getElementById('msg');
+if(!f)return;f.addEventListener('submit',function(ev){ev.preventDefault();var v=(e.value||'').trim().toLowerCase();
+if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.className='msg bad';m.textContent='Enter the email address you use for work, like name@company.com.';e.focus();return;}
+var d=v.split('@')[1];var url=C[d];
+if(url){m.className='msg ok';m.textContent='Taking you to your dashboard\u2026';window.location.href=url;}
+else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.replace(/[<>&]/g,'')+'</b> yet. If you are an Elevate client, email <span class="copy">hello@elevatemanagedservices.com</span> and we will get you set up. In the meantime you can explore the demo.';}
+});})();
+</script></main><footer class="foot"><div class="shell"><div class="foot__row"><a class="lockup" href="index.html" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m21" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#m21)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><nav aria-label="Footer"><a href="index.html">Home</a><a href="about.html">About</a><a href="services.html">Services</a><a href="education.html">Education</a><a href="portal.html">Client Portal</a></nav></div>

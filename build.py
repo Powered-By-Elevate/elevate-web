@@ -193,7 +193,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* portal systems */
 .sysgrp { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; align-items: center; padding: 24px 26px }
 .sysgrp h3 { font-size: 24px }
-.sysgrp .chips { grid-column: 1 / -1; gap: 8px }
+.sysgrp .chips { grid-column: 1 / -1; gap: 8px; align-self: start }
 .sysgrp .chip { font-size: 13.5px; padding: 7px 13px }
 .sysintro { display: grid; gap: 10px; padding: 24px 26px }
 .sysintro .eyebrow { margin: 0 }
@@ -367,7 +367,7 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="
 def page(fname, title, desc, body):
     head = (f'<title>{title}</title><meta name="description" content="{desc}">'
             '<meta name="claude:viewport-fit-sides" content="cover">' + FONTS + f'<style>{CSS}</style>')
-    inner = f'{nav("portal.html" if fname == "signin.html" else fname)}<main>{body}{close_band() if fname not in ("portal.html", "signin.html") else ""}</main>{footer()}{SCRIPT}'
+    inner = f'{nav(fname)}<main>{body}{close_band() if fname != "portal.html" else ""}</main>{footer()}{SCRIPT}'
     bare = PREVIEW and fname == "index.html"
     if bare:
         return head + inner
@@ -505,8 +505,8 @@ def services():
 <div class="eyebrow">Featured: Business Intelligence</div><h2 class="h2">Every number, <span class="it">live.</span></h2>
 <p class="lede">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click. Clients sign in through the client portal.</p>
 <div class="chips">{"".join(f'<span class="chip">{i}</span>' for i in inds)}</div>
-<div class="btns"><a class="btn btn--gold" href="signin.html">Sign in to your dashboard</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div></div>
-<img src="img/dashboard.png" alt="The Elevate BI Dashboard showing a sample construction company" width="1400" height="945" loading="lazy"></div></section>
+<div class="btns"><a class="btn btn--gold" href="portal.html">Sign in to your dashboard</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div></div>
+<img src="img/dashboard.png" alt="The Elevate BI Dashboard showing a sample construction company" width="1400" height="945" loading="lazy"></div></section>{systems_band()}
 ''')
 
 def education():
@@ -541,26 +541,18 @@ def education():
 <p class="lede">Our partner companies delivered three new schools in 2026 for 2,510 students. Elevate runs the finance and operations behind the teams that built them.</p></div>
 <div class="grid g3">{proof_cards(SCHOOLS)}</div></div></section>''')
 
-def portal():
-    groups = [("ledger", "Accounting", ["QuickBooks Online", "Sage Intacct", "Xero", "NetSuite", "Sage 100", "Others on request"]),
-              ("pay", "Payroll and HR", ["ADP", "QuickBooks Payroll", "Rippling", "Gusto", "Paychex", "Paylocity"]),
-              ("folder", "Operations", ["Procore", "Bill.com", "Microsoft 365", "Google Workspace", "Monday.com", "Spreadsheets"])]
+SYSTEMS = [("ledger", "Accounting", ["QuickBooks Online", "Sage Intacct", "Xero", "NetSuite", "Sage 100", "Others on request"]),
+           ("pay", "Payroll and HR", ["ADP", "QuickBooks Payroll", "Rippling", "Gusto", "Paychex", "Paylocity"]),
+           ("folder", "Operations", ["Procore", "Bill.com", "Microsoft 365", "Google Workspace", "Monday.com", "Spreadsheets"])]
+
+def systems_band():
     def chips(names):
         return "".join(f'<span class="chip">{n}</span>' for n in names)
-    gl = "".join(f'<div class="card sysgrp">{icon(i)}<h3>{t}</h3><div class="chips">{chips(names)}</div></div>' for i, t, names in groups)
-    return page("portal.html", "Elevate Client Portal", "Where Elevate clients sign in to their BI Dashboard.",
-        f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">Client portal</div>
-<h1 class="h2" style="font-size:clamp(44px,6vw,72px)">Everything we run for you, <span class="it">in one place.</span></h1>
-<p class="lede">Sign in to your BI Dashboard to see your numbers, your reports and the work behind them. It reads from the systems you already use, so nothing changes for your team.</p></div>
-<div class="portal-hero"><div class="featured deep">
-<div class="eyebrow">Business Intelligence</div><h2>Your BI <span class="it">Dashboard.</span></h2>
-<p>Your live financial dashboard, cut to your role. Revenue, margin, cash, payroll and the work behind them, updated every day.</p>
-<div class="btns"><a class="btn btn--gold" href="signin.html">Sign in &rarr;</a><a class="btn btn--line" href="{DEMO}" target="_blank" rel="noopener">View the demo</a></div>
-<a href="signin.html" aria-label="Sign in to your dashboard"><img src="img/dashboard.png" alt="" width="1400" height="945" loading="lazy"></a></div>
-<div class="tools"><div class="card sysintro"><div class="eyebrow">Works with your systems</div>
-<p>Keep your accounting, payroll and project software. Your dashboard connects to it, whichever one you use.</p></div>{gl}
-<div class="card sysintro"><h3>New client, or need access?</h3><p>Email your Elevate team and we will set you up.</p><span class="copy">{EMAIL}</span></div></div></div></div></section>''')
-
+    gl = "".join(f'<div class="card sysgrp">{icon(i)}<h3>{t}</h3><div class="chips">{chips(names)}</div></div>' for i, t, names in SYSTEMS)
+    return f'''<section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">Works with your systems</div>
+<h2 class="h2">Keep the software <span class="it">you already use.</span></h2>
+<p class="lede">Your dashboard connects to your accounting, payroll and project systems, whichever ones you run. Nothing changes for your team.</p></div>
+<div class="grid g3">{gl}</div></div></section>'''
 
 # Client dashboards by email domain. Add one line per client when their dashboard goes live,
 # e.g. "acmebuilders.com": "https://dashboards.elevatemanagedservices.com/acme/".
@@ -568,7 +560,7 @@ def portal():
 CLIENTS = {}
 DEMO = "https://powered-by-elevate.github.io/hub/"
 
-def signin():
+def portal():
     import json
     js = """<script>
 (function(){var C=%s;var f=document.getElementById('signinForm'),e=document.getElementById('email'),m=document.getElementById('msg');
@@ -598,12 +590,12 @@ else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.rep
 <div class="chips"><span class="chip">Construction</span><span class="chip">Schools</span><span class="chip">Retail</span><span class="chip">Food &amp; beverage</span><span class="chip">Manufacturing</span><span class="chip">Freight</span><span class="chip">Software</span></div>
 <span class="btn btn--gold" style="justify-self:start">View the demo &rarr;</span></a>
 </div></div></section>{js}'''
-    return page("signin.html", "Elevate Client Sign-in", "Sign in to your Elevate BI Dashboard, or explore the demo.", body)
+    return page("portal.html", "Elevate Client Portal", "Sign in to your Elevate BI Dashboard, or explore the demo.", body)
 
 def build():
     OUT.mkdir(exist_ok=True)
     for fn, html in [("index.html", home()), ("about.html", about()), ("services.html", services()),
-                     ("education.html", education()), ("portal.html", portal()), ("signin.html", signin())]:
+                     ("education.html", education()), ("portal.html", portal())]:
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
 
