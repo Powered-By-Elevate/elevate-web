@@ -408,15 +408,11 @@ def home():
 <h2 class="h2">Two practices. <span class="it">One standard.</span></h2>
 <p class="lede">Elevate is the managed services arm of a family of multi-million dollar companies spanning two states in the Southeast. We partner with organizations and schools at any level to simplify operations, strengthen outcomes and build thriving communities.</p></div>
 <div class="grid g3">{t}</div></div></section>
-<section class="deep stats-band">{swoosh(.4)}<div class="shell"><div class="stats">
-<div class="stat"><b>2</b><span>Practices, one standard</span></div><div class="stat"><b>7</b><span>Industries in our BI Dashboard</span></div>
-<div class="stat"><b>3</b><span>Schools opened on time in 2026 by our family of companies</span></div><div class="stat"><b>30</b><span>Day onboarding to a monthly rhythm</span></div></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
-<h2 class="h2">Built by operators, <span class="it">for operators.</span></h2>
+<h2 class="h2">Schools and communities, <span class="it">built.</span></h2>
 <p class="lede">Our partner companies build and open schools and communities. Elevate keeps the books, the payroll and the reporting behind that work.</p></div>
 <div class="grid g3">{proof_cards([SCHOOLS[0], BUILDS[0], BUILDS[1]])}</div></div></section>
-<section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">How engagement begins</div>
-<h2 class="h2">Start with one <span class="it">conversation.</span></h2></div>{steps(HOW)}</div></section>''')
+''')
 
 def about():
     rows = [("Scope", "Accounting and payroll only", "The whole back office, plus enrollment, facilities and growth"),
@@ -434,13 +430,11 @@ def about():
         hero("Who we are", 'Built inside the work, <span class="it">not beside it.</span>',
              "Elevate grew up running the back office for a family of multi-million dollar companies spanning two states in the Southeast. The same team and the same standard are now open to outside companies and schools.",
              "bo-desk.jpg", "", "right center", "page-hero") +
-        f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">Why we exist</div>
-<h2 class="h2">Growth breaks the back office <span class="it">first.</span></h2>
-<p class="lede">As organizations and schools add entities, campuses and people, the work behind the scenes fractures long before the mission does. Leaders should spend their time leading, not chasing the back office.</p></div>
-<div class="grid g4">{pc}</div></div></section>
-<section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">Why Elevate</div>
-<h2 class="h2">What changes <span class="it">with us.</span></h2></div>
-<div class="scroll"><table class="cmp"><thead><tr><th></th><th>A typical back-office provider</th><th>Elevate</th></tr></thead><tbody>{trs}</tbody></table></div></div></section>
+        f'''<section class="band"><div class="shell split"><div style="display:grid;gap:20px;min-width:0"><div class="eyebrow">Our story</div>
+<h2 class="h2">Built by operators, <span class="it">for operators.</span></h2>
+<p class="lede">Elevate started as the back office for our own family of companies, which build and run schools, communities and businesses across the Southeast. Running finance, payroll, compliance and reporting for that portfolio is how we learned to do it well. Today we bring the same team and the same standard to outside companies and schools.</p>
+<p class="lede">Our purpose is simple. Leaders should spend their time leading, teaching and growing, not chasing the back office. We keep the books closed on time, the reports clear and every deadline on a calendar, so they can.</p></div>
+<div class="frame" style="background-image:url(img/bo-review.jpg)" role="img" aria-label="An Elevate team member reviewing financial binders with a client"></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">The team</div>
 <h2 class="h2">Senior leaders, <span class="it">on every engagement.</span></h2>
 <p class="lede">Every client gets senior oversight from the leaders who already run finance and education for a multi-million dollar portfolio across the Southeast.</p></div>{people()}</div></section>''')
@@ -460,9 +454,7 @@ def services():
 <div class="chips">{"".join(f'<span class="chip">{i}</span>' for i in inds)}</div>
 <div class="btns"><a class="btn btn--gold" href="portal.html">Go to the client portal</a></div></div>
 <img src="img/dashboard.png" alt="The Elevate BI Dashboard showing a sample construction company" width="1400" height="945" loading="lazy"></div></section>
-<section class="band"><div class="shell"><div class="head"><div class="eyebrow">How engagement begins</div>
-<h2 class="h2">Focused support or <span class="it">integrated partnership.</span></h2>
-<p class="lede">Take the part that is breaking, such as payroll, the close or an audit. Or take the whole back office on one execution layer, with one team accountable.</p></div>{steps(HOW)}</div></section>''')
+''')
 
 def education():
     grants = [("Title programs", "Title I, II and IV funds from application through expenditure tracking, monitoring and reporting."),
@@ -482,19 +474,19 @@ def education():
 <h2 class="h2">The money, <span class="it">handled.</span> Every review, <span class="it">ready.</span></h2>
 <p class="lede">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div>
 <div class="grid g3">{svc_cards(EDU, gold=True)}</div></div></section>
-<section class="band band--card"><div class="shell split"><div style="display:grid;gap:20px;min-width:0"><div class="eyebrow">Grant support</div>
+<section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">Grant support</div>
 <h2 class="h2">Every grant dollar, <span class="it">accounted for.</span></h2>
 <p class="lede">From application to expenditure tracking to the final report, we work alongside school leadership so grant funds are documented and audit-ready all year.</p></div>
-<div class="frame" style="background-image:url(img/bo-review.jpg)" role="img" aria-label="A finance professional and a school administrator reviewing audit binders"></div></div>
-<div class="grid g3" style="margin-top:40px">{gc}</div></div></section>
-<section class="band deep" id="launch">{swoosh(.45)}<div class="shell"><div class="head"><div class="eyebrow">Starting a new school?</div>
+<div class="grid g3">{gc}</div></div></section>
+<section class="band deep" id="launch">{swoosh(.45)}<div class="shell split"><div style="display:grid;gap:20px;min-width:0"><div class="eyebrow">Starting a new school?</div>
 <h2 class="h2">From charter to <span class="it">opening day.</span></h2>
-<p class="lede">Our family of companies has built and opened schools. We bring that experience to every launch, so founders can focus on students.</p></div>{steps(launch)}</div></section>
+<p class="lede">Our family of companies has built and opened schools. We set up the books, payroll, policies and opening budget during the planning year, so founders can focus on students.</p>
+<div class="btns"><a class="btn btn--gold" href="mailto:{EMAIL}?subject=New%20school%20launch">Plan your launch with us</a></div></div>
+<div class="frame" style="background-image:url(img/q3-020.jpg)" role="img" aria-label="Aerial view of a newly built charter school campus"></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Three schools. <span class="it">Opened on time.</span></h2>
 <p class="lede">Our partner companies delivered three new schools in 2026 for 2,510 students. Elevate runs the finance and operations behind the teams that built them.</p></div>
-<div class="grid g3">{proof_cards(SCHOOLS)}</div>
-<div style="margin-top:44px;display:grid;gap:16px"><div class="eyebrow">Beyond the back office</div><div class="chips">{"".join(f'<span class="chip">{b}</span>' for b in beyond)}</div></div></div></section>''')
+<div class="grid g3">{proof_cards(SCHOOLS)}</div></div></section>''')
 
 def portal():
     tools = [("doc", "Financial Reports", "Your books and statements in Sage Intacct.", "https://www.intacct.com/ia/acct/login.phtml"),
