@@ -27,17 +27,9 @@ CSS = r"""
   --display: "Bodoni Moda", "Bodoni 72", Didot, Georgia, serif;
   --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
   --shell: 1240px;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
-  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
-  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
-  color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0b1416; --card: #121f22; --ink: #e7eeee; --ink2: #a8bcbf; --line: #22343a;
-  --teal: #4fb3cc; --teal2: #64c6dc; --gold: #e9c97e; --gold2: #e0bc68;
-  --deep: #041a20; --deep2: #0a3a45; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6);
-  color-scheme: dark }
+
 *, *::before, *::after { box-sizing: border-box }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.65 var(--body); -webkit-font-smoothing: antialiased }
 h1, h2, h3, h4 { margin: 0; text-wrap: balance; font-family: var(--display); font-weight: 500; letter-spacing: -.01em; line-height: 1.08 }
@@ -262,13 +254,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 [hidden] { display: none !important }
 .mast__end { display: flex; align-items: center; gap: 10px }
-.theme-btn { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 1px solid var(--line); background: transparent; color: var(--ink2); border-radius: 50%; cursor: pointer; flex: none; transition: border-color .18s ease, color .18s ease }
-.theme-btn:hover { border-color: var(--teal); color: var(--teal) }
-.theme-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
-.theme-btn .i-sun { display: none }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-btn .i-sun { display: block } :root:not([data-theme="light"]) .theme-btn .i-moon { display: none } }
-:root[data-theme="dark"] .theme-btn .i-sun { display: block }
-:root[data-theme="dark"] .theme-btn .i-moon { display: none }
 @media (max-width: 860px) { .mast__end { flex-direction: row-reverse } }
 /* closing band and footer */
 .close { text-align: left }
@@ -338,7 +323,6 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 .person .ph { width: 168px; height: 168px }
 .close h2 { font-size: clamp(42px, 6vw, 84px) }
 @media (prefers-reduced-motion: reduce) { .card, .tile { transition: none } .card:hover, .tile:hover { transform: none } }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .band:not(.deep)::after { background-image: radial-gradient(rgba(100,198,220,.12) 1px, transparent 1.5px) } }
 """
 
 MARK = '''<svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="m{i}" x1="0" y1="1" x2="1" y2="0">
@@ -384,11 +368,7 @@ def nav(current):
     links = "".join(f'<a href="{f}"{CUR if f == current else ""}>{t}</a>' for f, t in PAGES)
     return f'''<header class="mast"><div class="shell mast__row">{lockup()}
 <button class="menu" type="button" aria-expanded="false" aria-controls="nav" id="menuBtn">Menu</button>
-<div class="mast__end"><nav class="nav" id="nav" aria-label="Main">{links}</nav>
-<button class="theme-btn" id="themeToggle" type="button" aria-label="Switch between light and dark mode">
-<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
-</button></div></div></header>'''
+<div class="mast__end"><nav class="nav" id="nav" aria-label="Main">{links}</nav></div></div></header>'''
 
 def close_band():
     return f'''<section class="band deep close">{swoosh(.6)}<div class="shell">
@@ -406,10 +386,6 @@ def footer():
 
 
 SCRIPT = """<script>
-(function(){var r=document.documentElement,K='elv-theme',v=null;try{v=localStorage.getItem(K);}catch(e){}
-if(v==='dark'||v==='light')r.setAttribute('data-theme',v);
-var t=document.getElementById('themeToggle');if(t)t.addEventListener('click',function(){var cur=r.getAttribute('data-theme');
-var dark=cur?cur==='dark':matchMedia('(prefers-color-scheme: dark)').matches;var n=dark?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(K,n);}catch(e){}});})();
 (function(){try{history.scrollRestoration='manual';}catch(e){}
 function top(){if(!location.hash){window.scrollTo(0,0);var se=document.scrollingElement||document.documentElement;se.scrollTop=0;document.body.scrollTop=0;}}
 top();window.addEventListener('load',top);window.addEventListener('pageshow',top);
