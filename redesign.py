@@ -366,7 +366,6 @@ def services():
     w = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in why)
     sysb = "".join(f'<div><h3>{t}</h3><p>{", ".join(items)}</p></div>' for _, t, items in B.SYSTEMS)
     body = f'''{phero("Our Services", "Comprehensive Support for Every Stage of Your Company's Growth", "Take the whole back office, or the part that is breaking. Every service runs on the same team and the same calendar.")}
-{bleed("tnc-truck.jpg", "center 55%")}
 <section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/tnc-nova.jpg)"></div><div style="background-image:url({IMG}/tnc-gs.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Building a Company That <span class="hl">Thrives</span></h2><p>Most growing companies do not need another software subscription. They need someone to run the work: close the books, pay the people, file on time and tell the leadership team what the numbers mean.</p><a class="link" href="{R}/contact">Get the guidance you need {ARROW}</a></div></div></section>
 <section class="sec grey" id="services" style="padding-top:0"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2"><span class="hl">Six Services,</span> One Team Accountable</h2><p style="color:var(--ink2)">Pick a service to see what it covers.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
