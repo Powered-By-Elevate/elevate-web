@@ -501,6 +501,7 @@ BUILDS = [("tnc-nova.jpg", "Nova River District", "Rome, GA", "250 homes &middot
           ("tnc-gt.jpg", "Student housing at Georgia Tech", "Atlanta, GA", "55 residences &middot; underway")]
 
 OUR_CLIENTS = [("client-tnc.png", "True North Companies logo", "tall", "3 years", "True North Companies", "Development, construction and real estate"),
+               ("client-trueplaces.png", "True Places logo", "wide", "2 years", "True Places", "Mixed-use and intergenerational communities"),
                ("client-tnk12.png", "TNK12 shield", "tall", "2 years", "TNK12", "School development across South Carolina"),
                ("client-belton.png", "Belton Preparatory Academy seal", "tall", "Since 2026", "Belton Preparatory Academy", "Public charter school, Belton, SC")]
 
