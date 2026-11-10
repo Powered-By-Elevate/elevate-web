@@ -339,7 +339,7 @@ def about():
 <p style="color:var(--ink2)">Some weeks that meant closing the books for a construction company on a Friday and running payroll for a brand new charter school on Monday. Other weeks it meant helping a first-year school leader get ready for a board meeting, or making sure a growing company had a clear set of numbers to take to the bank.</p>
 <p style="color:var(--ink2)">Doing that work up close taught us what leaders actually need: someone who picks up, knows the history and gets it right the first time.</p></div>
 <div class="split__img" style="background-image:url({IMG}/bo-review.jpg)"></div></section>
-<section class="sec grey" id="values" style="padding-top:0"><div class="shell"><h2 class="h2" style="margin-bottom:36px"><span class="hl">Our Values:</span> How We Show Up for You</h2><div class="tabs" data-tabs>{tabs(vals)}</div></div></section>
+<section class="sec grey" id="values"><div class="shell"><h2 class="h2" style="margin-bottom:36px"><span class="hl">Our Values:</span> How We Show Up for You</h2><div class="tabs" data-tabs>{tabs(vals)}</div></div></section>
 <section class="sec" id="clients"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:16px"><span class="eyebrow">Who we serve</span><h2 class="h2">Partners Who Stay, <span class="hl">Year After Year</span></h2></div>
 <style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{clients}</div></div></section>
 <section class="sec grey" id="team"><div class="shell"><h2 class="h2" style="text-align:center;margin-bottom:44px">Meet the <span class="hl">Team</span></h2><div class="team">{team}</div></div></section>'''
