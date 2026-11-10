@@ -18,11 +18,12 @@
    where it always was: pages in settings.js, scope in query.js, money in
    fmt.js. A sample person is a level with a name on it, nothing more. */
 
-import * as F from './fmt.js?v=02d4c24167';
-import { Q } from './query.js?v=02d4c24167';
-import { esc, icon, brandMark, INDUSTRY_ICON } from './icons.js?v=02d4c24167';
-import { scene } from './scenes.js?v=02d4c24167';
-import { spark } from './chart.js?v=02d4c24167';
+import * as F from './fmt.js?v=5cc1fbd6cf';
+import { Q } from './query.js?v=5cc1fbd6cf';
+import { esc, icon, brandMark, INDUSTRY_ICON } from './icons.js?v=5cc1fbd6cf';
+import { scene } from './scenes.js?v=5cc1fbd6cf';
+import { spark } from './chart.js?v=5cc1fbd6cf';
+import { PUBLIC } from './site.js?v=5cc1fbd6cf';
 
 export function scopeWord(role) {
   return { all: 'every company', company: 'one company', units: 'assigned units only',
@@ -119,10 +120,10 @@ export function signin({ cfg, s, q, ind, tenant, note }) {
   const closed = q.closed ? F.monthName(q.closed, true) : '';
   return `<div class="sg" data-kind="signin">
     <header class="gate-top" data-rise>
+      ${tenant ? '' : `<button class="gate-back" data-act="chooser">${icon('back', 15)}Back to industry picker</button>`}
       <span class="gate-prod">${esc(s.data.productName)} <span>${esc(cfg.product.product.vendor)}</span></span>
       <span class="gate-links">
-        ${tenant ? '' : `<button class="gate-link" data-act="chooser">${icon('grid', 14)}Another company</button>
-        <button class="gate-link" data-act="console">${icon('shield', 14)}Elevate staff</button>`}
+        ${tenant || PUBLIC ? '' : `<button class="gate-link" data-act="console">${icon('shield', 14)}Elevate staff</button>`}
       </span>
     </header>
     <div class="sg-card" data-rise>
@@ -149,6 +150,7 @@ export function signin({ cfg, s, q, ind, tenant, note }) {
           ${who.map((p, i) => person(cfg, ind, p, i)).join('')}
         </div>` : `<p class="sg-small">No sample people are set up for this Hub.</p>`}
         <p class="sg-foot">This is a demo sign-in. Every name here is invented, and picking one sets the view level and nothing more.</p>
+        ${tenant ? '' : `<button class="sg-back" data-act="chooser">${icon('back', 16)}Back to industry picker</button>`}
       </section>
     </div>
   </div>`;

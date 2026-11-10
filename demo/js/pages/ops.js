@@ -2,11 +2,11 @@
    and the unit detail all come from the industry profile, which is what makes
    the same build read as a construction dashboard and a fleet dashboard. */
 
-import * as F from '../fmt.js?v=02d4c24167';
-import * as C from '../chart.js?v=02d4c24167';
-import * as U from '../ui.js?v=02d4c24167';
-import { esc, icon } from '../icons.js?v=02d4c24167';
-import { motif } from '../scenes.js?v=02d4c24167';
+import * as F from '../fmt.js?v=5cc1fbd6cf';
+import * as C from '../chart.js?v=5cc1fbd6cf';
+import * as U from '../ui.js?v=5cc1fbd6cf';
+import { esc, icon } from '../icons.js?v=5cc1fbd6cf';
+import { motif } from '../scenes.js?v=5cc1fbd6cf';
 
 const mN = m => F.monthName(m);
 
@@ -36,6 +36,15 @@ const COLUMNS = {
     { name: 'Staff', n: true, get: r => F.num(r.f.staff, 1) },
     { name: 'Per student', n: true, get: r => F.exact(r.f.funding) },
     { name: 'Cost per student', n: true, get: r => F.exact(r.f.costPer) },
+  ],
+  healthcare: [
+    { name: 'Specialty', get: r => esc(r.specialty || '') },
+    { name: 'Visits', n: true, get: r => F.num(r.f.visits) },
+    { name: 'Providers', n: true, get: r => F.num(r.f.providers, 1) },
+    { name: 'Per visit', n: true, get: r => F.exact(r.f.perVisit, 2) },
+    { name: 'Collected', n: true, get: r => bar(r.f.collect, 100, F.pct(r.f.collect, 1)) },
+    { name: 'Days in A/R', n: true, get: r => F.num(r.f.arDays, 0) },
+    { name: 'No-shows', n: true, get: r => F.pct(r.f.noShow, 1) },
   ],
   retail: [
     { name: 'Format', get: r => esc(r.format || '') },
@@ -255,17 +264,18 @@ function headlineOf(q, r, ind, w) {
 
 function headlineName(ind) {
   return { construction: 'Earned revenue', education: 'Students enrolled', retail: 'Net sales',
-    restaurants: 'Net sales', industrial: 'Units produced', logistics: 'Miles', tech: 'ARR' }[ind.id];
+    restaurants: 'Net sales', industrial: 'Units produced', logistics: 'Miles', tech: 'ARR',
+    healthcare: 'Patient visits' }[ind.id];
 }
 
 function headlineTotal(q, ind, m) {
   const key = { construction: 'rev', education: 'enrolled', retail: 'sales', restaurants: 'sales',
-    industrial: 'produced', logistics: 'miles', tech: 'arr' }[ind.id];
+    industrial: 'produced', logistics: 'miles', tech: 'arr', healthcare: 'visits' }[ind.id];
   return q.factSum(key, [m]);
 }
 
 function headlineFmt(ind, v) {
-  return ['education', 'industrial', 'logistics'].includes(ind.id) ? F.num(v) : F.money(v);
+  return ['education', 'industrial', 'logistics', 'healthcare'].includes(ind.id) ? F.num(v) : F.money(v);
 }
 
 /* Rules, per industry. A flag names the figure that tripped it. */
@@ -298,6 +308,17 @@ function flags(q, rows, ind) {
            <b>${F.pct(fill * 100, 0)}</b> full, worth
            <b>${F.money((f.capacity - f.enrolled) * (f.funding || 0))}</b> of funding`,
           (f.capacity - f.enrolled) * (f.funding || 0));
+      }
+    } else if (ind.id === 'healthcare') {
+      /* money left on the table: what was allowed and not collected */
+      const leak = (f.rev || 0) * Math.max(0, 96 - (f.collect || 0)) / 100;
+      if ((f.arDays || 0) > 50 || (f.collect || 100) < 92) {
+        add('Revenue cycle', 'bad', `<b>${F.num(f.arDays, 0)}</b> days in A/R and
+          <b>${F.pct(f.collect, 1)}</b> collected, about <b>${F.money(leak)}</b> short this month`, leak);
+      } else if ((f.noShow || 0) > 9) {
+        add('No-shows', 'warn', `<b>${F.pct(f.noShow, 1)}</b> of booked visits did not show, about
+          <b>${F.num((f.visits || 0) * f.noShow / (100 - f.noShow))}</b> empty slots`,
+          (f.visits || 0) * f.noShow / (100 - f.noShow) * (f.perVisit || 0));
       }
     } else if (ind.id === 'retail') {
       if (f.margin && f.margin < ind.model.gm * 100 - 6) {
@@ -486,7 +507,7 @@ export function second(ctx) {
   const name = (ind.pages && ind.pages['ops-second'] && ind.pages['ops-second'].name) || 'Performance';
   const fn = {
     construction: backlog, education: enrolment, retail: category, restaurants: primeCost,
-    industrial: throughput, logistics: lanes, tech: retention,
+    industrial: throughput, logistics: lanes, tech: retention, healthcare: revenueCycle,
   }[ind.id] || backlog;
   return U.pageHead({ eyebrow: 'Operations', title: name, answer: fn.answer(ctx),
     motif: motif(ind.id, s.data.brand.palette) })
@@ -668,6 +689,58 @@ enrolment.answer = ctx => {
     ${low.length ? `<b>${low.length}</b> ${low.length === 1 ? 'campus is' : 'campuses are'} under 85%, worth
       <b>${F.money(low.reduce((a, r) => a + (r.f.capacity - r.f.enrolled) * (r.f.funding || 0), 0))}</b>
       of funding.` : 'Every campus is above 85% full.'}`;
+};
+
+/* --- healthcare: visits and the revenue cycle
+
+   A clinic earns a visit four times over: it has to be booked, the patient has
+   to come, it has to be coded and the payer has to pay. Visits and no-shows come
+   from the practice management system and the money from the ledger, so nothing
+   on this page is typed in by hand. */
+const COLLECT_TARGET = 95;
+
+function revenueCycle(ctx) {
+  const { q } = ctx;
+  const rows = q.unitRows();
+  const months = q.months.slice(-18);
+  return U.panel({
+    col: 12, title: 'Collection rate by clinic',
+    note: `Collected against what payers allowed. The mark is the ${COLLECT_TARGET}% a well run practice holds.`,
+    body: C.hbars({
+      rows: rows.map(r => ({
+        name: r.short, value: r.f.collect || 0, mark: COLLECT_TARGET,
+        note: `${F.num(r.f.arDays, 0)} days in A/R`,
+        color: (r.f.collect || 0) < 92 ? 'var(--bad)' : ((r.f.collect || 0) < COLLECT_TARGET ? 'var(--warn)' : 'var(--good)'),
+      })).sort((a, b) => a.value - b.value),
+      fmt: v => F.pct(v, 1), max: 100,
+    }),
+    foot: 'A point of collection on this month’s revenue is worth '
+      + `<b>${F.money(q.factAt('rev') / 100)}</b> to the group.`,
+  }) + U.panel({
+    col: 5, title: 'No-shows against days in A/R',
+    note: 'A clinic high on both is losing money at the front desk and again in billing.',
+    body: C.scatter({
+      points: rows.map(r => ({ name: r.name, x: r.f.noShow || 0, y: r.f.arDays || 0 })),
+      xFmt: v => F.pct(v, 1), yFmt: v => F.num(v, 0),
+      xLabel: 'No-show rate', yLabel: 'Days in A/R', height: 300,
+    }),
+  }) + U.panel({
+    col: 7, title: 'Visits, month by month',
+    body: C.line({
+      series: [{ name: 'Visits', values: months.map(m => q.factSum('visits', [m])) }],
+      labels: months.map(mN), fmt: v => F.num(v), height: 230, legend: false,
+    }),
+    foot: 'Winter carries the respiratory season, so January reads high and summer reads low every year.',
+  });
+}
+revenueCycle.answer = ctx => {
+  const { q } = ctx;
+  const v = q.kpi('visits'), pv = q.kpi('perVisit'), cr = q.kpi('collectRate'), ar = q.kpi('arDays');
+  const worst = q.unitRows().slice().sort((a, b) => (b.f.arDays || 0) - (a.f.arDays || 0))[0];
+  return `<b>${F.num(v.value)}</b> visits at <b>${F.exact(pv.value, 2)}</b> each, with
+    <b>${F.pct(cr.value, 1)}</b> collected and <b>${F.num(ar.value, 0)}</b> days in A/R.
+    <b>${esc(worst ? worst.name : '')}</b> is slowest to collect at
+    <b>${F.num(worst ? worst.f.arDays : 0, 0)}</b> days.`;
 };
 
 /* --- retail: category and basket */
@@ -1044,6 +1117,18 @@ function chain(u, f, ind) {
         { name: 'Left over', value: rev - cost, total: true },
       ];
     }
+    case 'healthcare': {
+      const rev = f.rev || 0;
+      const allowed = (f.collect || 0) ? rev / (f.collect / 100) : rev;
+      const clinical = rev * (1 - ind.model.gm);
+      return [
+        { name: 'Allowed by payers', value: allowed, total: true },
+        { name: 'Not collected', value: -(allowed - rev) },
+        { name: 'Collected', value: rev, total: true },
+        { name: 'Clinical cost', value: -clinical },
+        { name: 'Clinic margin', value: rev - clinical, total: true },
+      ];
+    }
     case 'retail': {
       const sales = f.sales || 0;
       const cogs = sales * (1 - (f.margin || 0) / 100);
@@ -1100,6 +1185,9 @@ function chainNote(u, f, ind) {
     case 'education':
       return `An empty seat costs the same to keep as a full one, which is why the gap is
         drawn as money rather than as a count.`;
+    case 'healthcare':
+      return `Clinical cost is providers, staff and supplies at the group’s rate. Rent and
+        the billing office sit in overhead, above this line.`;
     case 'retail':
       return `Before store payroll and occupancy, which sit in overhead rather than on the store.`;
     case 'restaurants':
@@ -1137,6 +1225,14 @@ function unitVerdict(q, u, f, ind) {
           <b>${F.exact(f.costPer)}</b> of cost, with
           <b>${F.num(f.staff, 1)}</b> staff, or one for every
           <b>${F.num(f.staff ? f.enrolled / f.staff : 0, 1)}</b> students.`,
+      };
+    case 'healthcare':
+      return {
+        title: `${name} saw <b>${F.num(f.visits)}</b> patients and collected
+          <b>${F.pct(f.collect, 1)}</b> of what payers allowed.`,
+        body: `<b>${F.exact(f.perVisit, 2)}</b> a visit across <b>${F.num(f.providers, 1)}</b>
+          providers, with <b>${F.pct(f.noShow, 1)}</b> of bookings not showing and
+          <b>${F.num(f.arDays, 0)}</b> days in A/R.`,
       };
     case 'retail':
       return {
@@ -1202,6 +1298,8 @@ const GRID = {
     says: 'how each truck has served' },
   tech: { key: 'arr', name: 'ARR', fmt: v => F.money(v), good: 'high',
     says: 'how each product has grown' },
+  healthcare: { key: 'visits', name: 'Patient visits', fmt: v => F.num(v), good: 'high',
+    says: 'how busy each clinic has been' },
 };
 
 export function grid(ctx) {
@@ -1319,6 +1417,7 @@ const RULES = {
     'On time under 90%',
   ],
   tech: ['Monthly churn over 1.4% of the product’s ARR'],
+  healthcare: ['Days in A/R over 50, or under 92% collected', 'No-shows over 9% of bookings'],
 };
 
 /* What needs you.
@@ -1577,10 +1676,10 @@ export function season(ctx) {
   const ind = s.industry;
   const months = q.months;
   const key = { construction: 'rev', education: 'enrolled', retail: 'sales', restaurants: 'covers',
-    industrial: 'produced', logistics: 'miles', tech: 'arr' }[ind.id] || 'rev';
+    industrial: 'produced', logistics: 'miles', tech: 'arr', healthcare: 'visits' }[ind.id] || 'rev';
   const label = { construction: 'Earned revenue', education: 'Students enrolled',
     retail: 'Net sales', restaurants: 'Covers', industrial: 'Units produced', logistics: 'Miles',
-    tech: 'ARR' }[ind.id] || 'Revenue';
+    tech: 'ARR', healthcare: 'Patient visits' }[ind.id] || 'Revenue';
   const money = ['rev', 'sales', 'arr'].includes(key);
   const fmt = v => money ? F.money(v) : F.num(v, 0);
 

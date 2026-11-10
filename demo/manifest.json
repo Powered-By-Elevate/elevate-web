@@ -1,6 +1,6 @@
 {
-  "files": 42,
-  "bytes": 4381942,
+  "files": 44,
+  "bytes": 4722522,
   "industries": [
     "construction",
     "retail",
@@ -8,7 +8,8 @@
     "industrial",
     "logistics",
     "tech",
-    "education"
+    "education",
+    "healthcare"
   ],
-  "hash": "7b5f6c9c1682"
+  "hash": "f54a286466cc"
 }

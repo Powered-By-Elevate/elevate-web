@@ -9,7 +9,7 @@
    Every page works, because every page is already built from the same
    furniture: a verdict or a page head, then panels. */
 
-import { esc, icon, brandMark } from './icons.js?v=02d4c24167';
+import { esc, icon, brandMark } from './icons.js?v=5cc1fbd6cf';
 
 const state = { on: false, at: 0, slides: [], ctx: null };
 

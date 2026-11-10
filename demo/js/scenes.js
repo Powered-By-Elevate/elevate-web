@@ -14,7 +14,7 @@
    The drawing is decoration and says nothing about the data. Nothing here
    should ever be read as a figure. */
 
-import { esc } from './icons.js?v=02d4c24167';
+import { esc } from './icons.js?v=5cc1fbd6cf';
 
 let seq = 0;
 
@@ -109,6 +109,28 @@ const SCENES = {
       <path d="M160 356V196"/>
     </g>
     <path d="M160 200h62l-16 18 16 18h-62Z" fill="${p.accent}" opacity=".8"/>
+    ${ground(p)}`,
+
+  /* a clinic: a low building with a lit cross, a covered entrance, a second
+     wing behind and a few cars in the lot */
+  healthcare: (p, id) => `
+    ${sun(p, 160, 90, 38)}
+    ${far(id, [[40, 262, 100], [1080, 248, 90]])}
+    <g>
+      <rect x="640" y="226" width="300" height="130" fill="${p.deep}" opacity=".4"/>
+      <rect x="280" y="196" width="420" height="160" fill="${p.deep}" opacity=".58"/>
+      ${grid(304, 224, 160, 90, 5, 3, p.lift, .42)}
+      ${grid(664, 252, 250, 64, 7, 2, p.lift, .32)}
+      <rect x="520" y="150" width="76" height="76" rx="10" fill="${p.lift}" opacity=".85"/>
+      <path d="M558 166v44M536 188h44" stroke="${p.navy}" stroke-width="12" stroke-linecap="round"/>
+      <path d="M486 296h170v14H486Z" fill="${p.accent}" opacity=".8"/>
+      <rect x="520" y="310" width="100" height="46" fill="${p.navy}" opacity=".5"/>
+    </g>
+    ${trees(p, [[200, 356], [246, 356], [990, 356]])}
+    <g fill="${p.accent}" opacity=".6">
+      <rect x="740" y="338" width="52" height="18" rx="5"/>
+      <rect x="808" y="338" width="52" height="18" rx="5"/>
+    </g>
     ${ground(p)}`,
 
   /* a parade: shopfronts with awnings and a lit window */
@@ -289,6 +311,8 @@ export function motif(industryId, palette, size = 46) {
     logistics: `<rect x="4" y="14" width="17" height="13" fill="currentColor" opacity=".4"/>
       <path d="M21 18h7l5 6v3H21Z" fill="currentColor" opacity=".55"/>
       <circle cx="11" cy="30" r="3.4" fill="currentColor"/><circle cx="28" cy="30" r="3.4" fill="currentColor"/>`,
+    healthcare: `<rect x="5" y="12" width="30" height="22" fill="currentColor" opacity=".35"/>
+      <path d="M20 15v12M14 21h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`,
     tech: `<rect x="5" y="9" width="30" height="20" rx="3" fill="currentColor" opacity=".35"/>
       <path d="M12 24l6-6-6-6M22 24h7" stroke="currentColor" stroke-width="2.4" fill="none"
         stroke-linecap="round" stroke-linejoin="round"/>`,
