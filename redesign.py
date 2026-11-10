@@ -104,12 +104,13 @@ p{margin:0}a{color:var(--teal)}img{max-width:100%;display:block}
 
 /* marquee */
 .marq{padding:38px 0;border-bottom:1px solid var(--line);overflow:hidden}
-.marq__track{display:flex;gap:90px;width:max-content;animation:marq 34s linear infinite;align-items:center}
+.marq__track{display:flex;width:max-content;animation:marq 60s linear infinite}
+.marq__group{display:flex;gap:90px;padding-right:90px;align-items:center;flex:none}
 .marq img{height:64px;width:auto;max-width:220px;object-fit:contain;filter:grayscale(1);opacity:.7;transition:filter .3s,opacity .3s}
 .marq img:hover{filter:none;opacity:1}
 .marq .word{font:500 26px/1 var(--serif);color:#8a9597;white-space:nowrap}
 @keyframes marq{to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.marq__track{animation:none;flex-wrap:wrap;justify-content:center;width:auto}}
+@media(prefers-reduced-motion:reduce){.marq__track{animation:none}}
 
 /* layouts */
 .two{display:grid;gap:clamp(36px,5vw,72px);align-items:center}
@@ -285,7 +286,9 @@ def tabs(rows, sel_img=True):
 def marquee():
     logos = [("client-tnc.png", "True North Companies"), ("client-tnk12.png", "TNK12"), ("client-belton.png", "Belton Preparatory Academy"), ("client-aia.png", "American Innovation Academies")]
     one = "".join(f'<img src="{IMG}/{f}" alt="{a}">' for f, a in logos) + '<span class="word">Upstate Prep Academy</span>'
-    return f'<div class="marq" aria-label="Organizations we serve"><div class="marq__track">{one}{one}</div></div>'
+    group = f'<div class="marq__group">{one * 3}</div>'
+    group2 = f'<div class="marq__group" aria-hidden="true">{one * 3}</div>'
+    return f'<div class="marq" aria-label="Organizations we serve"><div class="marq__track">{group}{group2}</div></div>'
 
 def tile(img, title, sub, href=None):
     if not href:
