@@ -478,13 +478,13 @@ EDU = [
     ("school", "New School Launch", "From charter approval to opening day.",
      ["Planning-year financial setup", "Compliance documentation", "Facilities readiness", "Opening-day operations"]),
 ]
-TEAM = [("fawole", "Joseph Fawole", "President", "background-size:125%;background-position:48% 8%"),
+TEAM = [("fawole", "Joseph Fawole", "President", "background-size:140%;background-position:50% 14%"),
         ("knowles", "Matthew Knowles", "Financial Analyst", ""),
         ("tucker", "Amanda C. Tucker", "Director of Education &amp; Workforce Development", "background-size:142%;background-position:52% 82%"),
         ("davis", "Marc Davis", "Chief Financial Officer", ""),
         ("russell", "Anita Russell", "Vice President of Finance", ""),
         ("provencher", "Vicki Provencher", "Controller", "background-size:118%;background-position:50% 18%"),
-        ("mcdonald", "Will McDonald", "Education Facilities Director", "background-size:150%;background-position:56% 14%"),
+        ("mcdonald", "Will McDonald", "Education Facilities Director", "background-size:150%;background-position:50% 12%"),
         ("ltucker", "Lynette Tucker", "Director of Enrollment &amp; Partnerships", "background-size:122%;background-position:50% 30%")]
 
 def people():

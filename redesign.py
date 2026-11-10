@@ -167,8 +167,8 @@ main{overflow-x:clip}
 
 /* team */
 .team{display:grid;gap:34px 26px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
-@media(min-width:1000px){.team{grid-template-columns:repeat(4,1fr)}}
-.team article{text-align:center;display:grid;gap:6px}
+@media(min-width:1000px){.team{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.team article{text-align:center;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
 .team .ph{width:100%;aspect-ratio:1;background-color:#dfe8ea;background-repeat:no-repeat;margin-bottom:10px}
 .team h3{font-size:19px}.team p{font-size:14.5px;color:var(--teal)}
 
@@ -330,7 +330,7 @@ def about():
     vals = [("Relationships before reports", "bo-team.jpg", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", None),
             ("The same people, every month", "bo-review.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
             ("Give leaders their time back", "q3-017.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
-    TEAMFIX = {"tucker": "background-size:175%;background-position:47% 30%"}
+    TEAMFIX = {"tucker": "background-size:175%;background-position:47% 30%", "fawole": "background-size:cover;background-position:50% 30%", "mcdonald": "background-size:cover;background-position:50% 30%", "knowles": "background-size:135%;background-position:50% 22%", "davis": "background-size:135%;background-position:50% 20%"}
     team = "".join(f'<article><div class="ph" role="img" aria-label="{n}" style="background-image:url({IMG}/team-{k}.jpg);{TEAMFIX.get(k) or c or "background-size:cover;background-position:center"}"></div><h3>{n}</h3><p>{t}</p></article>' for k, n, t, c in B.TEAM)
     clients = "".join(B.client_card(*c).replace('src="img/', f'src="{IMG}/').replace(' loading="lazy"', '') for c in B.OUR_CLIENTS)
     body = f'''{phero("About Us", "Our Story: Taking Care of Our Own, Then Yours", "Elevate began as the people keeping the lights on for a family of companies that build and run schools, communities and businesses across the Southeast. Today we bring that same team and that same care to companies and schools outside our family.")}
