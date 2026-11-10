@@ -366,7 +366,6 @@ def services():
     w = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in why)
     sysb = "".join(f'<div><h3>{t}</h3><p>{", ".join(items)}</p></div>' for _, t, items in B.SYSTEMS)
     body = f'''{phero("Our Services", "Comprehensive Support for Every Stage of Your Company's Growth", "Take the whole back office, or the part that is breaking. Every service runs on the same team and the same calendar.")}
-{bleed("tnc-truck.jpg", "center 55%")}
 <section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/tnc-nova.jpg)"></div><div style="background-image:url({IMG}/tnc-gs.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Building a Company That <span class="hl">Thrives</span></h2><p>Most growing companies do not need another software subscription. They need someone to run the work: close the books, pay the people, file on time and tell the leadership team what the numbers mean.</p><a class="link" href="{R}/contact">Get the guidance you need {ARROW}</a></div></div></section>
 <section class="sec grey" id="services" style="padding-top:0"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2"><span class="hl">Six Services,</span> One Team Accountable</h2><p style="color:var(--ink2)">Pick a service to see what it covers.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
@@ -393,7 +392,7 @@ def education():
               ("Opening day: doors open", "hub-edu-close.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
     builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS)
     body = f'''{phero("Education Services", "The Complete Back Office for Charter and Private Schools", "Built around each school's stage, priorities and staff, from the first planning year to every audit after.")}
-{bleed("libertas-flag.jpg", "center 40%")}
+{bleed("school-front.jpg", "center 45%")}
 <section class="sec grey" id="schools"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2">The Money, Handled. <span class="hl">Every Review, Ready.</span></h2><p style="color:var(--ink2)">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec" id="serve"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Schools we serve</span><h2 class="h2">Open Today. <span class="hl">Opening Next.</span></h2></div>
 <style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{schools}</div></div></section>
