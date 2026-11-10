@@ -2,9 +2,9 @@
    tables. Pages compose these rather than writing markup, so every page in
    every industry carries the same material. */
 
-import { esc, icon } from './icons.js?v=5cc1fbd6cf';
-import { spark } from './chart.js?v=5cc1fbd6cf';
-import * as F from './fmt.js?v=5cc1fbd6cf';
+import { esc, icon } from './icons.js?v=9843449aa8';
+import { spark } from './chart.js?v=9843449aa8';
+import * as F from './fmt.js?v=9843449aa8';
 
 export function verdict({ title, body, figs = [] }) {
   return `<section class="verdict">
