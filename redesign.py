@@ -333,8 +333,8 @@ QUOTE = f'''<section class="sec"><div class="shell"><div class="card-teal on-tea
 
 # ------------------------------------------------------------------ pages
 def home():
-    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "tnc-lobby.jpg"))
-    body = f'''<section class="hero"><div class="hero__slides two">{slides}</div><div class="hero__in">
+    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "team-laptop.jpg", "tnc-lobby.jpg"))
+    body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
 <div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" target="_blank" rel="noopener" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
@@ -379,8 +379,8 @@ def about():
     return page("about", "About", "about", body)
 
 # Every service shows the Hub screen that runs it, and no image appears twice on the site (Matt, 2026-11-10).
-SVC_IMG = {"Financial Management": "team-overhead.jpg", "Compliance": "icon:shield", "Operations & Execution": "icon:gears",
-           "HR, Payroll & People": "icon:people", "Marketing": "icon:megaphone", "Business Intelligence": "hub-picker.jpg"}
+SVC_IMG = {"Financial Management": "team-overhead.jpg", "Compliance": "team-compliance.jpg", "Operations & Execution": "team-meeting.jpg",
+           "HR, Payroll & People": "team-review-desk.jpg", "Marketing": "team-talk.jpg", "Business Intelligence": "hub-picker.jpg"}
 
 def services():
     rows = [(t, SVC_IMG.get(t, "icon:check"), d, bl) for _, t, d, bl in B.BIZ]
@@ -401,7 +401,7 @@ def services():
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
 
-EDU_IMG = ["icon:ledger", "icon:payroll", "icon:badge", "icon:board", "libertas-flag.jpg", "icon:launch"]
+EDU_IMG = ["team-vicki-screen.jpg", "team-monitor.jpg", "team-amanda.jpg", "team-papers.jpg", "libertas-flag.jpg", "site-block.jpg"]
 
 def education():
     rows = [(t, EDU_IMG[i % len(EDU_IMG)], d, bl) for i, (_, t, d, bl) in enumerate(B.EDU)]
@@ -412,9 +412,9 @@ def education():
               ("Board-Ready Reporting", "Grant spending shown in the monthly board package, so nothing surprises the board at audit time.")]
     g = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in grants)
     launch = [("Planning year: set up the books", "q3-016.jpg", "Chart of accounts, banking, payroll and policies in place before the first hire.", None),
-              ("Six months out: staff and systems", "icon:check", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
-              ("Ninety days out: facility ready", "icon:folder", "Facility readiness, insurance, procurement and the opening budget locked.", None),
-              ("Opening day: doors open", "icon:calendar", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
+              ("Six months out: staff and systems", "team-joseph-hall.jpg", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
+              ("Ninety days out: facility ready", "site-trailer.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
+              ("Opening day: doors open", "school-chalk.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
     builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS)
     body = f'''{phero("Education Services", "The Complete Back Office for Charter and Private Schools", "Built around each school's stage, priorities and staff, from the first planning year to every audit after.")}
 {bleed("school-front.jpg", "center 45%")}
