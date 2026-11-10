@@ -165,8 +165,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .scroll { overflow-x: auto; border-radius: 22px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow) }
 
 /* people */
-.people { display: flex; flex-wrap: wrap; justify-content: center; gap: 36px 24px }
-.people .person { width: 190px; max-width: 100% }
+.people { display: flex; flex-wrap: wrap; justify-content: center; gap: 36px 24px; max-width: 1000px; margin-inline: auto }
+.people .person { width: 220px; max-width: 100% }
 .person { display: grid; justify-items: center; text-align: center; gap: 8px }
 .person .ph { width: 156px; height: 156px; border-radius: 50%; background: var(--deep) center/cover; box-shadow: 0 0 0 4px var(--card), 0 0 0 5.5px var(--gold), var(--shadow); margin-bottom: 10px }
 .person h3 { font-size: 22px }
@@ -484,9 +484,8 @@ TEAM = [("fawole", "Joseph Fawole", "President", "background-size:125%;backgroun
         ("davis", "Marc Davis", "Chief Financial Officer", ""),
         ("russell", "Anita Russell", "Vice President of Finance", ""),
         ("provencher", "Vicki Provencher", "Controller", "background-size:118%;background-position:50% 18%"),
-        ("mcdonald", "Will McDonald", "Education Project Director", "background-size:150%;background-position:56% 14%"),
-        ("ltucker", "Lynette Tucker", "Director of Community Engagement", "background-size:122%;background-position:50% 30%"),
-        ("gander", "Christie Gander", "Office Manager", "background-size:120%;background-position:50% 16%")]
+        ("mcdonald", "Will McDonald", "Education Facilities Director", "background-size:150%;background-position:56% 14%"),
+        ("ltucker", "Lynette Tucker", "Director of Enrollment &amp; Partnerships", "background-size:122%;background-position:50% 30%")]
 
 def people():
     return '<div class="people">' + "".join(
