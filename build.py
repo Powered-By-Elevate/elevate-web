@@ -485,7 +485,7 @@ TEAM = [("fawole", "Joseph Fawole", "President", "background-size:140%;backgroun
         ("russell", "Anita Russell", "Vice President of Finance", ""),
         ("provencher", "Vicki Provencher", "Controller", "background-size:118%;background-position:50% 18%"),
         ("mcdonald", "Will McDonald", "Education Facilities Director", "background-size:150%;background-position:50% 12%"),
-        ("ltucker", "Lynette Tucker", "Director of Enrollment &amp; Partnerships", "background-size:122%;background-position:50% 30%")]
+        ("ltucker", "Lynette Tucker", "Director of Enrollment &amp; Partnerships", "background-size:135%;background-position:50% 14%")]
 
 def people():
     return '<div class="people">' + "".join(
