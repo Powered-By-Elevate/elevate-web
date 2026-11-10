@@ -151,6 +151,11 @@ main{overflow-x:clip}
 .tabs__list button[aria-selected=true] span{opacity:1}
 .tabs__panel{display:grid;gap:20px}
 .tabs__panel .ph{aspect-ratio:4/3;background:center/cover}
+.tabs__panel .ph--icon{display:grid;place-items:center;background:linear-gradient(135deg,var(--teal) 0%,var(--deep) 100%);color:#fff;position:relative;overflow:hidden}
+.tabs__panel .ph--icon svg{width:30%;height:auto;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+.tabs__panel .ph--icon::after{content:"";position:absolute;inset:auto -20% -40% auto;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(230,192,104,.28),transparent 70%)}
+.hero__slides.two div{animation-duration:12s}.hero__slides.two div{animation-name:fade2}
+@keyframes fade2{0%{opacity:0;transform:scale(1.04)}8%{opacity:1}50%{opacity:1}58%{opacity:0;transform:scale(1.1)}100%{opacity:0}}
 .tabs__panel p{color:var(--ink2);font-size:18px}
 .tabs__panel ul{margin:0;padding-left:20px;color:var(--ink2)}
 
@@ -224,6 +229,25 @@ main{overflow-x:clip}
 CHEV = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>'
 ARROW = "&#8599;"
 
+# Matt, 2026-11-10: the service tabs are not pictures of the dashboard, which
+# goes stale and suggests every service runs from it (it is a separate sale).
+# A tab with no real photo shows one of these marks instead.
+ICON = {
+  "ledger": '<path d="M12 10h40v44H12z"/><path d="M20 20h24M20 30h24M20 40h14"/>',
+  "shield": '<path d="M32 8l20 8v14c0 13-9 22-20 26-11-4-20-13-20-26V16z"/><path d="M23 32l6 6 12-13"/>',
+  "gears": '<circle cx="32" cy="32" r="9"/><path d="M32 10v8M32 46v8M10 32h8M46 32h8M16.5 16.5l5.7 5.7M41.8 41.8l5.7 5.7M16.5 47.5l5.7-5.7M41.8 22.2l5.7-5.7"/>',
+  "people": '<circle cx="24" cy="24" r="7"/><circle cx="42" cy="26" r="5.5"/><path d="M10 50c1-9 7-14 14-14s13 5 14 14M36 50c.6-7 4-11 9-11s8 3 9 9"/>',
+  "megaphone": '<path d="M12 28v10h8l18 10V18L20 28z"/><path d="M44 26c3 2 3 10 0 12M48 22c6 4 6 16 0 20"/><path d="M20 38l3 12h6l-2-10"/>',
+  "payroll": '<rect x="8" y="16" width="48" height="32" rx="3"/><circle cx="32" cy="32" r="7"/><path d="M14 22h6M44 42h6"/>',
+  "board": '<path d="M10 14h44v28H10z"/><path d="M20 34l8-8 6 5 10-11"/><path d="M26 42l-4 10M38 42l4 10"/>',
+  "grant": '<path d="M14 50h36M18 50V28M28 50V28M36 50V28M46 50V28M12 28h40L32 14z"/>',
+  "launch": '<path d="M32 8c10 6 14 16 12 28l-6 6H26l-6-6C18 24 22 14 32 8z"/><circle cx="32" cy="26" r="4"/><path d="M26 42l-6 10M38 42l6 10M32 46v8"/>',
+  "calendar": '<rect x="10" y="14" width="44" height="40" rx="3"/><path d="M10 24h44M22 8v10M42 8v10M20 34h6M30 34h6M40 34h6M20 44h6M30 44h6"/>',
+  "folder": '<path d="M8 18h18l5 6h25v28H8z"/><path d="M8 28h48"/>',
+  "badge": '<rect x="14" y="10" width="36" height="46" rx="4"/><circle cx="32" cy="28" r="7"/><path d="M22 46c2-6 6-8 10-8s8 2 10 8M26 10v6h12v-6"/>',
+  "check": '<circle cx="32" cy="32" r="22"/><path d="M22 33l7 7 14-15"/>',
+}
+
 def logo():
     return f'<a class="logo" href="{R}/" aria-label="Elevate Managed Services, home">{B.MARK.format(i="r" + str(id(object())))}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>'
 
@@ -284,6 +308,7 @@ def tabs(rows, sel_img=True):
     for i, (t, img, txt, bl) in enumerate(rows):
         li = "".join(f"<li>{b}</li>" for b in bl) if bl else ""
         if not img: ph = ""
+        elif img.startswith("icon:"): ph = '<div class="ph ph--icon" aria-hidden="true"><svg viewBox="0 0 64 64">%s</svg></div>' % ICON[img[5:]]
         elif img.endswith(".png"): ph = '<div class="ph" style="background-image:url(%s/%s);background-size:contain;background-repeat:no-repeat;background-color:var(--tint)"></div>' % (IMG, img)
         else: ph = '<div class="ph" style="background-image:url(%s/%s)"></div>' % (IMG, img)
         hid = "" if i == 0 else " hidden"
@@ -308,8 +333,8 @@ QUOTE = f'''<section class="sec"><div class="shell"><div class="card-teal on-tea
 
 # ------------------------------------------------------------------ pages
 def home():
-    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "tnc-lobby.jpg", "team-joseph.jpg"))
-    body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
+    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "tnc-lobby.jpg"))
+    body = f'''<section class="hero"><div class="hero__slides two">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
 <div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" target="_blank" rel="noopener" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
@@ -354,11 +379,11 @@ def about():
     return page("about", "About", "about", body)
 
 # Every service shows the Hub screen that runs it, and no image appears twice on the site (Matt, 2026-11-10).
-SVC_IMG = {"Financial Management": "hub-con-pl.jpg", "Compliance": "hub-tech-statements.jpg", "Operations & Execution": "hub-log-watch.jpg",
-           "HR, Payroll & People": "hub-ret-hr.jpg", "Marketing": "hub-rest-home.jpg", "Business Intelligence": "hub-picker.jpg"}
+SVC_IMG = {"Financial Management": "team-overhead.jpg", "Compliance": "icon:shield", "Operations & Execution": "icon:gears",
+           "HR, Payroll & People": "icon:people", "Marketing": "icon:megaphone", "Business Intelligence": "hub-picker.jpg"}
 
 def services():
-    rows = [(t, SVC_IMG.get(t, "hub-picker.jpg"), d, bl) for _, t, d, bl in B.BIZ]
+    rows = [(t, SVC_IMG.get(t, "icon:check"), d, bl) for _, t, d, bl in B.BIZ]
     why = [("One Team Accountable", "Every service runs on the same execution layer and the same people, so nothing falls between vendors."),
            ("A Calendar You Can Set a Clock By", "The close, the board package and the filings land on fixed dates every month."),
            ("Every Number, Live", "One financial dashboard for every entity, read straight from the books and cut to each role."),
@@ -376,7 +401,7 @@ def services():
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
 
-EDU_IMG = ["dashboard-edu.png", "hub-edu-payroll.jpg", "hub-edu-directory.jpg", "hub-edu-statements.jpg", "hub-edu-budget.jpg", "hub-edu-home.jpg"]
+EDU_IMG = ["icon:ledger", "icon:payroll", "icon:badge", "icon:board", "libertas-flag.jpg", "icon:launch"]
 
 def education():
     rows = [(t, EDU_IMG[i % len(EDU_IMG)], d, bl) for i, (_, t, d, bl) in enumerate(B.EDU)]
@@ -387,9 +412,9 @@ def education():
               ("Board-Ready Reporting", "Grant spending shown in the monthly board package, so nothing surprises the board at audit time.")]
     g = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in grants)
     launch = [("Planning year: set up the books", "q3-016.jpg", "Chart of accounts, banking, payroll and policies in place before the first hire.", None),
-              ("Six months out: staff and systems", "hub-edu-onboarding.jpg", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
-              ("Ninety days out: facility ready", "hub-edu-docs.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
-              ("Opening day: doors open", "hub-edu-close.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
+              ("Six months out: staff and systems", "icon:check", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
+              ("Ninety days out: facility ready", "icon:folder", "Facility readiness, insurance, procurement and the opening budget locked.", None),
+              ("Opening day: doors open", "icon:calendar", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
     builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS)
     body = f'''{phero("Education Services", "The Complete Back Office for Charter and Private Schools", "Built around each school's stage, priorities and staff, from the first planning year to every audit after.")}
 {bleed("school-front.jpg", "center 45%")}
@@ -426,7 +451,7 @@ def contact():
 <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 <div><button class="btn btn--teal" type="submit">Submit</button></div><p id="formStatus" class="msg" role="status" aria-live="polite"></p></form>
 <div id="formDone" class="done" hidden><span class="eyebrow">Thank you</span><h2 class="h2">Your inquiry <span class="hl">is in.</span></h2><p>Your message has been sent to the Elevate team. We will be in touch within one business day.</p></div></div>
-<div class="split__img" style="min-height:560px;background-image:url({IMG}/team-overhead.jpg);background-position:center"></div></div></section>
+<div class="split__img" style="min-height:560px;background-image:url({IMG}/team-joseph.jpg);background-position:60% center"></div></div></section>
 <section class="sec grey"><div class="shell"><h2 class="h2" style="margin-bottom:28px">Frequently Asked <span class="hl">Questions</span></h2><div class="faq">{faq}</div></div></section>{js}'''
     return page("contact", "Contact", "contact", body)
 
