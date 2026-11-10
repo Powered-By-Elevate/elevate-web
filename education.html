@@ -109,8 +109,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .client__logo img { display: block; max-width: 100%; max-height: 190px; object-fit: contain }
 .client__logo--wide img { width: 82% }
 .client__logo--tall img { height: 190px; width: auto }
+.client__word { font: 500 clamp(30px, 2.6vw, 40px)/1.12 var(--display); color: var(--deep2); text-align: center; letter-spacing: .01em }
 .client__body { flex: 1; padding: 26px 30px 30px; color: #fff; background: radial-gradient(600px 240px at 90% -20%, rgba(47,157,168,.25), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 75%) }
 .client__body b { display: block; font: 500 clamp(40px, 3.6vw, 54px)/1 var(--display); color: var(--gold) }
+.client__body small { display: block; margin-bottom: 10px; font: 600 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--teal2) }
 .client__body h3 { margin-top: 14px; font-size: 24px; color: #fff }
 .client__body p { margin-top: 8px; font: 400 15px/1.55 var(--body); color: var(--on-deep2) }
 .stat em { display: block; margin-top: 8px; font: 400 15px/1.5 var(--body); font-style: normal; color: var(--on-deep2) }
@@ -340,6 +342,13 @@ h3, h4 { font-variation-settings: "opsz" 14; font-optical-sizing: none }
 <p class="lede">Our family of companies has built and opened schools. We set up the books, payroll, policies and opening budget during the planning year, so founders can focus on students.</p>
 <div class="btns"><a class="btn btn--gold" href="/contact?topic=New%20school%20launch">Plan your launch with us</a></div></div>
 <div class="frame" style="background-image:url(img/q3-020.jpg)" role="img" aria-label="Aerial view of a newly built charter school campus"></div></div></section>
+<section class="band clients"><div class="shell"><div class="head"><div class="eyebrow">Schools we serve</div>
+<h2 class="h2">Open today. <span class="it">Opening next.</span></h2>
+<p class="lede">The schools that run on Elevate's books, payroll and reporting, and the ones we are getting ready to open.</p></div>
+<div class="grid g3"><article class="client"><div class="client__logo client__logo--tall"><img src="img/client-belton.png" alt="Belton Preparatory Academy seal" loading="lazy"></div>
+<div class="client__body"><small>Client since</small><b>2026</b><h3>Belton Preparatory Academy</h3><p>Public charter school, Belton, SC</p></div></article><article class="client"><div class="client__logo client__logo--text"><span class="client__word">Upstate Prep Academy</span></div>
+<div class="client__body"><small>Opening</small><b>Fall 2027</b><h3>Upstate Prep Academy</h3><p>Charter school, Greenville, SC</p></div></article><article class="client"><div class="client__logo client__logo--wide"><img src="img/client-aia.png" alt="American Innovation Academies logo" loading="lazy"></div>
+<div class="client__body"><small>Opening</small><b>Fall 2028</b><h3>AIA Woodruff</h3><p>Grades 9 to 12 charter school, Woodruff, SC</p></div></article></div></div></section>
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Three schools. <span class="it">Opened on time.</span></h2>
 <p class="lede">Our partner companies delivered three new schools in 2026 for 2,510 students. Elevate runs the finance and operations behind the teams that built them.</p></div>
