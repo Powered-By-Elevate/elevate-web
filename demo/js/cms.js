@@ -8,11 +8,12 @@
    and auth route are confirmed and the adapter is a day or two of work. A demo
    that blurs those three is a demo that gets caught. */
 
-import * as U from './ui.js?v=02d4c24167';
-import * as F from './fmt.js?v=02d4c24167';
-import { esc, icon, brandMark, connTile } from './icons.js?v=02d4c24167';
-import { paletteFrom, contrast, mix } from './settings.js?v=02d4c24167';
-import { statusWord } from './pages/misc.js?v=02d4c24167';
+import * as U from './ui.js?v=5cc1fbd6cf';
+import * as F from './fmt.js?v=5cc1fbd6cf';
+import { esc, icon, brandMark, connTile } from './icons.js?v=5cc1fbd6cf';
+import { paletteFrom, contrast, mix } from './settings.js?v=5cc1fbd6cf';
+import { statusWord } from './pages/misc.js?v=5cc1fbd6cf';
+import { locked } from './site.js?v=5cc1fbd6cf';
 
 /* ⚖️ Matt, 2026-11-02: *"i would also love for the settings pages to be
    intentionally built out in a very user friendly and pleasing to the eye kind
@@ -67,9 +68,15 @@ export const FONT_PAIRS = [
   { name: 'DM Serif Display + DM Sans', display: '"DM Serif Display", Georgia, serif', body: '"DM Sans", -apple-system, sans-serif', google: 'DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;700' },
 ];
 
+/* A demo shows two tabs: the brand, which the viewer may change (kept in this
+   browser), and the software every figure is read from, which nobody may
+   change (site.js). Levels, modules and the hand-off file are deployment work. */
+const DEMO_TABS = ['brand', 'conns'];
+
 export function settings(ctx) {
   const { s } = ctx;
-  const tab = ctx.subtab || 'brand';
+  const tabs = locked(s) ? TABS.filter(t => DEMO_TABS.includes(t.id)) : TABS;
+  const tab = tabs.some(t => t.id === ctx.subtab) ? ctx.subtab : 'brand';
   const body = {
     brand: brandTab, conns: connsTab, levels: levelsTab,
     modules: modulesTab, deploy: deployTab,
@@ -80,17 +87,17 @@ export function settings(ctx) {
     title: 'Settings',
     answer: s.tenant ? `How this Hub looks and who sees what. A change here shows in this browser,
       and the next build follows the settings file your administrator keeps.`
-      : `Everything on this page is configuration, not code. Change it here and the whole
-      dashboard follows; export it and the same dashboard is built for a real deployment.`,
+      : `Make this demo yours: name, logo, colors and type. It stays in this browser only.
+      Every figure is read from connected software, so nothing else here can be edited.`,
   }) + `<div class="set-grid">
-    <nav class="set-nav">${TABS.map(t =>
+    <nav class="set-nav">${tabs.map(t =>
     `<button data-act="settab" data-arg="${t.id}" aria-current="${t.id === tab}">
        <span class="sn-i">${icon(t.ico, 16)}</span>
        <span><b>${esc(t.name)}</b><span>${esc(t.why)}</span></span>
      </button>`).join('')}
       ${s.tenant ? '' : `<div class="set-reset">
         ${U.btn('Reset to the sample', { act: 'reset-settings', sm: true })}
-        <p>Puts every setting on this page back to the demo it shipped with.</p>
+        <p>Puts the name, logo, colors and type back to the demo it shipped with.</p>
       </div>`}
     </nav>
     <div>${body}</div>
@@ -195,7 +202,7 @@ function connsTab(ctx) {
   const header = U.panel({
     title: 'What this Hub reads',
     note: s.tenant ? 'What this Hub is connected to. A page whose source is not connected says so rather than showing a number from nowhere.'
-      : 'Nine categories. Switch one on and its figures go live on the pages that use it; switch it off and those pages say so rather than showing a number from nowhere.',
+      : `Where every figure in this demo comes from. Finance, CRM, marketing and pipeline are read from the company's own software with no manual entry. Documents and HR are hosted inside the Hub. Read only in the demo.`,
     body: `<div class="strip" style="margin:4px 0 0">
       ${counts.map(x => `<div class="strip-item">
         <div class="strip-label">${esc(x.c.name)}</div>
@@ -255,7 +262,7 @@ function connCard(c, s) {
       <span class="tag ${c.status === 'live' ? 'good' : c.status === 'built' ? 'warn' : ''}">
         <i class="dot"></i>${esc(statusWord(c.status))}</span>
       ${c.recommend ? `<span class="tag">${icon('bolt', 12)}We recommend</span>` : ''}
-      ${s.tenant ? '' : on
+      ${locked(s) || s.tenant ? (on ? '<span class="tag good"><i class="dot"></i>Connected</span>' : '') : on
       ? U.btn('Disconnect', { act: 'disconnect', arg: c.id, sm: true })
       : U.btn('Connect', { act: 'connect', arg: c.id, kind: 'primary', sm: true, ico: 'link' })}
     </div>
