@@ -32,7 +32,7 @@ p{margin:0}a{color:var(--teal)}img{max-width:100%;display:block}
 .shell{max-width:var(--shell);margin-inline:auto;padding-inline:16px}
 @media(min-width:900px){.shell{padding-inline:40px}}
 .hl{color:var(--teal)}
-.on-teal .hl{color:var(--gold)}
+.on-teal .hl,.phero .hl{color:var(--gold)}
 .eyebrow{font:500 italic 18px/1 var(--serif);color:var(--teal);margin-bottom:14px;display:block}
 .on-teal .eyebrow{color:#cfe6ea}
 .h1{font-size:clamp(36px,5vw,60px)}
@@ -104,12 +104,13 @@ p{margin:0}a{color:var(--teal)}img{max-width:100%;display:block}
 
 /* marquee */
 .marq{padding:38px 0;border-bottom:1px solid var(--line);overflow:hidden}
-.marq__track{display:flex;gap:90px;width:max-content;animation:marq 34s linear infinite;align-items:center}
+.marq__track{display:flex;width:max-content;animation:marq 60s linear infinite}
+.marq__group{display:flex;gap:90px;padding-right:90px;align-items:center;flex:none}
 .marq img{height:64px;width:auto;max-width:220px;object-fit:contain;filter:grayscale(1);opacity:.7;transition:filter .3s,opacity .3s}
 .marq img:hover{filter:none;opacity:1}
 .marq .word{font:500 26px/1 var(--serif);color:#8a9597;white-space:nowrap}
 @keyframes marq{to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.marq__track{animation:none;flex-wrap:wrap;justify-content:center;width:auto}}
+@media(prefers-reduced-motion:reduce){.marq__track{animation:none}}
 
 /* layouts */
 .two{display:grid;gap:clamp(36px,5vw,72px);align-items:center}
@@ -165,9 +166,10 @@ main{overflow-x:clip}
 .card-teal cite{display:block;margin-top:22px;font:500 italic 19px/1 var(--serif);color:#cfe6ea}
 
 /* team */
-.team{display:grid;gap:34px 26px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.team{display:grid;gap:34px 26px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+@media(min-width:1000px){.team{grid-template-columns:repeat(4,1fr)}}
 .team article{text-align:center;display:grid;gap:6px}
-.team .ph{aspect-ratio:1;background-color:#dfe8ea;background-repeat:no-repeat;margin-bottom:10px}
+.team .ph{width:100%;aspect-ratio:1;background-color:#dfe8ea;background-repeat:no-repeat;margin-bottom:10px}
 .team h3{font-size:19px}.team p{font-size:14.5px;color:var(--teal)}
 
 /* lists in tinted box (partners style) */
@@ -207,6 +209,14 @@ main{overflow-x:clip}
 .foot p,.foot a{font-size:15px;color:var(--ink2);text-decoration:none;display:block;line-height:1.9}
 .foot a:hover{color:var(--teal)}
 .foot small{display:block;margin-top:14px;font-size:13px;color:#8a9597}
+.signin-box{background:var(--grey);padding:clamp(32px,4vw,56px);display:grid;gap:20px;align-content:start}
+.demo-box{background:var(--teal);color:#fff;padding:clamp(32px,4vw,56px);display:grid;gap:20px;align-content:start}
+.demo-box p{color:#d8ebee}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid rgba(255,255,255,.45);color:#fff;text-decoration:none;padding:9px 16px;border-radius:99px;font:500 14.5px/1 var(--sans);transition:background .2s,color .2s}
+.chip:hover{background:#fff;color:var(--teal)}
+.small-note{font-size:14.5px;color:var(--ink2)}
+.msg.ok{color:var(--teal)}
 .pv{position:fixed;left:12px;bottom:12px;z-index:60;background:var(--gold);color:var(--deep);font:600 12px/1 var(--sans);padding:8px 12px;border-radius:99px;letter-spacing:.06em}
 """
 
@@ -225,15 +235,15 @@ def header(cur):
     for label, page, subs in MENU:
         sub = "".join(f'<a href="{R}/{h}">{t}</a>' for t, h in subs)
         items += f'<div class="dd{" cur" if cur == page else ""}"><button type="button" aria-expanded="false">{label} {CHEV}</button><div class="dd__panel"><a href="{R}/{page}">{label} overview</a>{sub}</div></div>'
-    items += f'<a href="/portal"{" aria-current=page" if cur == "portal" else ""}>Client Portal</a><a class="btn btn--white" href="{R}/contact">Contact Us</a>'
+    items += f'<a href="{R}/portal"{" aria-current=page" if cur == "portal" else ""}>Client Portal</a><a class="btn btn--white" href="{R}/contact">Contact Us</a>'
     burger = '<button class="burger" type="button" aria-label="Menu" aria-expanded="false" id="burger"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2"/></svg></button>'
     return f'<header class="hdr" id="hdr"><div class="shell hdr__row">{logo()}{burger}<nav class="nav" id="nav" aria-label="Main">{items}</nav></div></header>'
 
 def footer():
     return f'''<section class="cta"><div class="shell"><h2>Ready to give your leaders their time back?</h2><a class="btn btn--white" href="{R}/contact">Let's Connect</a></div></section>
 <footer class="foot"><div class="shell"><div>{logo()}<p style="margin-top:18px;max-width:340px">Back-office, education and business intelligence services for growing companies and schools across the Southeast.</p></div>
-<div><h4>Contact</h4><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{R}/contact">Book a discovery call</a><a href="/portal">Client Portal</a></div>
-<div><h4>Explore</h4><a href="{R}/about">About</a><a href="{R}/services">Business services</a><a href="{R}/education">Education services</a><a href="/demo/#/choose">View the demo</a>
+<div><h4>Contact</h4><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{R}/contact">Book a discovery call</a><a href="{R}/portal">Client Portal</a></div>
+<div><h4>Explore</h4><a href="{R}/about">About</a><a href="{R}/services">Business services</a><a href="{R}/education">Education services</a><a href="/demo/#/choose">View our dashboard demo</a>
 <small>&copy; 2026 Elevate Managed Services</small></div></div></footer>'''
 
 JS = """<script>
@@ -265,15 +275,24 @@ def tabs(rows, sel_img=True):
     panels = ""
     for i, (t, img, txt, bl) in enumerate(rows):
         li = "".join(f"<li>{b}</li>" for b in bl) if bl else ""
-        panels += f'<div class="tabs__panel" role="tabpanel"{"" if i == 0 else " hidden"}>{f"<div class=ph style=background-image:url({IMG}/{img})></div>" if img else ""}<p>{txt}</p>{f"<ul>{li}</ul>" if li else ""}</div>'
+        if not img: ph = ""
+        elif img.endswith(".png"): ph = '<div class="ph" style="background-image:url(%s/%s);background-size:contain;background-repeat:no-repeat;background-color:var(--tint)"></div>' % (IMG, img)
+        else: ph = '<div class="ph" style="background-image:url(%s/%s)"></div>' % (IMG, img)
+        hid = "" if i == 0 else " hidden"
+        ul = f"<ul>{li}</ul>" if li else ""
+        panels += f'<div class="tabs__panel" role="tabpanel"{hid}>{ph}<p>{txt}</p>{ul}</div>'
     return f'<div class="tabs__list" role="tablist">{btns}</div><div>{panels}</div>'
 
 def marquee():
     logos = [("client-tnc.png", "True North Companies"), ("client-tnk12.png", "TNK12"), ("client-belton.png", "Belton Preparatory Academy"), ("client-aia.png", "American Innovation Academies")]
     one = "".join(f'<img src="{IMG}/{f}" alt="{a}">' for f, a in logos) + '<span class="word">Upstate Prep Academy</span>'
-    return f'<div class="marq" aria-label="Organizations we serve"><div class="marq__track">{one}{one}</div></div>'
+    group = f'<div class="marq__group">{one * 3}</div>'
+    group2 = f'<div class="marq__group" aria-hidden="true">{one * 3}</div>'
+    return f'<div class="marq" aria-label="Organizations we serve"><div class="marq__track">{group}{group2}</div></div>'
 
-def tile(img, title, sub, href):
+def tile(img, title, sub, href=None):
+    if not href:
+        return f'<div class="tile tile--still" style="background-image:url({IMG}/{img})"><div><h3>{title}</h3><small>{sub}</small></div></div>'
     return f'<a class="tile" href="{href}" style="background-image:url({IMG}/{img})"><div><h3>{title}</h3><small>{sub}</small></div><i>+</i></a>'
 
 QUOTE = f'''<section class="sec"><div class="shell"><div class="card-teal on-teal">{B.MARK.format(i="q").replace('<svg ', '<svg class="mark" ', 1)}
@@ -285,7 +304,7 @@ def home():
     body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
-<div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View the demo</a></div></div></section>
+<div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
 {marquee()}
 <section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/bo-review.jpg)"></div><div style="background-image:url({IMG}/bo-papers.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Running an Organization That <span class="hl">Thrives</span></h2>
@@ -311,7 +330,8 @@ def about():
     vals = [("Relationships before reports", "bo-team.jpg", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", None),
             ("The same people, every month", "bo-review.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
             ("Give leaders their time back", "q3-017.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
-    team = "".join(f'<article><div class="ph" role="img" aria-label="{n}" style="background-image:url({IMG}/team-{k}.jpg);{c or "background-size:cover;background-position:center"}"></div><h3>{n}</h3><p>{t}</p></article>' for k, n, t, c in B.TEAM)
+    TEAMFIX = {"tucker": "background-size:175%;background-position:47% 30%"}
+    team = "".join(f'<article><div class="ph" role="img" aria-label="{n}" style="background-image:url({IMG}/team-{k}.jpg);{TEAMFIX.get(k) or c or "background-size:cover;background-position:center"}"></div><h3>{n}</h3><p>{t}</p></article>' for k, n, t, c in B.TEAM)
     clients = "".join(B.client_card(*c).replace('src="img/', f'src="{IMG}/').replace(' loading="lazy"', '') for c in B.OUR_CLIENTS)
     body = f'''{phero("About Us", "Our Story: Taking Care of Our Own, Then Yours", "Elevate began as the people keeping the lights on for a family of companies that build and run schools, communities and businesses across the Southeast. Today we bring that same team and that same care to companies and schools outside our family.")}
 <section class="split grey" id="story"><div class="split__copy"><span class="eyebrow">Our story</span><h2 class="h2">We Started by Taking Care of <span class="hl">Our Own</span></h2>
@@ -321,11 +341,11 @@ def about():
 <section class="sec grey" id="values" style="padding-top:0"><div class="shell"><h2 class="h2" style="margin-bottom:36px"><span class="hl">Our Values:</span> How We Show Up for You</h2><div class="tabs" data-tabs>{tabs(vals)}</div></div></section>
 <section class="sec" id="clients"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:16px"><span class="eyebrow">Who we serve</span><h2 class="h2">Partners Who Stay, <span class="hl">Year After Year</span></h2></div>
 <style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{clients}</div></div></section>
-<section class="sec grey" id="team"><div class="shell"><h2 class="h2" style="text-align:center;margin-bottom:44px">The People You Will <span class="hl">Actually Talk To</span></h2><div class="team">{team}</div></div></section>'''
+<section class="sec grey" id="team"><div class="shell"><h2 class="h2" style="text-align:center;margin-bottom:44px">Meet the <span class="hl">Team</span></h2><div class="team">{team}</div></div></section>'''
     return page("about", "About", "about", body)
 
 SVC_IMG = {"Financial Management": "bo-papers.jpg", "Compliance": "bo-review.jpg", "Operations & Execution": "bo-team.jpg",
-           "HR, Payroll & People": "bo-desk.jpg", "Marketing": "bo-team.jpg", "Business Intelligence": "dashboard.png"}
+           "HR, Payroll & People": "bo-desk.jpg", "Marketing": "bo-team.jpg", "Business Intelligence": "dashboard-edu.png"}
 
 def services():
     rows = [(t, SVC_IMG.get(t, "bo-desk.jpg"), d, bl) for _, t, d, bl in B.BIZ]
@@ -342,7 +362,7 @@ def services():
 <section class="sec grey" id="services" style="padding-top:0"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2"><span class="hl">Six Services,</span> One Team Accountable</h2><p style="color:var(--ink2)">Pick a service to see what it covers.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Why This Approach <span class="hl">Works</span></h2><p style="color:var(--ink2)">Success is not more tools. It is the right work done on time by people who know your business.</p></div><div class="why">{w}</div></div></section>
 <section class="split" id="bi"><div class="split__img" style="background-image:url({IMG}/dashboard.png);background-size:contain;background-repeat:no-repeat;background-color:#e9f1f3"></div>
-<div class="split__copy on-teal" style="background:var(--teal);color:#fff"><span class="eyebrow">Business Intelligence</span><h2 class="h2">Every Number, <span class="hl">Live</span></h2><p style="color:#d8ebee">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click.</p><div style="display:flex;gap:14px;flex-wrap:wrap"><a class="btn btn--white" href="/demo/#/choose">View the demo</a><a class="btn btn--white" href="/portal">Client sign in</a></div></div></section>
+<div class="split__copy on-teal" style="background:var(--teal);color:#fff"><span class="eyebrow">Business Intelligence</span><h2 class="h2">Every Number, <span class="hl">Live</span></h2><p style="color:#d8ebee">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click.</p><div style="display:flex;gap:14px;flex-wrap:wrap"><a class="btn btn--white" href="/demo/#/choose">View our dashboard demo</a><a class="btn btn--white" href="{R}/portal">Client sign in</a></div></div></section>
 <section class="sec" id="systems"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Works With <span class="hl">Your Systems</span></h2><p style="color:var(--ink2)">We work in the software you already use, so nothing has to be rebuilt.</p></div><div class="why">{sysb}</div></div></section>
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
@@ -361,7 +381,7 @@ def education():
               ("Six months out: staff and systems", "bo-team.jpg", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
               ("Ninety days out: facility ready", "q3-020.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
               ("Opening day: doors open", "q3-017.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
-    builds = "".join(tile(i, t, a, R + "/education#serve") for i, t, a, _ in B.SCHOOLS)
+    builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS)
     body = f'''{phero("Education Services", "The Complete Back Office for Charter and Private Schools", "Built around each school's stage, priorities and staff, from the first planning year to every audit after.")}
 {bleed("q3-017.jpg")}
 <section class="sec grey" id="schools"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2">The Money, Handled. <span class="hl">Every Review, Ready.</span></h2><p style="color:var(--ink2)">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
@@ -401,10 +421,36 @@ def contact():
 <section class="sec grey"><div class="shell"><h2 class="h2" style="margin-bottom:28px">Frequently Asked <span class="hl">Questions</span></h2><div class="faq">{faq}</div></div></section>{js}'''
     return page("contact", "Contact", "contact", body)
 
+def portal():
+    src = B.portal()
+    i = src.find("getElementById('signinForm')")
+    js = src[src.rfind("<script", 0, i):src.find("</script>", i) + 9] if i > 0 else ""
+    chips = "".join(f'<a class="chip" href="/demo/#/demo/{i}">{n}</a>' for n, i in B.INDUSTRY_DEMOS)
+    sees = [("Your Numbers, Live", "Read straight from your accounting system, so the dashboard always matches the books."),
+            ("Cut to Each Role", "Leaders see the answer, finance sees the detail, and each person sees only what their role allows."),
+            ("Every Entity in One Place", "Switch between companies or campuses, or see them all together."),
+            ("Lender and Board Ready", "Statements, packs and quarterly reports in one click.")]
+    w = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in sees)
+    body = f"""{phero("Client Portal", "Sign In to Your <span class='hl'>Dashboard</span>", "Enter your work email and we will take you to your company's BI Dashboard. Not a client yet? Explore a sample company.")}
+<section class="sec"><div class="shell two" style="align-items:stretch">
+<div class="signin-box"><span class="eyebrow">Client sign-in</span><h2 class="h2">Welcome <span class="hl">Back</span></h2>
+<form id="signinForm" class="form" novalidate><label for="email">Work email<input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label>
+<div><button class="btn btn--teal" type="submit">Continue &rarr;</button></div></form>
+<p id="msg" class="msg" role="status" aria-live="polite"></p>
+<p class="small-note">Trouble signing in? Email <a href="mailto:{EMAIL}">{EMAIL}</a>.</p></div>
+<div class="demo-box on-teal"><span class="eyebrow">Not a client yet?</span><h2 class="h2">See It With a <span class="hl">Sample Company</span></h2>
+<p>Pick an industry and explore a live dashboard built the way that business is measured. Anything you change stays in your own browser.</p>
+<div class="chips">{chips}</div><div><a class="btn btn--white" href="/demo/#/choose">View our dashboard demo &rarr;</a></div></div></div></section>
+<section class="split"><div class="split__img" style="background-image:url({IMG}/dashboard-retail.png);background-size:contain;background-repeat:no-repeat;background-color:var(--tint)"></div>
+<div class="split__copy grey"><span class="eyebrow">What you will see</span><h2 class="h2">One Dashboard for <span class="hl">Every Entity</span></h2>
+<p style="color:var(--ink2)">Every client gets a dashboard set up for their companies or campuses, their roles and the way their business is measured.</p></div></section>
+<section class="sec"><div class="shell"><div class="why">{w}</div></div></section>{js}"""
+    return page("portal", "Client Portal", "portal", body)
+
 def build():
     OUT.mkdir(exist_ok=True)
     for fn, html in [("index.html", home()), ("about.html", about()), ("services.html", services()),
-                     ("education.html", education()), ("contact.html", contact())]:
+                     ("education.html", education()), ("contact.html", contact()), ("portal.html", portal())]:
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
 
