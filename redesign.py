@@ -308,7 +308,7 @@ QUOTE = f'''<section class="sec"><div class="shell"><div class="card-teal on-tea
 
 # ------------------------------------------------------------------ pages
 def home():
-    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "team-whiteboard.jpg", "team-hall.jpg"))
+    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "team-whiteboard.jpg", "team-desk-vicki.jpg"))
     body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
@@ -326,7 +326,7 @@ def home():
 <li><b>Business Intelligence:</b> one live financial dashboard for every entity, cut to each role.</li></ul>
 <p style="color:var(--ink2)">Working with us, you gain a steady rhythm, expert hands and the confidence to focus on what matters most: <b style="color:var(--ink)">your people and your mission.</b></p>
 <a class="link" href="{R}/services">Explore our services {ARROW}</a></div>
-<div class="split__img" style="background-image:url({IMG}/team-desk-vicki.jpg);background-position:center 30%"></div></section>
+<div class="split__img" style="background-image:url({IMG}/team-hall.jpg)"></div></section>
 <section class="sec"><div class="shell two"><div class="copy"><h2 class="h2">We Help Schools <span class="hl">Run Smoothly</span></h2>
 <p>From the first planning year to every audit after, Elevate runs the money side of charter and private schools: accounting, payroll, grants and board reporting, so school leaders can stay in classrooms.</p>
 <div><a class="btn btn--teal" href="{R}/education">See our education services</a></div></div>
