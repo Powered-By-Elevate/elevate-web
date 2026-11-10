@@ -308,13 +308,13 @@ QUOTE = f'''<section class="sec"><div class="shell"><div class="card-teal on-tea
 
 # ------------------------------------------------------------------ pages
 def home():
-    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-meeting.jpg", "team-plans.jpg", "team-review.jpg"))
+    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "team-whiteboard.jpg", "team-laugh.jpg"))
     body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
 <div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" target="_blank" rel="noopener" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
 {marquee()}
-<section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/team-review.jpg)"></div><div style="background-image:url({IMG}/team-papers.jpg)"></div></div>
+<section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/team-laugh.jpg)"></div><div style="background-image:url({IMG}/team-overhead.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Running an Organization That <span class="hl">Thrives</span></h2>
 <p>Growing a company or opening a school stretches every leader thin. Elevate began as the team keeping the lights on for our own family of companies, so we know what it takes: books that close on time, payroll that is right, and reporting a board or a bank can trust.</p>
 <p>We bring the same team every month, and we measure every process by the hours it hands back to you.</p>
@@ -326,7 +326,7 @@ def home():
 <li><b>Business Intelligence:</b> one live financial dashboard for every entity, cut to each role.</li></ul>
 <p style="color:var(--ink2)">Working with us, you gain a steady rhythm, expert hands and the confidence to focus on what matters most: <b style="color:var(--ink)">your people and your mission.</b></p>
 <a class="link" href="{R}/services">Explore our services {ARROW}</a></div>
-<div class="split__img" style="background-image:url({IMG}/team-desk.jpg)"></div></section>
+<div class="split__img" style="background-image:url({IMG}/team-hall.jpg)"></div></section>
 <section class="sec"><div class="shell two"><div class="copy"><h2 class="h2">We Help Schools <span class="hl">Run Smoothly</span></h2>
 <p>From the first planning year to every audit after, Elevate runs the money side of charter and private schools: accounting, payroll, grants and board reporting, so school leaders can stay in classrooms.</p>
 <div><a class="btn btn--teal" href="{R}/education">See our education services</a></div></div>
@@ -336,7 +336,7 @@ def home():
 
 def about():
     vals = [("Relationships before reports", "team-table.jpg", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", None),
-            ("The same people, every month", "team-office.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
+            ("The same people, every month", "team-whiteboard.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
             ("Give leaders their time back", "q3-017.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
     PHOTO = {}
     TEAMFIX = {"tucker": "background-size:122%;background-position:50% 43%", "fawole": "background-size:cover;background-position:50% 0%", "mcdonald": "background-size:cover;background-position:50% 0%", "knowles": "background-size:cover;background-position:50% 0%", "davis": "background-size:cover;background-position:50% 0%", "ltucker": "background-size:cover;background-position:50% 0%"}
@@ -346,18 +346,18 @@ def about():
 <section class="split grey" id="story"><div class="split__copy"><span class="eyebrow">Our story</span><h2 class="h2">We Started by Taking Care of <span class="hl">Our Own</span></h2>
 <p style="color:var(--ink2)">Some weeks that meant closing the books for a construction company on a Friday and running payroll for a brand new charter school on Monday. Other weeks it meant helping a first-year school leader get ready for a board meeting, or making sure a growing company had a clear set of numbers to take to the bank.</p>
 <p style="color:var(--ink2)">Doing that work up close taught us what leaders actually need: someone who picks up, knows the history and gets it right the first time.</p></div>
-<div class="split__img" style="background-image:url({IMG}/team-review.jpg)"></div></section>
+<div class="split__img" style="background-image:url({IMG}/team-laugh.jpg)"></div></section>
 <section class="sec grey" id="values"><div class="shell"><h2 class="h2" style="margin-bottom:36px"><span class="hl">Our Values:</span> How We Show Up for You</h2><div class="tabs" data-tabs>{tabs(vals)}</div></div></section>
 <section class="sec" id="clients"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:16px"><span class="eyebrow">Who we serve</span><h2 class="h2">Partners Who Stay, <span class="hl">Year After Year</span></h2></div>
 <style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{clients}</div></div></section>
 <section class="sec grey" id="team"><div class="shell"><h2 class="h2" style="text-align:center;margin-bottom:44px">Meet the <span class="hl">Team</span></h2><div class="team">{team}</div></div></section>'''
     return page("about", "About", "about", body)
 
-SVC_IMG = {"Financial Management": "team-papers.jpg", "Compliance": "team-partners.jpg", "Operations & Execution": "team-meeting.jpg",
-           "HR, Payroll & People": "team-desk.jpg", "Marketing": "team-plans.jpg", "Business Intelligence": "dashboard-edu.png"}
+SVC_IMG = {"Financial Management": "team-overhead.jpg", "Compliance": "team-joseph.jpg", "Operations & Execution": "team-table.jpg",
+           "HR, Payroll & People": "team-hall.jpg", "Marketing": "team-plan.jpg", "Business Intelligence": "dashboard-edu.png"}
 
 def services():
-    rows = [(t, SVC_IMG.get(t, "team-desk.jpg"), d, bl) for _, t, d, bl in B.BIZ]
+    rows = [(t, SVC_IMG.get(t, "team-hall.jpg"), d, bl) for _, t, d, bl in B.BIZ]
     why = [("One Team Accountable", "Every service runs on the same execution layer and the same people, so nothing falls between vendors."),
            ("A Calendar You Can Set a Clock By", "The close, the board package and the filings land on fixed dates every month."),
            ("Every Number, Live", "One financial dashboard for every entity, read straight from the books and cut to each role."),
@@ -365,8 +365,8 @@ def services():
     w = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in why)
     sysb = "".join(f'<div><h3>{t}</h3><p>{", ".join(items)}</p></div>' for _, t, items in B.SYSTEMS)
     body = f'''{phero("Our Services", "Comprehensive Support for Every Stage of Your Company's Growth", "Take the whole back office, or the part that is breaking. Every service runs on the same team and the same calendar.")}
-{bleed("team-plans.jpg", "center 30%")}
-<section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/team-meeting.jpg)"></div><div style="background-image:url({IMG}/team-review.jpg)"></div></div>
+{bleed("team-overhead.jpg", "center 50%")}
+<section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/team-table.jpg)"></div><div style="background-image:url({IMG}/team-laugh.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Building a Company That <span class="hl">Thrives</span></h2><p>Most growing companies do not need another software subscription. They need someone to run the work: close the books, pay the people, file on time and tell the leadership team what the numbers mean.</p><a class="link" href="{R}/contact">Get the guidance you need {ARROW}</a></div></div></section>
 <section class="sec grey" id="services" style="padding-top:0"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2"><span class="hl">Six Services,</span> One Team Accountable</h2><p style="color:var(--ink2)">Pick a service to see what it covers.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Why This Approach <span class="hl">Works</span></h2><p style="color:var(--ink2)">Success is not more tools. It is the right work done on time by people who know your business.</p></div><div class="why">{w}</div></div></section>
@@ -376,7 +376,7 @@ def services():
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
 
-EDU_IMG = ["team-papers.jpg", "team-desk.jpg", "team-table.jpg", "team-review.jpg", "q3-016.jpg", "q3-002.jpg"]
+EDU_IMG = ["team-overhead.jpg", "team-hall.jpg", "team-table.jpg", "team-plan.jpg", "q3-016.jpg", "q3-002.jpg"]
 
 def education():
     rows = [(t, EDU_IMG[i % len(EDU_IMG)], d, bl) for i, (_, t, d, bl) in enumerate(B.EDU)]
@@ -387,12 +387,12 @@ def education():
               ("Board-Ready Reporting", "Grant spending shown in the monthly board package, so nothing surprises the board at audit time.")]
     g = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in grants)
     launch = [("Planning year: set up the books", "q3-016.jpg", "Chart of accounts, banking, payroll and policies in place before the first hire.", None),
-              ("Six months out: staff and systems", "team-meeting.jpg", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
+              ("Six months out: staff and systems", "team-whiteboard.jpg", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
               ("Ninety days out: facility ready", "q3-020.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
               ("Opening day: doors open", "q3-017.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
     builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS)
     body = f'''{phero("Education Services", "The Complete Back Office for Charter and Private Schools", "Built around each school's stage, priorities and staff, from the first planning year to every audit after.")}
-{bleed("q3-017.jpg")}
+{bleed("libertas-flag.jpg", "center 40%")}
 <section class="sec grey" id="schools"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2">The Money, Handled. <span class="hl">Every Review, Ready.</span></h2><p style="color:var(--ink2)">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec" id="serve"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Schools we serve</span><h2 class="h2">Open Today. <span class="hl">Opening Next.</span></h2></div>
 <style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{schools}</div></div></section>
@@ -426,7 +426,7 @@ def contact():
 <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 <div><button class="btn btn--teal" type="submit">Submit</button></div><p id="formStatus" class="msg" role="status" aria-live="polite"></p></form>
 <div id="formDone" class="done" hidden><span class="eyebrow">Thank you</span><h2 class="h2">Your inquiry <span class="hl">is in.</span></h2><p>Your message has been sent to the Elevate team. We will be in touch within one business day.</p></div></div>
-<div class="split__img" style="min-height:560px;background-image:url({IMG}/team-meeting.jpg)"></div></div></section>
+<div class="split__img" style="min-height:560px;background-image:url({IMG}/team-joseph.jpg);background-position:60% center"></div></div></section>
 <section class="sec grey"><div class="shell"><h2 class="h2" style="margin-bottom:28px">Frequently Asked <span class="hl">Questions</span></h2><div class="faq">{faq}</div></div></section>{js}'''
     return page("contact", "Contact", "contact", body)
 
