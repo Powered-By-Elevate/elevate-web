@@ -531,7 +531,7 @@ HOW = [("Step one", "Discovery", "A 45 to 60 minute conversation about your enti
 
 # ------------------------------------------------------------------ pages
 def home():
-    tiles = [("/services", "bo-desk.jpg", "Business Services", "Take the whole back office, or take the part that is breaking.", "center"),
+    tiles = [("/services", "team-desk.jpg", "Business Services", "Take the whole back office, or take the part that is breaking.", "center"),
              ("/education", "q3-017.jpg", "Education Services", "The complete back office for charter and private schools.", "center"),
              ("/services#bi", "dashboard.png", "Business Intelligence", "One live financial dashboard for every entity, cut to each role.", "60% 30%;background-size:150%")]
     t = "".join(f'<a class="tile" href="{h}" style="background-image:url(img/{i});background-position:{p}"><div><h3>{a}</h3><p>{b}</p><span class="go">Learn more</span></div></a>' for h, i, a, b, p in tiles)
@@ -539,7 +539,7 @@ def home():
         "Back-office and education services for growing companies and schools across the Southeast.",
         hero("Capacity for today. A stronger tomorrow.", 'A Bolder <span class="it">Solution.</span>',
              "Back-office and education services that take the weight off growing organizations and schools, so leaders can lead.",
-             "bo-team.jpg", f'<div class="btns"><a class="btn btn--gold" href="/contact?topic=Discovery%20call%20request">Book a discovery call</a><a class="btn btn--line" href="/portal">Client portal</a></div>', "72% center") +
+             "team-meeting.jpg", f'<div class="btns"><a class="btn btn--gold" href="/contact?topic=Discovery%20call%20request">Book a discovery call</a><a class="btn btn--line" href="/portal">Client portal</a></div>', "72% center") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we do</div>
 <h2 class="h2">Two practices. <span class="it">One standard.</span></h2>
 <p class="lede">Elevate is the managed services arm of a family of multi-million dollar companies spanning two states in the Southeast. We partner with organizations and schools at any level to simplify operations, strengthen outcomes and build thriving communities.</p></div>
@@ -559,14 +559,14 @@ def about():
     return page("about.html", "About Elevate", "The story and the people behind Elevate Managed Services.",
         hero("About Elevate", 'Real people. <span class="it">Real partnership.</span>',
              "We are a small team of finance, people and education professionals who would rather know you by name than by account number.",
-             "bo-desk.jpg", "", "right center", "page-hero") +
+             "team-desk.jpg", "", "right center", "page-hero") +
         f'''<section class="band"><div class="shell split"><div class="story">
 <div class="eyebrow">Our story</div>
 <h2 class="h2">We started by taking care of <span class="it">our own.</span></h2>
 <p class="lead-p">Elevate did not begin as a consulting firm. It began as the people keeping the lights on for our own family of companies, which build and run schools, communities and businesses across the Southeast.</p>
 <p>Some weeks that meant closing the books for a construction company on a Friday and running payroll for a brand new charter school on Monday. Other weeks it meant helping a first-year school leader get ready for a board meeting, or making sure a growing company had a clear set of numbers to take to the bank.</p>
 <p>Doing that work up close taught us what leaders actually need: someone who picks up, knows the history and gets it right the first time. Today we bring that same team and that same care to companies and schools outside our family.</p></div>
-<div class="frame tall" style="background-image:url(img/bo-review.jpg)" role="img" aria-label="An Elevate team member reviewing financial binders with a school leader"></div></div></section>
+<div class="frame tall" style="background-image:url(img/team-review.jpg)" role="img" aria-label="Joseph Fawole and Amanda Tucker in a working session"></div></div></section>
 <section class="band deep">{swoosh(.45)}<div class="shell"><p class="pull">Leaders should spend their time teaching, leading and growing. <span class="it">We will take care of the rest.</span></p></div></section>
 <section class="band band--card"><div class="shell"><div class="head"><div class="eyebrow">What we believe</div>
 <h2 class="h2">How we show up <span class="it">for you.</span></h2></div>
@@ -581,7 +581,7 @@ def services():
     return page("services.html", "Business Services", "Financial management, compliance, operations, people, marketing and business intelligence.",
         hero("Business services", 'Take the whole back office. <span class="it">Or the part that is breaking.</span>',
              "Every service runs on the same execution layer, so a client who starts with one can add another without rebuilding their reporting.",
-             "bo-papers.jpg", f'<div class="btns"><a class="btn btn--gold" href="/contact?topic=Business%20services">Talk to us</a></div>', "center 30%", "page-hero") +
+             "team-papers.jpg", f'<div class="btns"><a class="btn btn--gold" href="/contact?topic=Business%20services">Talk to us</a></div>', "center 30%", "page-hero") +
         f'''<section class="band"><div class="shell"><div class="head"><div class="eyebrow">What we run</div>
 <h2 class="h2">Six services. <span class="it">One team accountable.</span></h2></div>
 <div class="grid g3">{svc_cards(BIZ)}</div></div></section>
