@@ -7,23 +7,23 @@
    a single figure on the page is shown disabled with its reason, rather than
    offered and then doing nothing. */
 
-import { Settings, paletteFrom } from './settings.js?v=5cc1fbd6cf';
-import { Q, loadData } from './query.js?v=5cc1fbd6cf';
-import * as F from './fmt.js?v=5cc1fbd6cf';
-import * as C from './chart.js?v=5cc1fbd6cf';
-import * as U from './ui.js?v=5cc1fbd6cf';
-import { esc, icon, brandMark } from './icons.js?v=5cc1fbd6cf';
-import { financePages } from './pages/finance.js?v=5cc1fbd6cf';
-import { opsPages } from './pages/ops.js?v=5cc1fbd6cf';
-import { miscPages } from './pages/misc.js?v=5cc1fbd6cf';
-import { hrPages } from './pages/hr.js?v=5cc1fbd6cf';
-import { mashPages, hrAct, hrWire } from './pages/hrmash.js?v=5cc1fbd6cf';
-import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=5cc1fbd6cf';
-import * as Chooser from './chooser.js?v=5cc1fbd6cf';
-import * as Present from './present.js?v=5cc1fbd6cf';
-import * as World from './world.js?v=5cc1fbd6cf';
-import * as Gate from './gate.js?v=5cc1fbd6cf';
-import * as Site from './site.js?v=5cc1fbd6cf';
+import { Settings, paletteFrom } from './settings.js?v=9843449aa8';
+import { Q, loadData } from './query.js?v=9843449aa8';
+import * as F from './fmt.js?v=9843449aa8';
+import * as C from './chart.js?v=9843449aa8';
+import * as U from './ui.js?v=9843449aa8';
+import { esc, icon, brandMark } from './icons.js?v=9843449aa8';
+import { financePages } from './pages/finance.js?v=9843449aa8';
+import { opsPages } from './pages/ops.js?v=9843449aa8';
+import { miscPages } from './pages/misc.js?v=9843449aa8';
+import { hrPages } from './pages/hr.js?v=9843449aa8';
+import { mashPages, hrAct, hrWire } from './pages/hrmash.js?v=9843449aa8';
+import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=9843449aa8';
+import * as Chooser from './chooser.js?v=9843449aa8';
+import * as Present from './present.js?v=9843449aa8';
+import * as World from './world.js?v=9843449aa8';
+import * as Gate from './gate.js?v=9843449aa8';
+import * as Site from './site.js?v=9843449aa8';
 
 const BASIS = [
   { id: 'month', name: 'Month' }, { id: 'ytd', name: 'YTD' },
