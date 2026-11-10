@@ -11,7 +11,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 PREVIEW = "--preview" in sys.argv
-OUT = HERE / "preview" if PREVIEW else HERE
+OUT = HERE / "preview" if (PREVIEW or "--old" in sys.argv) else HERE
 EMAIL = "hello@elevatemanagedservices.com"
 
 PAGES = [("index.html", "Home"), ("about.html", "About"), ("services.html", "Services"),
@@ -743,4 +743,12 @@ def build():
                                      '<link rel="canonical" href="/portal"><title>Client Portal</title><a href="/portal">Client Portal</a>')
 
 if __name__ == "__main__":
-    build()
+    # The live pages come from redesign.py since 2026-11-10. This file keeps the
+    # shared copy, team and clients that redesign.py imports, and its own layout
+    # builds into preview/ only when asked: python3 build.py --old
+    import sys
+    if "--old" in sys.argv:
+        build()
+    else:
+        import redesign
+        redesign.build()
