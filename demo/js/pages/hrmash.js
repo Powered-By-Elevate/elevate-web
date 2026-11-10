@@ -27,10 +27,10 @@
    No vendor's name, logo or wording ships: the layouts are borrowed, the brand is the client's.
    Every figure comes from the generated roster (build_hr in data/gen.py). The side by side is
    os-vault/wiki/research/hr-mashup-spec.md. The vendored libraries are in ../vendor/LICENSES.md. */
-import * as F from '../fmt.js?v=5cc1fbd6cf';
-import * as C from '../chart.js?v=5cc1fbd6cf';
-import * as U from '../ui.js?v=5cc1fbd6cf';
-import { esc, icon } from '../icons.js?v=5cc1fbd6cf';
+import * as F from '../fmt.js?v=9843449aa8';
+import * as C from '../chart.js?v=9843449aa8';
+import * as U from '../ui.js?v=9843449aa8';
+import { esc, icon } from '../icons.js?v=9843449aa8';
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

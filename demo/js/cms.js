@@ -8,12 +8,12 @@
    and auth route are confirmed and the adapter is a day or two of work. A demo
    that blurs those three is a demo that gets caught. */
 
-import * as U from './ui.js?v=5cc1fbd6cf';
-import * as F from './fmt.js?v=5cc1fbd6cf';
-import { esc, icon, brandMark, connTile } from './icons.js?v=5cc1fbd6cf';
-import { paletteFrom, contrast, mix } from './settings.js?v=5cc1fbd6cf';
-import { statusWord } from './pages/misc.js?v=5cc1fbd6cf';
-import { locked } from './site.js?v=5cc1fbd6cf';
+import * as U from './ui.js?v=9843449aa8';
+import * as F from './fmt.js?v=9843449aa8';
+import { esc, icon, brandMark, connTile } from './icons.js?v=9843449aa8';
+import { paletteFrom, contrast, mix } from './settings.js?v=9843449aa8';
+import { statusWord } from './pages/misc.js?v=9843449aa8';
+import { locked } from './site.js?v=9843449aa8';
 
 /* ⚖️ Matt, 2026-11-02: *"i would also love for the settings pages to be
    intentionally built out in a very user friendly and pleasing to the eye kind

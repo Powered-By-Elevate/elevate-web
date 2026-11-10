@@ -14,7 +14,7 @@
    The drawing is decoration and says nothing about the data. Nothing here
    should ever be read as a figure. */
 
-import { esc } from './icons.js?v=5cc1fbd6cf';
+import { esc } from './icons.js?v=9843449aa8';
 
 let seq = 0;
 
