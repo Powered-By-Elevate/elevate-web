@@ -495,7 +495,7 @@ def people():
 def proof_cards(items):
     return "".join(f'<div class="proof" style="background-image:url(img/{img})"><div><h3>{t}</h3><small>{a}<br>{b}</small></div></div>' for img, t, a, b in items)
 
-SCHOOLS = [("q3-017.jpg", "Cogito Academy", "Lancaster, SC", "1,000 students"), ("q3-010.jpg", "Libertas Academy", "Woodruff, SC", "1,000 students"),
+SCHOOLS = [("q3-017.jpg", "Cogito Academy", "Lancaster, SC", "1,000 students"), ("polaris-tech.jpg", "Polaris Tech Charter School", "Ridgeland, SC", "280 students"),
            ("q3-020.jpg", "Libertas Academy", "Colleton, SC", "510 students")]
 BUILDS = [("tnc-nova.jpg", "Nova River District", "Rome, GA", "250 homes &middot; completed 2025"), ("tnc-gs.jpg", "Student housing at Georgia Southern", "Statesboro, GA", "82 residences &middot; completed 2026"),
           ("tnc-gt.jpg", "Student housing at Georgia Tech", "Atlanta, GA", "55 residences &middot; underway")]
@@ -514,7 +514,7 @@ def client_card(img, alt, shape, yrs, name, desc):
     return f'''<article class="client"><div class="client__logo client__logo--{shape}">{logo}</div>
 <div class="client__body">{(f'<small>{yrs.split("|")[0]}</small>' if "|" in yrs else "")}<b>{yrs.split("|")[-1]}</b><h3>{name}</h3><p>{desc}</p></div></article>'''
 
-def clients_band(items=None, eyebrow="Who we serve", h2='Partners who stay. <span class="it">Year after year.</span>',
+def clients_band(items=None, eyebrow="Who we serve", h2='Our partners. <span class="it">Built on trust.</span>',
                  lede="The organizations that trust Elevate with their books, payroll and reporting."):
     cards = "".join(client_card(*c) for c in (items or OUR_CLIENTS))
     return f'''<section class="band clients"><div class="shell"><div class="head"><div class="eyebrow">{eyebrow}</div>
@@ -624,7 +624,7 @@ def education():
 {clients_band(SCHOOL_CLIENTS, "Schools we serve", 'Open today. <span class="it">Opening next.</span>', "The schools that run on Elevate's books, payroll and reporting, and the ones we are getting ready to open.")}
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Three schools. <span class="it">Opened on time.</span></h2>
-<p class="lede">Our partner companies delivered three new schools in 2026 for 2,510 students. Elevate runs the finance and operations behind the teams that built them.</p></div>
+<p class="lede">Our partner companies build schools across South Carolina and open them on time. Elevate runs the finance and operations behind the teams that built them.</p></div>
 <div class="grid g3">{proof_cards(SCHOOLS)}</div></div></section>''')
 
 SYSTEMS = [("ledger", "Accounting", ["QuickBooks Online", "Sage Intacct", "Xero", "NetSuite", "Sage 100", "Others on request"]),
