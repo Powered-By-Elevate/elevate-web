@@ -2,11 +2,11 @@
    and the unit detail all come from the industry profile, which is what makes
    the same build read as a construction dashboard and a fleet dashboard. */
 
-import * as F from '../fmt.js?v=cfc9ac23e4';
-import * as C from '../chart.js?v=cfc9ac23e4';
-import * as U from '../ui.js?v=cfc9ac23e4';
-import { esc, icon } from '../icons.js?v=cfc9ac23e4';
-import { motif } from '../scenes.js?v=cfc9ac23e4';
+import * as F from '../fmt.js?v=02d4c24167';
+import * as C from '../chart.js?v=02d4c24167';
+import * as U from '../ui.js?v=02d4c24167';
+import { esc, icon } from '../icons.js?v=02d4c24167';
+import { motif } from '../scenes.js?v=02d4c24167';
 
 const mN = m => F.monthName(m);
 
