@@ -505,7 +505,7 @@ OUR_CLIENTS = [("client-tnc.png", "True North Companies logo", "tall", "3 years"
                ("client-belton.png", "Belton Preparatory Academy seal", "tall", "Since 2026", "Belton Preparatory Academy", "Public charter school, Belton, SC")]
 
 SCHOOL_CLIENTS = [("client-belton.png", "Belton Preparatory Academy seal", "tall", "Client since|2026", "Belton Preparatory Academy", "Public charter school, Belton, SC"),
-                  (None, "Upstate Prep Academy", "text", "Opening|Fall 2027", "Upstate Prep Academy", "Charter school, Greenville, SC"),
+                  (None, "Upstate Prep Academy", "text", "Opening|Fall 2028", "Upstate Prep Academy", "Charter school, Greenville, SC"),
                   ("client-aia.png", "American Innovation Academies logo", "wide", "Opening|Fall 2028", "AIA Woodruff", "Grades 9 to 12 charter school, Woodruff, SC")]
 
 def client_card(img, alt, shape, yrs, name, desc):
