@@ -308,7 +308,7 @@ QUOTE = f'''<section class="sec"><div class="shell"><div class="card-teal on-tea
 
 # ------------------------------------------------------------------ pages
 def home():
-    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "team-desk-vicki.jpg", "team-joseph.jpg"))
+    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "tnc-lobby.jpg", "team-joseph.jpg"))
     body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
@@ -336,7 +336,7 @@ def home():
 
 def about():
     vals = [("Relationships before reports", "team-plan.jpg", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", None),
-            ("The same people, every month", "tnc-lobby.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
+            ("The same people, every month", "team-desk-vicki.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
             ("Give leaders their time back", "libertas-campus.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
     PHOTO = {}
     TEAMFIX = {"tucker": "background-size:122%;background-position:50% 43%", "fawole": "background-size:cover;background-position:50% 0%", "mcdonald": "background-size:cover;background-position:50% 0%", "knowles": "background-size:cover;background-position:50% 0%", "davis": "background-size:cover;background-position:50% 0%", "ltucker": "background-size:cover;background-position:50% 0%"}
