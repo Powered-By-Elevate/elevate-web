@@ -355,7 +355,7 @@ def home():
 <section class="sec"><div class="shell two"><div class="copy"><h2 class="h2">We Help Schools <span class="hl">Run Smoothly</span></h2>
 <p>From the first planning year to every audit after, Elevate runs the money side of charter and private schools: accounting, payroll, grants and board reporting, so school leaders can stay in classrooms.</p>
 <div><a class="btn btn--teal" href="{R}/education">See our education services</a></div></div>
-<div class="tiles">{tile("q3-002.jpg", "Schools we serve", "Belton Preparatory Academy · client since 2026", R + "/education#serve")}{tile("site-dusk.jpg", "Schools opening next", "Upstate Prep 2027 · AIA Woodruff 2028", R + "/education#serve")}</div></div></section>
+<div class="tiles">{tile("q3-002.jpg", "Schools we serve", "Belton Preparatory Academy · client since 2026", R + "/education#serve")}{tile("site-dusk.jpg", "Schools opening next", "Upstate Prep and AIA Woodruff · Fall 2028", R + "/education#serve")}</div></div></section>
 {QUOTE}'''
     return page("index", "Home", "home", body, home=True)
 
