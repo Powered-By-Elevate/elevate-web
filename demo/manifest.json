@@ -1,6 +1,6 @@
 {
   "files": 42,
-  "bytes": 4381548,
+  "bytes": 4381942,
   "industries": [
     "construction",
     "retail",
@@ -10,5 +10,5 @@
     "tech",
     "education"
   ],
-  "hash": "131ee93e93b4"
+  "hash": "7b5f6c9c1682"
 }

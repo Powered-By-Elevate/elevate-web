@@ -7,22 +7,22 @@
    a single figure on the page is shown disabled with its reason, rather than
    offered and then doing nothing. */
 
-import { Settings, paletteFrom } from './settings.js?v=cfc9ac23e4';
-import { Q, loadData } from './query.js?v=cfc9ac23e4';
-import * as F from './fmt.js?v=cfc9ac23e4';
-import * as C from './chart.js?v=cfc9ac23e4';
-import * as U from './ui.js?v=cfc9ac23e4';
-import { esc, icon, brandMark } from './icons.js?v=cfc9ac23e4';
-import { financePages } from './pages/finance.js?v=cfc9ac23e4';
-import { opsPages } from './pages/ops.js?v=cfc9ac23e4';
-import { miscPages } from './pages/misc.js?v=cfc9ac23e4';
-import { hrPages } from './pages/hr.js?v=cfc9ac23e4';
-import { mashPages, hrAct, hrWire } from './pages/hrmash.js?v=cfc9ac23e4';
-import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=cfc9ac23e4';
-import * as Chooser from './chooser.js?v=cfc9ac23e4';
-import * as Present from './present.js?v=cfc9ac23e4';
-import * as World from './world.js?v=cfc9ac23e4';
-import * as Gate from './gate.js?v=cfc9ac23e4';
+import { Settings, paletteFrom } from './settings.js?v=02d4c24167';
+import { Q, loadData } from './query.js?v=02d4c24167';
+import * as F from './fmt.js?v=02d4c24167';
+import * as C from './chart.js?v=02d4c24167';
+import * as U from './ui.js?v=02d4c24167';
+import { esc, icon, brandMark } from './icons.js?v=02d4c24167';
+import { financePages } from './pages/finance.js?v=02d4c24167';
+import { opsPages } from './pages/ops.js?v=02d4c24167';
+import { miscPages } from './pages/misc.js?v=02d4c24167';
+import { hrPages } from './pages/hr.js?v=02d4c24167';
+import { mashPages, hrAct, hrWire } from './pages/hrmash.js?v=02d4c24167';
+import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=02d4c24167';
+import * as Chooser from './chooser.js?v=02d4c24167';
+import * as Present from './present.js?v=02d4c24167';
+import * as World from './world.js?v=02d4c24167';
+import * as Gate from './gate.js?v=02d4c24167';
 
 const BASIS = [
   { id: 'month', name: 'Month' }, { id: 'ytd', name: 'YTD' },

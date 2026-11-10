@@ -6,10 +6,10 @@
    reviews and benefits. Payroll itself stays with the payroll provider: tax filing and moving
    money are what a company buys, and this tab reads them rather than replacing them. The
    teardown that shaped it is os-vault/wiki/research/paycor-teardown.md. */
-import * as F from '../fmt.js?v=cfc9ac23e4';
-import * as C from '../chart.js?v=cfc9ac23e4';
-import * as U from '../ui.js?v=cfc9ac23e4';
-import { esc } from '../icons.js?v=cfc9ac23e4';
+import * as F from '../fmt.js?v=02d4c24167';
+import * as C from '../chart.js?v=02d4c24167';
+import * as U from '../ui.js?v=02d4c24167';
+import { esc } from '../icons.js?v=02d4c24167';
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const day = iso => { const [, m, d] = iso.split('-').map(Number); return `${MON[m - 1]} ${d}`; };
