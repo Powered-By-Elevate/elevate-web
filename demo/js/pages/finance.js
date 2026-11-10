@@ -2,10 +2,10 @@
    page opens on a sentence that answers the page's own question, and every
    figure beside it is the figure that sentence used. */
 
-import * as F from '../fmt.js?v=02d4c24167';
-import * as C from '../chart.js?v=02d4c24167';
-import * as U from '../ui.js?v=02d4c24167';
-import { esc, icon } from '../icons.js?v=02d4c24167';
+import * as F from '../fmt.js?v=5cc1fbd6cf';
+import * as C from '../chart.js?v=5cc1fbd6cf';
+import * as U from '../ui.js?v=5cc1fbd6cf';
+import { esc, icon } from '../icons.js?v=5cc1fbd6cf';
 
 const PL_NAMES = {};
 
@@ -224,6 +224,11 @@ function verdictLine(ctx, m) {
       const e = q.kpi('enrolled'), fr = q.kpi('fillRate'), ps = q.kpi('perStudent');
       return `<b>${F.num(e.value)}</b> students fill <b>${F.pct(fr.value, 0)}</b> of the seats,
         at <b>${F.exact(ps.value)}</b> of revenue each.`;
+    },
+    healthcare: () => {
+      const v = q.kpi('visits'), pv = q.kpi('perVisit'), cr = q.kpi('collectRate');
+      return `<b>${F.num(v.value)}</b> patient visits at <b>${F.exact(pv.value, 2)}</b> each,
+        with <b>${F.pct(cr.value, 1)}</b> of what payers allowed collected.`;
     },
     retail: () => {
       const sp = q.kpi('salesPerSqft'), bk = q.kpi('basket');

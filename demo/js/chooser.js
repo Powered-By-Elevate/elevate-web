@@ -1,16 +1,17 @@
 /* The front door.
 
-   Every world in its own brand, construction and retail first, before a single extract is loaded. It
+   Every world in its own brand, construction and education first, before a single extract is loaded. It
    reads data/summary.json (about 3 KB) rather than the industry files,
    which are 2.6 MB between them, so the first screen paints immediately.
 
    This is the first fifteen seconds of every demo, which is why it is a place
    of its own rather than a row of cards at the bottom of a page. */
 
-import * as F from './fmt.js?v=02d4c24167';
-import { esc, brandMark, INDUSTRY_ICON, icon } from './icons.js?v=02d4c24167';
-import { scene } from './scenes.js?v=02d4c24167';
-import { spark } from './chart.js?v=02d4c24167';
+import * as F from './fmt.js?v=5cc1fbd6cf';
+import { esc, brandMark, INDUSTRY_ICON, icon } from './icons.js?v=5cc1fbd6cf';
+import { scene } from './scenes.js?v=5cc1fbd6cf';
+import { spark } from './chart.js?v=5cc1fbd6cf';
+import { PUBLIC } from './site.js?v=5cc1fbd6cf';
 
 let cards = null;
 
@@ -83,12 +84,12 @@ function markup(cfg, current) {
         <div class="ch-acts">
         ${current ? `<button class="ch-close" data-ch-close>${icon('close', 15)}Back to
           ${esc(cards.find(c => c.id === current) ? cards.find(c => c.id === current).company : 'the dashboard')}</button>` : ''}
-          <button class="ch-close ch-staff" data-act="console">${icon('shield', 15)}Elevate staff
-            <span>Console</span></button>
+          ${PUBLIC ? '' : `<button class="ch-close ch-staff" data-act="console">${icon('shield', 15)}Elevate staff
+            <span>Console</span></button>`}
         </div>
       </header>
       <div class="worlds">
-        ${cards.map(c => world(c, brands[c.brand], c.id === current,
+        ${ordered(cfg).map(c => world(c, brands[c.brand], c.id === current,
           (cfg.product.product.leads || []).includes(c.id))).join('')}
       </div>
       <footer class="ch-foot">
@@ -97,6 +98,16 @@ function markup(cfg, current) {
           ${cards.reduce((a, c) => a + c.units, 0)} sample ${'units'}</span>
       </footer>
     </div>`;
+}
+
+/* The picker's order is the product's call, not the order the industries
+   happen to sit in the file (Matt, 2026-11-10: construction and education
+   lead, healthcare ends the top lines). An industry the list does not name
+   keeps its place after the named ones. */
+function ordered(cfg) {
+  const order = cfg.product.product.order || [];
+  const at = id => { const i = order.indexOf(id); return i < 0 ? order.length : i; };
+  return cards.map((c, i) => [c, i]).sort((a, b) => at(a[0].id) - at(b[0].id) || a[1] - b[1]).map(x => x[0]);
 }
 
 function world(c, brand, isCurrent, leads) {

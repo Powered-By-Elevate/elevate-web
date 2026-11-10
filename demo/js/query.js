@@ -348,6 +348,27 @@ export class Q {
         const h = this.factSum('hours', w);
         return K('Sales per labor hour', h ? this.factSum('sales', w) / h : 0, 'usdExact');
       }
+      /* Healthcare. Visits come from the practice management system, revenue
+         from the ledger, so revenue per visit ties the two together. */
+      case 'visits': {
+        const v = this.factSum('visits', w), pv = this.factSum('visits', p);
+        return K('Patient visits', v, 'num', { delta: pct(v, pv) });
+      }
+      case 'perVisit': {
+        const v = this.factSum('visits', w);
+        return K('Revenue per visit', v ? this.factSum('rev', w) / v : 0, 'usdExact');
+      }
+      case 'collectRate':
+        return K('Collection rate', this.factAvg('collect', month, this.units, 'visits'), 'pct',
+          { note: 'Collected against what payers allowed' });
+      case 'arDays':
+        return K('Days in A/R', this.factAvg('arDays', month, this.units, 'visits'), 'days', { invert: true });
+      case 'noShow':
+        return K('No-show rate', this.factAvg('noShow', month, this.units, 'visits'), 'pct', { invert: true });
+      case 'perProvider': {
+        const pr = this.factAt('providers', month);
+        return K('Visits per provider a month', pr ? this.factAt('visits', month) / pr : 0, 'num');
+      }
       case 'oee':
         return K('OEE', this.factAvg('oee', month, this.units, 'hoursAvl'), 'pct');
       case 'costPerUnit': {

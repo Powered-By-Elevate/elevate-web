@@ -1,4 +1,4 @@
-import { esc } from './fmt.js?v=02d4c24167';
+import { esc } from './fmt.js?v=5cc1fbd6cf';
 
 /* esc lives in fmt.js. It is re-exported here because every drawing module
    needs both, and one import line per file is one fewer thing to get wrong. */
@@ -40,6 +40,7 @@ const P = {
   close: 'M6 6l12 12M18 6 6 18',
   menu: 'M4 7h16M4 12h16M4 17h16',
   arrow: 'M5 12h14m0 0-5-5m5 5-5 5',
+  back: 'M19 12H5m0 0 5-5m-5 5 5 5',
   bolt: 'M13 3 5 14h5l-1 7 8-11h-5l1-7Z',
   link: 'M9.5 14.5 14.5 9.5M11 7l1.5-1.5a4.2 4.2 0 0 1 6 6L17 13m-4 4-1.5 1.5a4.2 4.2 0 0 1-6-6L7 11',
   plus: 'M12 5v14M5 12h14',
@@ -51,6 +52,7 @@ const P = {
   store: 'M4 9h16v11H4V9Zm0 0 2-5h12l2 5M9 20v-6h6v6',
   factory: 'M3 20V11l5 3V11l5 3V8l8 4v8H3Zm4-3h2m4 0h2',
   school: 'M12 3 3 8h18l-9-5Zm-7 5v12h14V8M9 20v-6h6v6',
+  clinic: 'M4 21V7h16v14M9 21v-5h6v5M12 9v5M9.5 11.5h5M2 21h20',
   code: 'M9 7 4 12l5 5m6-10 5 5-5 5',
   dish: 'M12 5v2M5 17a7 7 0 0 1 14 0M3 17h18M6 20h12',
 };
@@ -111,4 +113,5 @@ export function hash(s) {
 export const INDUSTRY_ICON = {
   construction: 'plan', education: 'school', retail: 'store',
   industrial: 'factory', logistics: 'truck', tech: 'code', restaurants: 'dish',
+  healthcare: 'clinic',
 };

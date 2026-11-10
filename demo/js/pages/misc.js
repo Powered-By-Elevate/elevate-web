@@ -2,11 +2,11 @@
    lands on, so it carries the industry switch, the figures that matter today,
    and a door to each place. */
 
-import * as F from '../fmt.js?v=02d4c24167';
-import * as C from '../chart.js?v=02d4c24167';
-import * as U from '../ui.js?v=02d4c24167';
-import { esc, icon, brandMark, connTile, INDUSTRY_ICON } from '../icons.js?v=02d4c24167';
-import { scene, motif } from '../scenes.js?v=02d4c24167';
+import * as F from '../fmt.js?v=5cc1fbd6cf';
+import * as C from '../chart.js?v=5cc1fbd6cf';
+import * as U from '../ui.js?v=5cc1fbd6cf';
+import { esc, icon, brandMark, connTile, INDUSTRY_ICON } from '../icons.js?v=5cc1fbd6cf';
+import { scene, motif } from '../scenes.js?v=5cc1fbd6cf';
 
 /* ⛔ TRUNCATE WHERE THE INFORMATION IS NOT.
 
@@ -353,10 +353,121 @@ export function people(ctx) {
     }) + `</div>`;
 }
 
+/* --------------------------------------------------- marketing & enrollment */
+
+/* Matt, 2026-11-10: *"inside of the education demo, we need to focus in on
+   marketing and enrollment"*. A school's pipeline is families, so its page is
+   the enrollment funnel: what was spent, what it brought in, what it cost per
+   student, and whether next year's seats are filling. Every panel names the
+   software its figures are read from, because nothing here is typed in. */
+function srcNames(cfg, ids) {
+  const all = cfg.connectors.connectors || [];
+  return ids.map(id => (all.find(c => c.id === id) || { name: id }).name).join(' · ');
+}
+
+function marketing(ctx) {
+  const { q, cfg } = ctx;
+  const mk = q.data.marketing;
+  const rows = mk.monthly;
+  const months = [...new Set(rows.map(r => r.m))].sort();
+  const sum = (k, list = rows) => list.reduce((a, r) => a + r[k], 0);
+  const spend = sum('spend'), inq = sum('inquiries'), tours = sum('tours'),
+    apps = sum('applications'), enr = sum('enrolled');
+  const cpe = enr ? spend / enr : 0;
+  const camp = mk.campuses || [];
+  const open = camp.reduce((a, c) => a + c.open, 0);
+  const accepted = camp.reduce((a, c) => a + c.accepted, 0);
+  const fillNext = open ? accepted / open * 100 : 0;
+  const S = ids => `Source: ${esc(srcNames(cfg, ids))}`;
+
+  const byCh = mk.channels.map(ch => {
+    const mine = rows.filter(r => r.channel === ch);
+    const e = sum('enrolled', mine), sp = sum('spend', mine), i = sum('inquiries', mine);
+    return { ch, src: mine[0] ? mine[0].source : '', spend: sp, inq: i, enr: e,
+      cpe: sp && e ? sp / e : null, conv: i ? e / i * 100 : 0 };
+  });
+  const best = byCh.filter(x => x.cpe).sort((a, b) => a.cpe - b.cpe)[0];
+  const behind = camp.filter(c => c.open && c.accepted / c.open < 0.45);
+
+  const steps = [['Inquiries', inq], ['Tours', tours], ['Applications', apps], ['Enrolled', enr]];
+  const widest = Math.max(1, inq);
+
+  return U.pageHead({
+    eyebrow: 'Marketing & enrollment',
+    title: 'Marketing & enrollment',
+    answer: `<b>${F.num(enr)}</b> new students enrolled in the last twelve months from
+      <b>${F.num(inq)}</b> family inquiries, at <b>${F.money(cpe)}</b> of paid marketing per enrolled student.
+      ${best ? `${esc(best.ch)} is the cheapest paid channel at ${F.money(best.cpe)} per student.` : ''}
+      Next year, <b>${F.pct(fillNext, 0)}</b> of the ${F.num(open)} open seats already have an accepted offer${behind.length
+      ? `, and ${behind.length === 1 ? esc(behind[0].name) + ' is' : behind.length + ' campuses are'} behind` : ''}.`,
+  }) + `<div class="src-line">${icon('link', 14)}<span>Read from ${esc(srcNames(cfg, ['google-ads', 'meta-ads', 'google-analytics', 'hubspot', 'powerschool']))}.
+      Spend ties to the Sales &amp; marketing line in ${esc(srcNames(cfg, ['sage-intacct']))}. Nothing on this page is typed in.</span></div>`
+    + U.strip([
+      { label: 'Paid marketing', value: F.money(spend), note: 'last 12 months' },
+      { label: 'Inquiries', value: F.num(inq), note: `${F.money(inq ? spend / inq : 0)} each` },
+      { label: 'Tours', value: F.num(tours), note: `${F.pct(inq ? tours / inq * 100 : 0, 0)} of inquiries` },
+      { label: 'Applications', value: F.num(apps), note: `${F.pct(tours ? apps / tours * 100 : 0, 0)} of tours` },
+      { label: 'Enrolled', value: F.num(enr), note: `${F.pct(apps ? enr / apps * 100 : 0, 0)} of applications` },
+      { label: 'Cost per enrollment', value: F.money(cpe), note: 'paid spend ÷ enrolled' },
+    ]) + `<div class="grid">` +
+    U.panel({
+      col: 7, ico: 'funnel', title: 'The enrollment funnel',
+      note: 'Every family, from the first inquiry to a signed enrollment, over the last twelve months.',
+      body: `<div class="fun">${steps.map(([name, v], i) => {
+        const prev = steps[i - 1];
+        const keep = prev && prev[1] ? v / prev[1] * 100 : null;
+        return `<div class="fun-row">
+          <span class="fun-name">${esc(name)}</span>
+          <span class="fun-track"><i style="width:${Math.max(2, v / widest * 100).toFixed(1)}%"></i></span>
+          <span class="fun-val">${F.num(v)}</span>
+          <span class="fun-drop">${keep === null ? '<i class="muted">entry</i>' : `<i class="${keep < 40 ? 'down' : ''}">${keep.toFixed(0)}%</i>`}</span>
+        </div>`;
+      }).join('')}</div>`,
+      foot: S(['hubspot', 'powerschool']),
+    }) +
+    U.panel({
+      col: 5, ico: 'plan', title: 'Inquiries by month',
+      note: 'Enrollment season runs January to April for an August start.',
+      body: C.bars({ values: months.map(m => sum('inquiries', rows.filter(r => r.m === m))),
+        labels: months.map(m => F.monthName(m)), fmt: v => F.num(v), height: 200 }),
+      foot: S(['hubspot']),
+    }) +
+    U.panel({
+      col: 12, ico: 'target', title: 'By channel', pad: false,
+      note: 'What each channel cost and what it brought in. Free channels carry no cost per student.',
+      body: U.table({
+        cols: [{ name: 'Channel' }, { name: 'Spend', n: true }, { name: 'Inquiries', n: true },
+          { name: 'Enrolled', n: true }, { name: 'Inquiry to enrolled', n: true }, { name: 'Cost per student', n: true }],
+        rows: byCh.map(x => ({ cells: [
+          `<b>${esc(x.ch)}</b>${srcNames(cfg, [x.src]) === x.ch ? '' : `<div class="sub">from ${esc(srcNames(cfg, [x.src]))}</div>`}`,
+          x.spend ? F.money(x.spend) : '<span class="muted">free</span>', F.num(x.inq), F.num(x.enr),
+          F.pct(x.conv, 1), x.cpe ? F.money(x.cpe) : '<span class="muted">n/a</span>'] })),
+      }),
+      foot: S(['google-ads', 'meta-ads', 'google-analytics', 'hubspot']),
+    }) +
+    U.panel({
+      col: 12, ico: 'school', title: 'Next year, campus by campus', pad: false,
+      note: 'Seats less returning students are the open seats. Accepted offers against them is how full each campus will open.',
+      body: U.table({
+        cols: [{ name: 'Campus' }, { name: 'Seats', n: true }, { name: 'Returning', n: true }, { name: 'Open', n: true },
+          { name: 'Applications', n: true }, { name: 'Accepted', n: true }, { name: 'Open seats filled', n: true }, { name: 'Waitlist', n: true }],
+        rows: camp.map(c => {
+          const f = c.open ? c.accepted / c.open * 100 : 100;
+          return { cells: [`<b>${esc(c.name)}</b>`, F.num(c.seats), F.num(c.returning), F.num(c.open),
+            F.num(c.applications), F.num(c.accepted),
+            `<span class="${f >= 60 ? 'delta up' : f < 45 ? 'delta down' : 'delta flat'}">${F.pct(f, 0)}</span>`,
+            c.waitlist ? F.num(c.waitlist) : '<span class="muted">none</span>'] };
+        }),
+      }),
+      foot: S(['powerschool', 'hubspot']),
+    }) + `</div>`;
+}
+
 /* ---------------------------------------------------------------- pipeline */
 
 export function pipeline(ctx) {
   const { q, s } = ctx;
+  if (q.data.marketing) return marketing(ctx);
   const p = q.data.pipeline;
   const total = p.rows.reduce((a, r) => a + r.value, 0);
   const weighted = p.rows.reduce((a, r) => a + r.weighted, 0);
