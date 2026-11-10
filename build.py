@@ -514,7 +514,7 @@ def client_card(img, alt, shape, yrs, name, desc):
     return f'''<article class="client"><div class="client__logo client__logo--{shape}">{logo}</div>
 <div class="client__body">{(f'<small>{yrs.split("|")[0]}</small>' if "|" in yrs else "")}<b>{yrs.split("|")[-1]}</b><h3>{name}</h3><p>{desc}</p></div></article>'''
 
-def clients_band(items=None, eyebrow="Who we serve", h2='Partners who stay. <span class="it">Year after year.</span>',
+def clients_band(items=None, eyebrow="Who we serve", h2='Our partners. <span class="it">Built on trust.</span>',
                  lede="The organizations that trust Elevate with their books, payroll and reporting."):
     cards = "".join(client_card(*c) for c in (items or OUR_CLIENTS))
     return f'''<section class="band clients"><div class="shell"><div class="head"><div class="eyebrow">{eyebrow}</div>
