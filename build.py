@@ -128,8 +128,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .client__logo img { display: block; max-width: 100%; max-height: 190px; object-fit: contain }
 .client__logo--wide img { width: 82% }
 .client__logo--tall img { height: 190px; width: auto }
+.client__word { font: 500 clamp(30px, 2.6vw, 40px)/1.12 var(--display); color: var(--deep2); text-align: center; letter-spacing: .01em }
 .client__body { flex: 1; padding: 26px 30px 30px; color: #fff; background: radial-gradient(600px 240px at 90% -20%, rgba(47,157,168,.25), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 75%) }
 .client__body b { display: block; font: 500 clamp(40px, 3.6vw, 54px)/1 var(--display); color: var(--gold) }
+.client__body small { display: block; margin-bottom: 10px; font: 600 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--teal2) }
 .client__body h3 { margin-top: 14px; font-size: 24px; color: #fff }
 .client__body p { margin-top: 8px; font: 400 15px/1.55 var(--body); color: var(--on-deep2) }
 .stat em { display: block; margin-top: 8px; font: 400 15px/1.5 var(--body); font-style: normal; color: var(--on-deep2) }
@@ -503,12 +505,21 @@ OUR_CLIENTS = [("client-tnc.png", "True North Companies logo", "tall", "3 years"
                ("client-tnk12.png", "TNK12 shield", "tall", "2 years", "TNK12", "School development across South Carolina"),
                ("client-belton.png", "Belton Preparatory Academy seal", "tall", "Since 2026", "Belton Preparatory Academy", "Public charter school, Belton, SC")]
 
-def clients_band():
-    cards = "".join(f'''<article class="client"><div class="client__logo client__logo--{shape}"><img src="img/{img}" alt="{alt}" loading="lazy"></div>
-<div class="client__body"><b>{yrs}</b><h3>{name}</h3><p>{desc}</p></div></article>''' for img, alt, shape, yrs, name, desc in OUR_CLIENTS)
-    return f'''<section class="band clients"><div class="shell"><div class="head"><div class="eyebrow">Who we serve</div>
-<h2 class="h2">Partners who stay. <span class="it">Year after year.</span></h2>
-<p class="lede">The organizations that trust Elevate with their books, payroll and reporting.</p></div>
+SCHOOL_CLIENTS = [("client-belton.png", "Belton Preparatory Academy seal", "tall", "Client since|2026", "Belton Preparatory Academy", "Public charter school, Belton, SC"),
+                  (None, "Upstate Prep Academy", "text", "Opening|Fall 2027", "Upstate Prep Academy", "Charter school, Greenville, SC"),
+                  ("client-aia.png", "American Innovation Academies logo", "wide", "Opening|Fall 2028", "AIA Woodruff", "Grades 9 to 12 charter school, Woodruff, SC")]
+
+def client_card(img, alt, shape, yrs, name, desc):
+    logo = (f'<span class="client__word">{alt}</span>' if img is None else f'<img src="img/{img}" alt="{alt}" loading="lazy">')
+    return f'''<article class="client"><div class="client__logo client__logo--{shape}">{logo}</div>
+<div class="client__body">{(f'<small>{yrs.split("|")[0]}</small>' if "|" in yrs else "")}<b>{yrs.split("|")[-1]}</b><h3>{name}</h3><p>{desc}</p></div></article>'''
+
+def clients_band(items=None, eyebrow="Who we serve", h2='Partners who stay. <span class="it">Year after year.</span>',
+                 lede="The organizations that trust Elevate with their books, payroll and reporting."):
+    cards = "".join(client_card(*c) for c in (items or OUR_CLIENTS))
+    return f'''<section class="band clients"><div class="shell"><div class="head"><div class="eyebrow">{eyebrow}</div>
+<h2 class="h2">{h2}</h2>
+<p class="lede">{lede}</p></div>
 <div class="grid g3">{cards}</div></div></section>'''
 
 def steps(items):
@@ -610,6 +621,7 @@ def education():
 <p class="lede">Our family of companies has built and opened schools. We set up the books, payroll, policies and opening budget during the planning year, so founders can focus on students.</p>
 <div class="btns"><a class="btn btn--gold" href="/contact?topic=New%20school%20launch">Plan your launch with us</a></div></div>
 <div class="frame" style="background-image:url(img/q3-020.jpg)" role="img" aria-label="Aerial view of a newly built charter school campus"></div></div></section>
+{clients_band(SCHOOL_CLIENTS, "Schools we serve", 'Open today. <span class="it">Opening next.</span>', "The schools that run on Elevate's books, payroll and reporting, and the ones we are getting ready to open.")}
 <section class="band"><div class="shell"><div class="head"><div class="eyebrow">Proof from our family of companies</div>
 <h2 class="h2">Three schools. <span class="it">Opened on time.</span></h2>
 <p class="lede">Our partner companies delivered three new schools in 2026 for 2,510 students. Elevate runs the finance and operations behind the teams that built them.</p></div>

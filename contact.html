@@ -109,8 +109,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .client__logo img { display: block; max-width: 100%; max-height: 190px; object-fit: contain }
 .client__logo--wide img { width: 82% }
 .client__logo--tall img { height: 190px; width: auto }
+.client__word { font: 500 clamp(30px, 2.6vw, 40px)/1.12 var(--display); color: var(--deep2); text-align: center; letter-spacing: .01em }
 .client__body { flex: 1; padding: 26px 30px 30px; color: #fff; background: radial-gradient(600px 240px at 90% -20%, rgba(47,157,168,.25), transparent 60%), linear-gradient(160deg, var(--deep2), var(--deep) 75%) }
 .client__body b { display: block; font: 500 clamp(40px, 3.6vw, 54px)/1 var(--display); color: var(--gold) }
+.client__body small { display: block; margin-bottom: 10px; font: 600 12px/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--teal2) }
 .client__body h3 { margin-top: 14px; font-size: 24px; color: #fff }
 .client__body p { margin-top: 8px; font: 400 15px/1.55 var(--body); color: var(--on-deep2) }
 .stat em { display: block; margin-top: 8px; font: 400 15px/1.5 var(--body); font-style: normal; color: var(--on-deep2) }
