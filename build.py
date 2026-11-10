@@ -480,7 +480,7 @@ EDU = [
 ]
 TEAM = [("fawole", "Joseph Fawole", "President", "background-size:140%;background-position:50% 14%"),
         ("knowles", "Matthew Knowles", "Financial Analyst", ""),
-        ("tucker", "Amanda C. Tucker", "Director of Education &amp; Workforce Development", "background-size:142%;background-position:52% 82%"),
+        ("tucker", "Amanda C. Tucker", "Director of Education &amp; Workforce Development", "background-size:150%;background-position:50% 22%"),
         ("davis", "Marc Davis", "Chief Financial Officer", ""),
         ("russell", "Anita Russell", "Vice President of Finance", ""),
         ("provencher", "Vicki Provencher", "Controller", "background-size:118%;background-position:50% 18%"),
