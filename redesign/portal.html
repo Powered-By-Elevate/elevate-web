@@ -1,0 +1,237 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Client Portal · Elevate (redesign preview)</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"><style>
+:root{--teal:#0C6980;--teal-d:#08505f;--teal2:#2F9DA8;--gold:#E6C068;--gold2:#a9822f;--ink:#1f2a2c;--ink2:#5f6b6d;
+--grey:#F6F6F6;--tint:#EAF3F5;--line:#dfe6e7;--white:#fff;--deep:#052a33;
+--display:var(--serif);--body:var(--sans);--deep2:#0d4a58;--on-deep:#eef4f4;--on-deep2:#a9c2c7;--teal2b:#2F9DA8;--sans:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;--serif:"Bodoni Moda","Bodoni 72",Didot,Georgia,serif;--shell:1240px;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--white);color:var(--ink);font:400 17px/1.7 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;font-family:var(--sans);font-weight:600;letter-spacing:-.015em;line-height:1.12;text-wrap:balance}
+p{margin:0}a{color:var(--teal)}img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--teal2);outline-offset:3px}
+.shell{max-width:var(--shell);margin-inline:auto;padding-inline:16px}
+@media(min-width:900px){.shell{padding-inline:40px}}
+.hl{color:var(--teal)}
+.on-teal .hl,.phero .hl{color:var(--gold)}
+.eyebrow{font:500 italic 18px/1 var(--serif);color:var(--teal);margin-bottom:14px;display:block}
+.on-teal .eyebrow{color:#cfe6ea}
+.h1{font-size:clamp(36px,5vw,60px)}
+.h2{font-size:clamp(30px,3.6vw,46px)}
+.sec{padding-block:clamp(64px,8vw,104px)}
+.grey{background:var(--grey)}
+.tint{background:var(--tint)}
+.copy{display:grid;gap:20px;align-content:center}
+.copy p{color:var(--ink2)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:2px;font:600 17px/1 var(--serif);text-decoration:none;border:0;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.btn--teal{background:var(--teal);color:#fff}.btn--teal:hover{background:var(--teal2)}
+.btn--white{background:#fff;color:var(--teal)}.btn--white:hover{background:var(--gold);color:var(--deep)}
+.link{font:600 italic 18px/1.3 var(--serif);color:var(--teal);text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px;display:inline-flex;gap:8px;align-items:center}
+.link:hover{color:var(--teal2)}
+
+/* header */
+.hdr{position:sticky;top:0;z-index:50;background:var(--teal);transition:background .3s,box-shadow .3s}
+.home .hdr{position:fixed;inset:0 0 auto;background:transparent}
+.home .hdr:has(.nav.open){background:var(--teal)}
+.home .hdr.solid{background:var(--teal);box-shadow:0 10px 30px -18px rgba(0,0,0,.5)}
+.hdr__row{display:flex;align-items:center;justify-content:space-between;min-height:84px;gap:24px}
+.logo{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none}
+.logo svg{width:44px;height:34px}
+.logo b{display:block;font:500 25px/1 var(--serif);letter-spacing:.12em}
+.logo small{display:block;font:600 9.5px/1 var(--sans);letter-spacing:.32em;margin-top:6px;opacity:.85}
+.nav{display:flex;align-items:center;gap:30px}
+.nav>a,.dd>button{color:#fff;font:500 15.5px/1 var(--sans);text-decoration:none;background:none;border:0;cursor:pointer;padding:30px 0;position:relative;display:flex;gap:6px;align-items:center}
+.nav>a[aria-current]::after,.dd.cur>button::after{content:"";position:absolute;left:0;right:0;bottom:22px;height:3px;background:var(--gold)}
+.dd{position:relative}
+.dd>button svg{width:10px;height:10px}
+.dd__panel{position:absolute;top:100%;left:-20px;min-width:250px;background:var(--teal-d);padding:12px 0;display:none;box-shadow:0 20px 40px -20px rgba(0,0,0,.5)}
+.dd:hover .dd__panel,.dd:focus-within .dd__panel{display:block}
+.dd__panel a{display:block;padding:10px 22px;color:#fff;text-decoration:none;font:400 14.5px/1.3 var(--sans)}
+.dd__panel a:hover{background:rgba(255,255,255,.1)}
+.nav .btn{padding:12px 20px;font-size:16px}
+.burger{display:none;background:none;border:0;color:#fff;cursor:pointer;width:44px;height:44px}
+.burger svg{width:28px;height:28px}
+@media(max-width:1119px){.burger{display:grid;place-items:center}
+.nav{display:none;position:absolute;left:0;right:0;top:100%;background:#fff;flex-direction:column;align-items:stretch;gap:0;padding:8px 16px 18px;box-shadow:0 20px 40px -20px rgba(0,0,0,.4)}
+.nav.open{display:flex}
+.nav>a,.dd>button{color:var(--ink);padding:16px 0;border-bottom:1px solid var(--line);width:100%;justify-content:space-between}
+.nav>a[aria-current]::after,.dd.cur>button::after{display:none}
+.dd__panel{position:static;display:none;background:none;box-shadow:none;padding:0 0 8px 12px}
+.dd.open .dd__panel{display:block}.dd:hover .dd__panel{display:none}.dd.open:hover .dd__panel{display:block}
+.dd__panel a{color:var(--teal);padding:10px 0}
+.nav .btn{margin-top:16px;justify-content:center;background:var(--teal);color:#fff}}
+
+/* home hero */
+.hero{position:relative;min-height:min(92vh,760px);display:grid;place-items:center;text-align:center;color:#fff;overflow:hidden;background:var(--deep)}
+.hero__slides{position:absolute;inset:0}
+.hero__slides div{position:absolute;inset:0;background:center/cover;opacity:0;animation:fade 18s infinite;transform:scale(1.04)}
+.hero__slides div:nth-child(2){animation-delay:6s}.hero__slides div:nth-child(3){animation-delay:12s}
+@keyframes fade{0%{opacity:0;transform:scale(1.04)}5%{opacity:1}33%{opacity:1}38%{opacity:0;transform:scale(1.1)}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.hero__slides div{animation:none}.hero__slides div:first-child{opacity:1}}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,42,51,.72),rgba(5,42,51,.55) 45%,rgba(5,42,51,.78))}
+.hero__in{position:relative;z-index:2;max-width:900px;padding:140px 16px 90px;display:grid;gap:24px;justify-items:center}
+.hero__in p{font-size:19px;color:#e3eef0;max-width:780px}
+.hero .btns{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:center}
+.play{color:#fff;font:600 17px/1 var(--serif);text-decoration:none;display:inline-flex;gap:10px;align-items:center}
+.play span{width:38px;height:38px;border-radius:50%;border:1.5px solid #fff;display:grid;place-items:center}
+.play svg{width:12px;height:12px;fill:#fff;margin-left:2px}
+
+/* page hero (interior) */
+.phero{background:var(--teal);color:#fff;text-align:center;padding:clamp(70px,9vw,120px) 0 clamp(64px,8vw,100px)}
+.phero .shell{max-width:980px;display:grid;gap:18px;justify-items:center}
+.phero p{color:#d8ebee;font-size:18.5px;max-width:820px}
+.bleed{height:clamp(320px,42vw,600px);background:center/cover;position:relative}
+.bleed::after{content:"";position:absolute;inset:0;background:rgba(5,42,51,.28)}
+
+/* marquee */
+.marq{padding:38px 0;border-bottom:1px solid var(--line);overflow:hidden}
+.marq__track{display:flex;gap:90px;width:max-content;animation:marq 34s linear infinite;align-items:center}
+.marq img{height:64px;width:auto;max-width:220px;object-fit:contain;filter:grayscale(1);opacity:.7;transition:filter .3s,opacity .3s}
+.marq img:hover{filter:none;opacity:1}
+.marq .word{font:500 26px/1 var(--serif);color:#8a9597;white-space:nowrap}
+@keyframes marq{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.marq__track{animation:none;flex-wrap:wrap;justify-content:center;width:auto}}
+
+/* layouts */
+.two{display:grid;gap:clamp(36px,5vw,72px);align-items:center}
+.two>*,.tiles>*,.tabs>*,.split>*{min-width:0}
+main{overflow-x:clip}
+@media(min-width:900px){.two{grid-template-columns:1fr 1fr}}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pair div{aspect-ratio:3/4.4;background:center/cover;border-radius:2px}
+.pair div:nth-child(2){margin-top:48px}
+.split{display:grid}
+.split__copy{padding:64px 16px;display:grid;gap:22px;align-content:center}
+@media(min-width:900px){.split{grid-template-columns:1fr 1fr}.split__copy{padding:clamp(64px,8vw,110px) clamp(40px,6vw,96px) clamp(64px,8vw,110px) max(40px,calc((100vw - var(--shell))/2 + 40px))}.split__img+.split__copy{padding:clamp(64px,8vw,110px) max(40px,calc((100vw - var(--shell))/2 + 40px)) clamp(64px,8vw,110px) clamp(40px,6vw,96px)}}
+.split__img{min-height:420px;background:center/cover}
+.dots{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.dots li{position:relative;padding-left:24px;color:var(--ink2)}
+.dots li::before{content:"";position:absolute;left:0;top:.6em;width:9px;height:9px;border-radius:50%;background:var(--teal)}
+.dots b{color:var(--ink)}
+
+/* cards like the template's project tiles */
+.tiles{display:grid;gap:22px}
+@media(min-width:700px){.tiles{grid-template-columns:1fr 1fr}}
+.tiles.t3{grid-template-columns:1fr}@media(min-width:900px){.tiles.t3{grid-template-columns:repeat(3,1fr)}}
+.tile{position:relative;aspect-ratio:3/3.6;background:center/cover;color:#fff;text-decoration:none;overflow:hidden;display:block}
+.tile::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,42,51,.85),transparent 55%);transition:opacity .3s}
+.tile div{position:absolute;left:26px;top:24px;right:26px;display:grid;gap:4px}
+.tile h3{font-size:24px;color:#fff}.tile small{font-size:14px;color:#d8ebee}
+.tile i{position:absolute;right:22px;bottom:14px;font:300 54px/1 var(--sans);font-style:normal;color:#fff;transition:transform .3s}
+.tile:hover i{transform:rotate(90deg)}
+
+/* tab list (values, services) */
+.tabs{display:grid;gap:clamp(36px,5vw,72px)}
+@media(min-width:900px){.tabs{grid-template-columns:1fr 1fr;align-items:start}}
+.tabs__list{border-top:1px solid var(--line)}
+.tabs__list button{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:20px 0;cursor:pointer;font:500 clamp(22px,2.4vw,30px)/1.2 var(--serif);color:#9aa5a7;text-align:left;transition:color .2s}
+.tabs__list button[aria-selected=true],.tabs__list button:hover{color:var(--teal)}
+.tabs__list button span{opacity:0;transition:opacity .2s}
+.tabs__list button[aria-selected=true] span{opacity:1}
+.tabs__panel{display:grid;gap:20px}
+.tabs__panel .ph{aspect-ratio:4/3;background:center/cover}
+.tabs__panel p{color:var(--ink2);font-size:18px}
+.tabs__panel ul{margin:0;padding-left:20px;color:var(--ink2)}
+
+/* why cards */
+.why{display:grid;gap:22px}@media(min-width:800px){.why{grid-template-columns:1fr 1fr}}
+.why div{background:var(--tint);padding:36px 34px;text-align:center;display:grid;gap:12px}
+.why h3{font:500 26px/1.2 var(--serif);color:var(--teal)}
+.why p{color:var(--ink2)}
+
+/* brand card (in place of testimonials) */
+.card-teal{background:var(--teal);color:#fff;padding:clamp(48px,7vw,90px) clamp(24px,6vw,90px);position:relative;overflow:hidden;text-align:center}
+.card-teal svg.mark{position:absolute;right:-60px;top:50%;transform:translateY(-50%);width:520px;height:auto;opacity:.12}
+.card-teal blockquote{margin:0;position:relative;font:600 clamp(24px,2.8vw,36px)/1.35 var(--sans);max-width:900px;margin-inline:auto}
+.card-teal cite{display:block;margin-top:22px;font:500 italic 19px/1 var(--serif);color:#cfe6ea}
+
+/* team */
+.team{display:grid;gap:34px 26px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+@media(min-width:1000px){.team{grid-template-columns:repeat(4,1fr)}}
+.team article{text-align:center;display:grid;gap:6px}
+.team .ph{width:100%;aspect-ratio:1;background-color:#dfe8ea;background-repeat:no-repeat;margin-bottom:10px}
+.team h3{font-size:19px}.team p{font-size:14.5px;color:var(--teal)}
+
+/* lists in tinted box (partners style) */
+.box{background:var(--tint);padding:36px;display:grid;gap:14px;text-align:center;font:500 22px/1.3 var(--serif);color:var(--teal)}
+
+/* faq */
+.faq{display:grid;gap:0 48px}@media(min-width:900px){.faq{grid-template-columns:1fr 1fr}}
+.faq details{border-bottom:1px solid var(--line);padding:20px 0}
+.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;font:600 18px/1.4 var(--sans)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:300 28px/1 var(--sans);color:var(--teal)}
+.faq details[open] summary::after{content:"\2212"}
+.faq p{margin-top:12px;color:var(--ink2)}
+
+/* form */
+.form{display:grid;gap:16px}
+.form label{display:grid;gap:6px;font:600 14px/1 var(--sans)}
+.form input,.form textarea,.form select{font:400 16px/1.4 var(--sans);padding:14px;border:1px solid #cfd8da;border-radius:2px;background:#fff;width:100%}
+.form .row{display:grid;gap:16px}@media(min-width:700px){.form .row{grid-template-columns:1fr 1fr}}
+.form .checks{display:flex;flex-wrap:wrap;gap:10px 20px;font-weight:400}
+.form .checks label{display:flex;gap:8px;align-items:center;font:400 15px/1 var(--sans)}
+.form .checks input{width:auto}
+.hp{position:absolute;left:-9999px}
+.msg{font-size:15px}.msg.bad{color:#b3261e}
+.done{display:grid;gap:12px}
+[hidden]{display:none!important}
+
+/* cta band + footer */
+.cta{border-top:8px solid var(--teal2);background:var(--teal);color:#fff}
+.cta .shell{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding-block:48px}
+.cta h2{font-size:clamp(26px,3vw,38px)}
+.foot{background:#fbfcfc;border-top:1px solid var(--line);padding:56px 0}
+.foot .shell{display:grid;gap:40px}
+@media(min-width:800px){.foot .shell{grid-template-columns:1.4fr 1fr 1fr}}
+.foot .logo{color:var(--teal)}
+.foot h4{margin:0 0 12px;font:500 italic 19px/1 var(--serif);color:var(--teal)}
+.foot p,.foot a{font-size:15px;color:var(--ink2);text-decoration:none;display:block;line-height:1.9}
+.foot a:hover{color:var(--teal)}
+.foot small{display:block;margin-top:14px;font-size:13px;color:#8a9597}
+.signin-box{background:var(--grey);padding:clamp(32px,4vw,56px);display:grid;gap:20px;align-content:start}
+.demo-box{background:var(--teal);color:#fff;padding:clamp(32px,4vw,56px);display:grid;gap:20px;align-content:start}
+.demo-box p{color:#d8ebee}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:1px solid rgba(255,255,255,.45);color:#fff;text-decoration:none;padding:9px 16px;border-radius:99px;font:500 14.5px/1 var(--sans);transition:background .2s,color .2s}
+.chip:hover{background:#fff;color:var(--teal)}
+.small-note{font-size:14.5px;color:var(--ink2)}
+.msg.ok{color:var(--teal)}
+.pv{position:fixed;left:12px;bottom:12px;z-index:60;background:var(--gold);color:var(--deep);font:600 12px/1 var(--sans);padding:8px 12px;border-radius:99px;letter-spacing:.06em}
+</style></head><body class=""><header class="hdr" id="hdr"><div class="shell hdr__row"><a class="logo" href="/redesign/" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mr140309166801776" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mr140309166801776)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><button class="burger" type="button" aria-label="Menu" aria-expanded="false" id="burger"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2"/></svg></button><nav class="nav" id="nav" aria-label="Main"><div class="dd"><button type="button" aria-expanded="false">About <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="dd__panel"><a href="/redesign/about">About overview</a><a href="/redesign/about#story">Our story</a><a href="/redesign/about#values">Our values</a><a href="/redesign/about#clients">Who we serve</a><a href="/redesign/about#team">Our team</a></div></div><div class="dd"><button type="button" aria-expanded="false">Services <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="dd__panel"><a href="/redesign/services">Services overview</a><a href="/redesign/services#services">Financial management</a><a href="/redesign/services#bi">BI Dashboard</a><a href="/redesign/services#services">HR, payroll and people</a><a href="/redesign/services#services">Marketing</a><a href="/redesign/services#systems">Systems we work with</a></div></div><div class="dd"><button type="button" aria-expanded="false">Education <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button><div class="dd__panel"><a href="/redesign/education">Education overview</a><a href="/redesign/education#schools">Back office for schools</a><a href="/redesign/education#serve">Schools we serve</a><a href="/redesign/education#grants">Grant support</a><a href="/redesign/education#launch">New school launch</a></div></div><a href="/redesign/portal" aria-current=page>Client Portal</a><a class="btn btn--white" href="/redesign/contact">Contact Us</a></nav></div></header><main><section class="phero"><div class="shell"><span class="eyebrow">Client Portal</span><h1 class="h1">Sign In to Your <span class='hl'>Dashboard</span></h1><p>Enter your work email and we will take you to your company's BI Dashboard. Not a client yet? Explore a sample company.</p></div></section>
+<section class="sec"><div class="shell two" style="align-items:stretch">
+<div class="signin-box"><span class="eyebrow">Client sign-in</span><h2 class="h2">Welcome <span class="hl">Back</span></h2>
+<form id="signinForm" class="form" novalidate><label for="email">Work email<input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label>
+<div><button class="btn btn--teal" type="submit">Continue &rarr;</button></div></form>
+<p id="msg" class="msg" role="status" aria-live="polite"></p>
+<p class="small-note">Trouble signing in? Email <a href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a>.</p></div>
+<div class="demo-box on-teal"><span class="eyebrow">Not a client yet?</span><h2 class="h2">See It With a <span class="hl">Sample Company</span></h2>
+<p>Pick an industry and explore a live dashboard built the way that business is measured. Anything you change stays in your own browser.</p>
+<div class="chips"><a class="chip" href="/demo/#/demo/construction">Construction</a><a class="chip" href="/demo/#/demo/education">Schools</a><a class="chip" href="/demo/#/demo/retail">Retail</a><a class="chip" href="/demo/#/demo/restaurants">Food &amp; beverage</a><a class="chip" href="/demo/#/demo/industrial">Manufacturing</a><a class="chip" href="/demo/#/demo/logistics">Freight</a><a class="chip" href="/demo/#/demo/tech">Software</a></div><div><a class="btn btn--white" href="/demo/#/choose">View our dashboard demo &rarr;</a></div></div></div></section>
+<section class="split"><div class="split__img" style="background-image:url(/img/dashboard-retail.png);background-size:contain;background-repeat:no-repeat;background-color:var(--tint)"></div>
+<div class="split__copy grey"><span class="eyebrow">What you will see</span><h2 class="h2">One Dashboard for <span class="hl">Every Entity</span></h2>
+<p style="color:var(--ink2)">Every client gets a dashboard set up for their companies or campuses, their roles and the way their business is measured.</p></div></section>
+<section class="sec"><div class="shell"><div class="why"><div><h3>Your Numbers, Live</h3><p>Read straight from your accounting system, so the dashboard always matches the books.</p></div><div><h3>Cut to Each Role</h3><p>Leaders see the answer, finance sees the detail, and each person sees only what their role allows.</p></div><div><h3>Every Entity in One Place</h3><p>Switch between companies or campuses, or see them all together.</p></div><div><h3>Lender and Board Ready</h3><p>Statements, packs and quarterly reports in one click.</p></div></div></div></section><script>
+(function(){var C={};var f=document.getElementById('signinForm'),e=document.getElementById('email'),m=document.getElementById('msg');
+if(!f)return;f.addEventListener('submit',function(ev){ev.preventDefault();var v=(e.value||'').trim().toLowerCase();
+if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.className='msg bad';m.textContent='Enter the email address you use for work, like name@company.com.';e.focus();return;}
+var d=v.split('@')[1];var url=C[d];
+if(url){m.className='msg ok';m.textContent='Taking you to your dashboard\u2026';window.location.href=url;}
+else{m.className='msg';m.innerHTML='We could not find a dashboard for <b>'+d.replace(/[<>&]/g,'')+'</b> yet. If you are an Elevate client, email <span class="copy">hello@elevatemanagedservices.com</span> and we will get you set up. In the meantime you can explore the demo.';}
+});})();
+</script></main><section class="cta"><div class="shell"><h2>Ready to give your leaders their time back?</h2><a class="btn btn--white" href="/redesign/contact">Let's Connect</a></div></section>
+<footer class="foot"><div class="shell"><div><a class="logo" href="/redesign/" aria-label="Elevate Managed Services, home"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mr140309166801776" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mr140309166801776)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><p style="margin-top:18px;max-width:340px">Back-office, education and business intelligence services for growing companies and schools across the Southeast.</p></div>
+<div><h4>Contact</h4><a href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a><a href="/redesign/contact">Book a discovery call</a><a href="/redesign/portal">Client Portal</a></div>
+<div><h4>Explore</h4><a href="/redesign/about">About</a><a href="/redesign/services">Business services</a><a href="/redesign/education">Education services</a><a href="/demo/#/choose">View our dashboard demo</a>
+<small>&copy; 2026 Elevate Managed Services</small></div></div></footer><span class="pv">REDESIGN PREVIEW</span><script>
+(function(){var h=document.getElementById('hdr');if(document.body.classList.contains('home')){var f=function(){h.classList.toggle('solid',scrollY>40)};addEventListener('scroll',f,{passive:true});f();}
+var b=document.getElementById('burger'),n=document.getElementById('nav');b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o)});
+document.querySelectorAll('.dd>button').forEach(function(x){x.addEventListener('click',function(){if(innerWidth<1120){var o=x.parentNode.classList.toggle('open');x.setAttribute('aria-expanded',o)}else{location.href=x.parentNode.querySelector('.dd__panel a').href}})});
+document.querySelectorAll('[data-tabs]').forEach(function(t){var bs=t.querySelectorAll('[role=tab]'),ps=t.querySelectorAll('[role=tabpanel]');
+bs.forEach(function(b,i){b.addEventListener('click',function(){bs.forEach(function(x,j){x.setAttribute('aria-selected',i===j);ps[j].hidden=i!==j})})})});
+})();
+</script></body></html>
