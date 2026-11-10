@@ -109,6 +109,7 @@ p{margin:0}a{color:var(--teal)}img{max-width:100%;display:block}
 .marq__group{display:flex;gap:90px;padding-right:90px;align-items:center;flex:none}
 .marq img{height:64px;width:auto;max-width:220px;object-fit:contain;filter:grayscale(1);opacity:.7;transition:filter .3s,opacity .3s}
 .marq img:hover{filter:none;opacity:1}
+.marq img[src*="trueplaces"]{height:52px;opacity:.5}
 .marq .word{font:500 26px/1 var(--serif);color:#8a9597;white-space:nowrap}
 @keyframes marq{to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.marq__track{animation:none}}
@@ -134,6 +135,8 @@ main{overflow-x:clip}
 .tiles{display:grid;gap:22px}
 @media(min-width:700px){.tiles{grid-template-columns:1fr 1fr}}
 .tiles.t3{grid-template-columns:1fr}@media(min-width:900px){.tiles.t3{grid-template-columns:repeat(3,1fr)}}
+.tiles.t4{grid-template-columns:1fr}@media(min-width:700px){.tiles.t4{grid-template-columns:1fr 1fr}}@media(min-width:1180px){.tiles.t4{grid-template-columns:repeat(4,1fr)}.tiles.t4 .client__body b{font-size:clamp(38px,3.1vw,46px);white-space:nowrap}}
+.tiles.t4 .client__logo--wide img{width:100%;max-width:250px}
 .tile{position:relative;aspect-ratio:3/3.6;background:center/cover;color:#fff;text-decoration:none;overflow:hidden;display:block}
 .tile::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,42,51,.85),transparent 55%);transition:opacity .3s}
 .tile div{position:absolute;left:26px;top:24px;right:26px;display:grid;gap:4px}
@@ -317,7 +320,7 @@ def tabs(rows, sel_img=True):
     return f'<div class="tabs__list" role="tablist">{btns}</div><div>{panels}</div>'
 
 def marquee():
-    logos = [("client-tnc.png", "True North Companies"), ("client-tnk12.png", "TNK12"), ("client-belton.png", "Belton Preparatory Academy"), ("client-aia.png", "American Innovation Academies")]
+    logos = [("client-tnc.png", "True North Companies"), ("client-trueplaces.png", "True Places"), ("client-tnk12.png", "TNK12"), ("client-belton.png", "Belton Preparatory Academy"), ("client-aia.png", "American Innovation Academies")]
     one = "".join(f'<img src="{IMG}/{f}" alt="{a}">' for f, a in logos) + '<span class="word">Upstate Prep Academy</span>'
     group = f'<div class="marq__group">{one * 3}</div>'
     group2 = f'<div class="marq__group" aria-hidden="true">{one * 3}</div>'
@@ -374,7 +377,7 @@ def about():
 <div class="split__img" style="background-image:url({IMG}/team-laugh.jpg)"></div></section>
 <section class="sec grey" id="values"><div class="shell"><h2 class="h2" style="margin-bottom:36px"><span class="hl">Our Values:</span> How We Show Up for You</h2><div class="tabs" data-tabs>{tabs(vals)}</div></div></section>
 <section class="sec" id="clients"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:16px"><span class="eyebrow">Who we serve</span><h2 class="h2">Partners Who Stay, <span class="hl">Year After Year</span></h2></div>
-<style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{clients}</div></div></section>
+<style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t4" style="gap:24px">{clients}</div></div></section>
 <section class="sec grey" id="team"><div class="shell"><h2 class="h2" style="text-align:center;margin-bottom:44px">Meet the <span class="hl">Team</span></h2><div class="team">{team}</div></div></section>'''
     return page("about", "About", "about", body)
 
