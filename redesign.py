@@ -308,13 +308,13 @@ QUOTE = f'''<section class="sec"><div class="shell"><div class="card-teal on-tea
 
 # ------------------------------------------------------------------ pages
 def home():
-    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "team-whiteboard.jpg", "team-hall.jpg"))
+    slides = "".join(f'<div style="background-image:url({IMG}/{i})"></div>' for i in ("team-table.jpg", "team-desk-vicki.jpg", "team-joseph.jpg"))
     body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
 <div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" target="_blank" rel="noopener" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
 {marquee()}
-<section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/team-hands.jpg)"></div><div style="background-image:url({IMG}/team-overhead.jpg)"></div></div>
+<section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/team-whiteboard.jpg)"></div><div style="background-image:url({IMG}/team-hands.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Running an Organization That <span class="hl">Thrives</span></h2>
 <p>Growing a company or opening a school stretches every leader thin. Elevate began as the team keeping the lights on for our own family of companies, so we know what it takes: books that close on time, payroll that is right, and reporting a board or a bank can trust.</p>
 <p>We bring the same team every month, and we measure every process by the hours it hands back to you.</p>
@@ -326,7 +326,7 @@ def home():
 <li><b>Business Intelligence:</b> one live financial dashboard for every entity, cut to each role.</li></ul>
 <p style="color:var(--ink2)">Working with us, you gain a steady rhythm, expert hands and the confidence to focus on what matters most: <b style="color:var(--ink)">your people and your mission.</b></p>
 <a class="link" href="{R}/services">Explore our services {ARROW}</a></div>
-<div class="split__img" style="background-image:url({IMG}/team-desk-vicki.jpg);background-position:center 30%"></div></section>
+<div class="split__img" style="background-image:url({IMG}/team-hall.jpg)"></div></section>
 <section class="sec"><div class="shell two"><div class="copy"><h2 class="h2">We Help Schools <span class="hl">Run Smoothly</span></h2>
 <p>From the first planning year to every audit after, Elevate runs the money side of charter and private schools: accounting, payroll, grants and board reporting, so school leaders can stay in classrooms.</p>
 <div><a class="btn btn--teal" href="{R}/education">See our education services</a></div></div>
@@ -427,7 +427,7 @@ def contact():
 <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 <div><button class="btn btn--teal" type="submit">Submit</button></div><p id="formStatus" class="msg" role="status" aria-live="polite"></p></form>
 <div id="formDone" class="done" hidden><span class="eyebrow">Thank you</span><h2 class="h2">Your inquiry <span class="hl">is in.</span></h2><p>Your message has been sent to the Elevate team. We will be in touch within one business day.</p></div></div>
-<div class="split__img" style="min-height:560px;background-image:url({IMG}/team-joseph.jpg);background-position:60% center"></div></div></section>
+<div class="split__img" style="min-height:560px;background-image:url({IMG}/team-overhead.jpg);background-position:center"></div></div></section>
 <section class="sec grey"><div class="shell"><h2 class="h2" style="margin-bottom:28px">Frequently Asked <span class="hl">Questions</span></h2><div class="faq">{faq}</div></div></section>{js}'''
     return page("contact", "Contact", "contact", body)
 
