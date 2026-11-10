@@ -1,6 +1,7 @@
 """Elevate site, redesign preview on the True North K-12 template layout.
 
-    python3 redesign.py   -> pages in redesign/ (served at /redesign/, not linked, noindex)
+    python3 redesign.py   -> the live site pages at the repo root (Joseph's pick, 2026-11-10)
+                             plus redirects in redesign/ so old preview links still land
 
 Layout follows the TNK12 site (Infomedia template): a transparent header over a
 moving hero that turns solid on scroll, a logo marquee, paired photos beside copy,
@@ -14,8 +15,8 @@ from pathlib import Path
 import build as B
 
 HERE = Path(__file__).parent
-OUT = HERE / "redesign"
-R = "/redesign"
+OUT = HERE
+R = ""
 IMG = "/img"
 EMAIL = B.EMAIL
 
@@ -243,7 +244,7 @@ def footer():
     return f'''<section class="cta"><div class="shell"><h2>Ready to give your leaders their time back?</h2><a class="btn btn--white" href="{R}/contact">Let's Connect</a></div></section>
 <footer class="foot"><div class="shell"><div>{logo()}<p style="margin-top:18px;max-width:340px">Back-office, education and business intelligence services for growing companies and schools across the Southeast.</p></div>
 <div><h4>Contact</h4><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{R}/contact">Book a discovery call</a><a href="{R}/portal">Client Portal</a></div>
-<div><h4>Explore</h4><a href="{R}/about">About</a><a href="{R}/services">Business services</a><a href="{R}/education">Education services</a><a href="/demo/#/choose">View our dashboard demo</a>
+<div><h4>Explore</h4><a href="{R}/about">About</a><a href="{R}/services">Business services</a><a href="{R}/education">Education services</a><a target="_blank" rel="noopener" href="/demo/#/choose">View our dashboard demo</a>
 <small>&copy; 2026 Elevate Managed Services</small></div></div></footer>'''
 
 JS = """<script>
@@ -258,10 +259,17 @@ bs.forEach(function(b,i){b.addEventListener('click',function(){bs.forEach(functi
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">')
 
+DESC = {"index": "Elevate Managed Services runs finance, HR, marketing and live business intelligence for growing companies and charter schools.",
+        "about": "The Elevate team and how we work: three years serving True North Companies, two with TNK-12 and Belton Preparatory Academy since 2026.",
+        "services": "Accounting and fractional CFO, HR, marketing and a live BI dashboard for growing companies.",
+        "education": "Back office for charter schools: accounting, payroll, state compliance, enrollment marketing and opening readiness.",
+        "contact": "Book a discovery call with Elevate Managed Services.",
+        "portal": "Client sign in for the Elevate BI dashboard, and a live demo for every industry."}
+
 def page(name, title, cur, body, home=False):
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-            f'<meta name="robots" content="noindex,nofollow"><title>{title} · Elevate (redesign preview)</title><link rel="icon" href="/favicon.svg" type="image/svg+xml">{FONTS}<style>{CSS}</style></head>'
-            f'<body class="{"home" if home else ""}">{header(cur)}<main>{body}</main>{footer()}<span class="pv">REDESIGN PREVIEW</span>{JS}</body></html>')
+            f'<title>{"Elevate Managed Services" if home else title + " · Elevate Managed Services"}</title><meta name="description" content="{DESC.get(name, DESC["index"])}"><link rel="icon" href="/favicon.svg" type="image/svg+xml">{FONTS}<style>{CSS}</style></head>'
+            f'<body class="{"home" if home else ""}">{header(cur)}<main>{body}</main>{footer()}{JS}</body></html>')
 
 def phero(eyebrow, h1, p=""):
     return f'<section class="phero"><div class="shell"><span class="eyebrow">{eyebrow}</span><h1 class="h1">{h1}</h1>{f"<p>{p}</p>" if p else ""}</div></section>'
@@ -304,7 +312,7 @@ def home():
     body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
-<div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
+<div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" target="_blank" rel="noopener" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
 {marquee()}
 <section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/bo-review.jpg)"></div><div style="background-image:url({IMG}/bo-papers.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Running an Organization That <span class="hl">Thrives</span></h2>
@@ -363,7 +371,7 @@ def services():
 <section class="sec grey" id="services" style="padding-top:0"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2"><span class="hl">Six Services,</span> One Team Accountable</h2><p style="color:var(--ink2)">Pick a service to see what it covers.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Why This Approach <span class="hl">Works</span></h2><p style="color:var(--ink2)">Success is not more tools. It is the right work done on time by people who know your business.</p></div><div class="why">{w}</div></div></section>
 <section class="split" id="bi"><div class="split__img" style="background-image:url({IMG}/dashboard.png);background-size:contain;background-repeat:no-repeat;background-color:#e9f1f3"></div>
-<div class="split__copy on-teal" style="background:var(--teal);color:#fff"><span class="eyebrow">Business Intelligence</span><h2 class="h2">Every Number, <span class="hl">Live</span></h2><p style="color:#d8ebee">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click.</p><div style="display:flex;gap:14px;flex-wrap:wrap"><a class="btn btn--white" href="/demo/#/choose">View our dashboard demo</a><a class="btn btn--white" href="{R}/portal">Client sign in</a></div></div></section>
+<div class="split__copy on-teal" style="background:var(--teal);color:#fff"><span class="eyebrow">Business Intelligence</span><h2 class="h2">Every Number, <span class="hl">Live</span></h2><p style="color:#d8ebee">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click.</p><div style="display:flex;gap:14px;flex-wrap:wrap"><a class="btn btn--white" target="_blank" rel="noopener" href="/demo/#/choose">View our dashboard demo</a><a class="btn btn--white" href="{R}/portal">Client sign in</a></div></div></section>
 <section class="sec" id="systems"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Works With <span class="hl">Your Systems</span></h2><p style="color:var(--ink2)">We work in the software you already use, so nothing has to be rebuilt.</p></div><div class="why">{sysb}</div></div></section>
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
@@ -426,7 +434,7 @@ def portal():
     src = B.portal()
     i = src.find("getElementById('signinForm')")
     js = src[src.rfind("<script", 0, i):src.find("</script>", i) + 9] if i > 0 else ""
-    chips = "".join(f'<a class="chip" href="/demo/#/demo/{i}">{n}</a>' for n, i in B.INDUSTRY_DEMOS)
+    chips = "".join(f'<a class="chip" target="_blank" rel="noopener" href="/demo/#/demo/{i}">{n}</a>' for n, i in B.INDUSTRY_DEMOS)
     sees = [("Your Numbers, Live", "Read straight from your accounting system, so the dashboard always matches the books."),
             ("Cut to Each Role", "Leaders see the answer, finance sees the detail, and each person sees only what their role allows."),
             ("Every Entity in One Place", "Switch between companies or campuses, or see them all together."),
@@ -441,7 +449,7 @@ def portal():
 <p class="small-note">Trouble signing in? Email <a href="mailto:{EMAIL}">{EMAIL}</a>.</p></div>
 <div class="demo-box on-teal"><span class="eyebrow">Not a client yet?</span><h2 class="h2">See It With a <span class="hl">Sample Company</span></h2>
 <p>Pick an industry and explore a live dashboard built the way that business is measured. Anything you change stays in your own browser.</p>
-<div class="chips">{chips}</div><div><a class="btn btn--white" href="/demo/#/choose">View our dashboard demo &rarr;</a></div></div></div></section>
+<div class="chips">{chips}</div><div><a class="btn btn--white" target="_blank" rel="noopener" href="/demo/#/choose">View our dashboard demo &rarr;</a></div></div></div></section>
 <section class="split"><div class="split__img" style="background-image:url({IMG}/dashboard-retail.png);background-size:contain;background-repeat:no-repeat;background-color:var(--tint)"></div>
 <div class="split__copy grey"><span class="eyebrow">What you will see</span><h2 class="h2">One Dashboard for <span class="hl">Every Entity</span></h2>
 <p style="color:var(--ink2)">Every client gets a dashboard set up for their companies or campuses, their roles and the way their business is measured.</p></div></section>
@@ -454,6 +462,15 @@ def build():
                      ("education.html", education()), ("contact.html", contact()), ("portal.html", portal())]:
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
+    # the preview lived at /redesign/; keep those links working
+    old = HERE / "redesign"
+    old.mkdir(exist_ok=True)
+    for fn in ("index", "about", "services", "education", "contact", "portal"):
+        to = "/" if fn == "index" else "/" + fn
+        (old / f"{fn}.html").write_text(f'<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url={to}">'
+                                        f'<link rel="canonical" href="{to}"><title>Elevate Managed Services</title><a href="{to}">Elevate Managed Services</a>')
+    (HERE / "signin.html").write_text('<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=/portal">'
+                                      '<link rel="canonical" href="/portal"><title>Client Portal</title><a href="/portal">Client Portal</a>')
 
 if __name__ == "__main__":
     build()

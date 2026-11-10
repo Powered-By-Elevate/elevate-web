@@ -2,6 +2,8 @@
 
 Static site for **Elevate Managed Services** (elevatemanagedservices.com).
 
+Build: `python3 redesign.py` writes the live pages at the root (the TNK12-template layout, live since 2026-11-10). `build.py` holds the shared copy, team and clients, and `python3 build.py --old` builds the previous layout into `preview/`. Demo links open in a new tab.
+
 `index.html` is fully self-contained: inline CSS, inline SVG logo, and a data-URI
 favicon. The only external request is Google Fonts (Bodoni Moda, IBM Plex Sans,
 IBM Plex Mono). No raster images anywhere, so nothing blurs at any density.
