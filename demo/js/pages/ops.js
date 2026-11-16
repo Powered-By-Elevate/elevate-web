@@ -2,11 +2,46 @@
    and the unit detail all come from the industry profile, which is what makes
    the same build read as a construction dashboard and a fleet dashboard. */
 
-import * as F from '../fmt.js?v=9843449aa8';
-import * as C from '../chart.js?v=9843449aa8';
-import * as U from '../ui.js?v=9843449aa8';
-import { esc, icon } from '../icons.js?v=9843449aa8';
-import { motif } from '../scenes.js?v=9843449aa8';
+import * as F from '../fmt.js?v=3265746c78';
+import * as C from '../chart.js?v=3265746c78';
+import * as U from '../ui.js?v=3265746c78';
+import { esc, icon } from '../icons.js?v=3265746c78';
+import { motif } from '../scenes.js?v=3265746c78';
+import * as M from '../calm.js?v=3265746c78';
+
+/* ⚖️ The calm pass (Matt, 2026-11-16: *"i would never use the current financial
+   dashboard we have because it is so overwhelming that it doesnt feel useful"*,
+   then *"this goes for the entire thing"*, *"make the design feel detailed,
+   intentional, and intricate as well"* and *"something that you really fail at
+   is making buttons and clickable objects look clickable. also at separation
+   of data and objects"*). Every Operations page is drawn from the calm
+   primitives in calm.js: one head that answers the page's question, at most
+   four figures, numbered sections with their source, facts on a tray beside
+   the picture, detail in folds. `panel` keeps the old call shape so each page's
+   arithmetic is untouched, and lays half-width sections side by side on a
+   twelve-column grid so a pair of short pictures still shares a row. */
+const unesc = t => String(t || '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+  .replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+let STAMP = '', SRC = '';
+function panel({ title, note = '', right = '', body = '', foot = '', col = 12, aside = '', fold = '', foldLabel, src }) {
+  return M.section({ title: unesc(title), note, right, src: src === undefined ? SRC : src, aside, fold, foldLabel,
+    body: body + (foot ? `<p class="cm-ops-foot">${foot}</p>` : '') })
+    .replace('<section class="cm-card"', `<section class="cm-card cm-ops-c${col >= 12 ? 12 : col}"`);
+}
+function pageHead({ eyebrow, title, answer = '' }) {
+  return M.head({ eyebrow, title: unesc(title), line: answer, stamp: STAMP });
+}
+function fresh() { return ''; }
+function calm(fn) {
+  return ctx => {
+    STAMP = `As of ${esc(F.monthName(ctx.q.view.month, true))}`;
+    SRC = (ctx.s.connectedIn('systems')[0] || {}).name || '';
+    return M.page(fn(ctx));
+  };
+}
+function pageName(ind, id, fallback) {
+  return (ind.pages && ind.pages[id] && ind.pages[id].name) || fallback;
+}
 
 const mN = m => F.monthName(m);
 
@@ -155,33 +190,9 @@ export function home(ctx) {
   const money = port.size && /contract|arr|sales|linehaul|funding/.test(port.size);
   const fmtSize = v => money ? F.money(v) : F.num(v);
 
-  return U.verdict({
-    title: opsVerdict(ctx, rows, flagged),
-    body: `${esc(ind.tagline)}. ${rows.length} ${esc(ind.unit.many)} in scope.`,
-    figs: headFigs(q, s, ind),
-  }) + `<div class="grid">` +
-    U.panel({
-      col: 12, title: `The whole book`, ico: 'grid',
-      note: `Every ${esc(ind.unit.one)} on one scale. The bar is ${esc((port.barLabel || 'progress').toLowerCase())}${
-        port.mark ? `, the tick is ${esc((port.markLabel || '').toLowerCase())}` : ''}${
-        port.barNote ? `, ${esc(port.barNote)}` : ''}.`,
-      body: `<div class="book-top">
-          <div class="book-bar" role="img" aria-label="${Math.round(done / (total || 1) * 100)}% of the book">
-            ${book.map(x => `<span style="flex:${Math.max(x.size, total * 0.004)} 0 0"
-              class="${x.flag ? 'bad' : ''}" title="${esc(x.r.short || x.r.name)}: ${fmtSize(x.size)}">
-              <i style="width:${Math.round((x.fill || 0) * 100)}%"></i></span>`).join('')}
-          </div>
-          <div class="book-key">
-            <span><b>${fmtSize(total)}</b>${esc(port.sizeLabel || 'total')} across ${book.length} ${esc(ind.unit.many)}</span>
-            <span><i class="k-done"></i>${Math.round(done / (total || 1) * 100)}% ${esc((port.barLabel || '').toLowerCase())}</span>
-            ${flagged.length ? `<span><i class="k-bad"></i>${flagged.length} flagged</span>` : ''}
-          </div>
-        </div>`,
-    }) +
-    U.panel({
-      col: 12, title: `Every ${esc(ind.unit.one)}`, ico: 'list', pad: false,
-      note: `Largest first. Click any row to open its arithmetic.`,
-      body: `<div class="pf">${book.map((x, n) => {
+  /* The finished and in-band units wait in a fold, so the face of the page is
+     the work still moving. Numbering stays the book's own, largest first. */
+  const pfRow = (x) => { const n = book.indexOf(x);
         const pct = Math.round((x.bar || 0) * 100);
         const fill = Math.round((x.fill || 0) * 100);
         return `<div class="pf-row" data-click="unit:${esc(x.r.id)}" tabindex="0">
@@ -204,12 +215,44 @@ export function home(ctx) {
           ? `<span class="tag ${x.flag.kind}"><i class="dot"></i>${esc(x.flag.tag)}</span>`
           : `<span class="tag good"><i class="dot"></i>In band</span>`}</span>
         </div>`;
-      }).join('')}</div>`,
-      foot: `${flagged.length} of ${rows.length} ${esc(ind.unit.many)} are outside their band.
-        The rules are on <b>What needs you</b>.`,
+};
+  const isSettled = x => (x.bar || 0) >= 0.999 && !x.flag;
+  const live = book.filter(x => !isSettled(x)), settled = book.filter(isSettled);
+  const pctDone = Math.round(done / (total || 1) * 100);
+  return pageHead({ eyebrow: 'Operations', title: pageName(ind, 'ops-home', 'Operations'),
+    answer: flagged.length
+      ? `<b>${esc(flagged[0].name)}</b> is the one to look at: ${endSentence(flagged[0].why)}${flagged.length > 1 ? ` ${flagged.length - 1} other${flagged.length > 2 ? 's are' : ' is'} flagged.` : ''}`
+      : `Every ${esc(ind.unit.one)} is inside its band.` }) +
+    M.figures(headFigs(q, s, ind)) + `<div class="cm-ops-grid">` +
+    panel({
+      col: 12, title: `The whole book`,
+      note: `Every ${esc(ind.unit.one)} on one scale. The bar is ${esc((port.barLabel || 'progress').toLowerCase())}${
+        port.mark ? `, the tick is ${esc((port.markLabel || '').toLowerCase())}` : ''}${
+        port.barNote ? `, ${esc(port.barNote)}` : ''}.`,
+      aside: M.facts([
+        { k: port.sizeLabel ? port.sizeLabel.charAt(0).toUpperCase() + port.sizeLabel.slice(1) : 'Total', v: fmtSize(total), hl: true,
+          sub: `across ${book.length} ${esc(ind.unit.many)}` },
+        { k: (port.barLabel || 'Progress'), v: `${pctDone}%`, sub: 'weighted by size' },
+        { k: 'Flagged', v: String(flagged.length), sub: flagged.length ? 'outside their band' : 'everything in band' },
+      ]),
+      body: `<div class="book-top">
+          <div class="book-bar" role="img" aria-label="${Math.round(done / (total || 1) * 100)}% of the book">
+            ${book.map(x => `<span style="flex:${Math.max(x.size, total * 0.004)} 0 0"
+              class="${x.flag ? 'bad' : ''}" title="${esc(x.r.short || x.r.name)}: ${fmtSize(x.size)}">
+              <i style="width:${Math.round((x.fill || 0) * 100)}%"></i></span>`).join('')}
+          </div>
+        </div>`,
     }) +
-    U.panel({
-      col: 12, title: 'The whole picture, month by month', ico: 'clock',
+    panel({
+      col: 12, title: `Every ${esc(ind.unit.one)}`,
+      note: `Largest first. Open any row for its arithmetic.`,
+      body: `<div class="pf">${live.map(pfRow).join('')}</div>`,
+      fold: settled.length ? `<div class="pf">${settled.map(pfRow).join('')}</div>` : '',
+      foldLabel: `${settled.length} finished and in band`,
+      right: flagged.length ? U.btn(`${flagged.length} need you`, { act: 'go', arg: 'ops-watch', sm: true, ico: 'arrow' }) : '',
+    }) +
+    panel({
+      col: 12, title: 'The whole picture, month by month', note: `${esc(headlineName(ind))}, eighteen months.`,
       body: (() => {
         const vs = q.months.slice(-18).map(m => headlineTotal(q, ind, m));
         const fin = vs.filter(Number.isFinite);
@@ -279,7 +322,7 @@ function headlineFmt(ind, v) {
 }
 
 /* Rules, per industry. A flag names the figure that tripped it. */
-function flags(q, rows, ind) {
+export function flags(q, rows, ind) {
   const out = [];
   const month = q.view.month;
   for (const r of rows) {
@@ -401,43 +444,36 @@ export function units(ctx) {
   const overTotal = over.reduce((a, x) => a + x.pos, 0);
   const underTotal = Math.abs(under.reduce((a, x) => a + x.pos, 0));
 
-  const head = U.pageHead({
+  const head = pageHead({
     eyebrow: 'Operations',
     title: name,
-    motif: motif(ind.id, s.data.brand.palette),
     answer: hasWip
-      ? `<b>${F.money(sum('contract'))}</b> under contract, of which
-         <b>${F.money(sum('earned'))}</b> has been earned and
-         <b>${F.money(sum('billed'))}</b> billed.
-         ${overTotal >= underTotal
-        ? `On balance the company is <b>${F.money(overTotal - underTotal)}</b> ahead of its work,
-             which is revenue it still has to deliver.`
-        : `On balance <b>${F.money(underTotal - overTotal)}</b> of work is done and not yet
-             invoiced, which is cash already spent and not asked for.`}`
-      : `Every ${esc(ind.unit.one)} in scope as of <b>${esc(F.monthName(q.view.month, true))}</b>.
-         A position is read as of the month, not summed over the window. Click any row for the
-         arithmetic behind it.`,
-  }) + U.fresh(q, s);
+      ? (overTotal >= underTotal
+        ? 'On balance the company is billed ahead of its work, which is revenue it still has to deliver.'
+        : 'On balance more work is done than billed, which is cash already spent and not yet asked for.')
+      : `Every ${esc(ind.unit.one)} in scope, read as of the month. Open any row for its arithmetic.`,
+  }) + fresh();
 
   /* ⛔ THE STRIP GOES BEFORE THE GRID, NEVER INSIDE IT. A `.strip` laid out as
      a grid child becomes a single column and overlaps the panel beside it.
      This is the second time I have made exactly this mistake, so the gate now
      refuses it rather than relying on me remembering. */
-  const wipStrip = !hasWip ? '' :
-    U.strip([
-      { label: 'Under contract', value: F.money(sum('contract')), note: `${rows.length} ${esc(ind.unit.many)}` },
-      { label: 'Earned to date', value: F.money(sum('earned')), note: `${F.pct(sum('contract') ? sum('earned') / sum('contract') * 100 : 0, 0)} of contract` },
-      { label: 'Billed to date', value: F.money(sum('billed')), note: 'invoiced' },
-      { label: 'Billed ahead', value: F.money(overTotal), note: `${over.length} ${over.length === 1 ? esc(ind.unit.one) : esc(ind.unit.many)}` },
-      { label: 'Not yet billed', value: F.money(underTotal), note: `${under.length} ${under.length === 1 ? esc(ind.unit.one) : esc(ind.unit.many)}` },
-    ]);
+  const wipStrip = !hasWip ? '' : M.figures([
+    { label: 'Under contract', value: F.money(sum('contract')), sub: `<b>${rows.length}</b> ${esc(ind.unit.many)}` },
+    { label: 'Earned to date', value: F.money(sum('earned')), sub: `<b>${F.pct(sum('contract') ? sum('earned') / sum('contract') * 100 : 0, 0)}</b> of contract` },
+    { label: 'Billed to date', value: F.money(sum('billed')), sub: 'invoiced to the client' },
+    { label: 'Margin on work done', value: F.money(sum('earned') - sum('cost')), sub: `after <b>${F.money(sum('cost'))}</b> of cost to date` },
+  ]);
 
   const wipPanels = !hasWip ? '' :
-    U.panel({
-      col: 12, ico: 'scale', title: 'The two sides of the billing position',
-      note: `Left is work done and not invoiced, which is cash already spent. Right is billing
-        ahead of the work, which is revenue still to deliver. A company wants both small, and
-        a single net figure would hide either one.`,
+    panel({
+      col: 12, title: 'The two sides of the billing position',
+      note: `Left is work done and not invoiced. Right is billing ahead of the work. A company wants both small.`,
+      aside: M.facts([
+        { k: 'Work done, not billed', v: F.money(underTotal), sub: `${under.length} ${under.length === 1 ? esc(ind.unit.one) : esc(ind.unit.many)}, cash already spent` },
+        { k: 'Billed ahead of the work', v: F.money(overTotal), sub: `${over.length} ${over.length === 1 ? esc(ind.unit.one) : esc(ind.unit.many)}, revenue still to deliver` },
+        { k: overTotal >= underTotal ? 'Net, ahead of the work' : 'Net, not yet billed', v: F.money(Math.abs(overTotal - underTotal)), hl: true },
+      ]),
       body: C.twoSided({
         /* ⛔ EVERY contract, not the largest eight. Cutting the chart at eight
            made its right-hand column total $394K while the strip above it and
@@ -457,20 +493,15 @@ export function units(ctx) {
         },
         fmt: v => F.money(v),
       }),
-      foot: `${F.money(underTotal)} on the left against ${F.money(overTotal)} on the right.
-        Both sides are read as of ${esc(F.monthName(q.view.month, true))}, because a position is
-        a position and does not sum over a window.`,
     });
 
-  return head + wipStrip + `<div class="grid">` + wipPanels +
-    U.panel({
-      col: 12, pad: false,
+  return head + wipStrip + `<div class="cm-ops-grid">` + wipPanels +
+    panel({
+      col: 12,
       right: U.btn('Download', { act: 'export-units', ico: 'download', sm: true }),
       title: hasWip ? 'The schedule' : `${rows.length} ${esc(ind.unit.many)}`,
-      note: `Owner shown as the ${esc((ind.unit.owner || 'manager').toLowerCase())} responsible.
-        Click any row for the arithmetic behind it.`,
+      note: `Owner is the ${esc((ind.unit.owner || 'manager').toLowerCase())} responsible. Open any row for its arithmetic.`,
       body: U.table({
-        maxHeight: '620px',
         cols: [{ name: ind.unit.key, w: '22%' }, { name: 'Status' }, ...cols],
         rows: rows.map(r => ({
           click: `unit:${r.id}`,
@@ -484,12 +515,7 @@ export function units(ctx) {
       /* ⛔ A schedule without totals is a list. The figure a reader checks
          first is the bottom line, and making them add a column themselves is
          the difference between a report and a data dump. */
-      foot: hasWip
-        ? `<b>${F.money(sum('contract'))}</b> under contract · <b>${F.money(sum('earned'))}</b>
-           earned · <b>${F.money(sum('billed'))}</b> billed · <b>${F.money(sum('cost'))}</b> cost
-           to date, leaving <b>${F.money(sum('earned') - sum('cost'))}</b> of margin on the work
-           done so far.`
-        : `${rows.length} ${esc(ind.unit.many)} as of ${esc(F.monthName(q.view.month, true))}.`,
+      foot: hasWip ? '' : `${rows.length} ${esc(ind.unit.many)} as of ${esc(F.monthName(q.view.month, true))}.`,
     }) + `</div>`;
 }
 
@@ -509,9 +535,9 @@ export function second(ctx) {
     construction: backlog, education: enrolment, retail: category, restaurants: primeCost,
     industrial: throughput, logistics: lanes, tech: retention, healthcare: revenueCycle,
   }[ind.id] || backlog;
-  return U.pageHead({ eyebrow: 'Operations', title: name, answer: fn.answer(ctx),
+  return pageHead({ eyebrow: 'Operations', title: name, answer: fn.answer(ctx),
     motif: motif(ind.id, s.data.brand.palette) })
-    + U.fresh(q, s) + `<div class="grid">${fn(ctx)}</div>`;
+    + fresh() + `<div class="cm-ops-grid">${fn(ctx)}</div>`;
 }
 
 /* --- construction: backlog and schedule */
@@ -562,7 +588,7 @@ function backlog(ctx) {
   const ticks = [];
   for (let i = Math.ceil(lo / 6) * 6; i <= hi; i += 6) ticks.push(i);
 
-  return U.panel({
+  return panel({
     col: 12, ico: 'clock', title: 'When each contract runs',
     note: `Every open contract on one calendar. The pale bar is its schedule, the solid part is the work earned, and the line is ${esc(F.monthName(q.view.month, true))}.`,
     /* ⛔ The axis, the today line and the bars must all measure from the SAME
@@ -601,13 +627,13 @@ function backlog(ctx) {
       : 'None is in that position today.'}
       </p></div>
     </div>`,
-  }) + U.panel({
+  }) + panel({
     col: 7, ico: 'bars', title: 'What is left to earn',
     note: 'The open contracts by the work still to come, largest first.',
     body: C.hbars({ rows: remaining, fmt: v => F.money(v) }),
     foot: `At the last three months’ pace of ${F.money(burn)} a month, the backlog is
       ${F.num(burn ? total / burn : 0, 1)} months of work.`,
-  }) + U.panel({
+  }) + panel({
     col: 5, ico: 'target', title: 'Completion spread',
     note: 'Where the open contracts sit. A cluster near the end means revenue falls off unless the pipeline lands.',
     body: C.bars({
@@ -618,7 +644,7 @@ function backlog(ctx) {
     }),
     foot: `${rows.filter(r => (r.f.pct || 0) >= 80).length} of ${rows.length} open contracts are
       past 80% complete.`,
-  }) + U.panel({
+  }) + panel({
     col: 12, ico: 'scale', title: 'Billing against work done',
     note: 'To the right is billed ahead of the work, to the left is work done and not yet invoiced.',
     body: C.hbars({
@@ -650,7 +676,7 @@ function enrolment(ctx) {
   const { q } = ctx;
   const rows = q.unitRows();
   const months = q.months.slice(-24);
-  return U.panel({
+  return panel({
     col: 7, title: 'Enrolment by campus',
     note: 'Enrolled against seats. The gap is funding not collected.',
     body: C.hbars({
@@ -662,7 +688,7 @@ function enrolment(ctx) {
       fmt: v => F.num(v), max: Math.max(...rows.map(r => r.f.capacity || 0)),
     }),
     foot: 'The tick on each bar is that campus’s capacity.',
-  }) + U.panel({
+  }) + panel({
     col: 5, title: 'Cost against funding, per student',
     note: 'A campus below the line costs more to run than it is funded for.',
     body: C.scatter({
@@ -670,7 +696,7 @@ function enrolment(ctx) {
       xFmt: v => F.exact(v), yFmt: v => F.exact(v),
       xLabel: 'Funding per student', yLabel: 'Cost per student', height: 300,
     }),
-  }) + U.panel({
+  }) + panel({
     col: 12, title: 'Enrolment over two years',
     body: C.line({
       series: [
@@ -703,7 +729,7 @@ function revenueCycle(ctx) {
   const { q } = ctx;
   const rows = q.unitRows();
   const months = q.months.slice(-18);
-  return U.panel({
+  return panel({
     col: 12, title: 'Collection rate by clinic',
     note: `Collected against what payers allowed. The mark is the ${COLLECT_TARGET}% a well run practice holds.`,
     body: C.hbars({
@@ -716,7 +742,7 @@ function revenueCycle(ctx) {
     }),
     foot: 'A point of collection on this month’s revenue is worth '
       + `<b>${F.money(q.factAt('rev') / 100)}</b> to the group.`,
-  }) + U.panel({
+  }) + panel({
     col: 5, title: 'No-shows against days in A/R',
     note: 'A clinic high on both is losing money at the front desk and again in billing.',
     body: C.scatter({
@@ -724,7 +750,7 @@ function revenueCycle(ctx) {
       xFmt: v => F.pct(v, 1), yFmt: v => F.num(v, 0),
       xLabel: 'No-show rate', yLabel: 'Days in A/R', height: 300,
     }),
-  }) + U.panel({
+  }) + panel({
     col: 7, title: 'Visits, month by month',
     body: C.line({
       series: [{ name: 'Visits', values: months.map(m => q.factSum('visits', [m])) }],
@@ -748,7 +774,7 @@ function category(ctx) {
   const { q } = ctx;
   const rows = q.unitRows();
   const months = q.months.slice(-18);
-  return U.panel({
+  return panel({
     col: 6, title: 'Sales per square foot',
     note: 'Annualised, selling area only, so a flagship and a mall unit can be compared.',
     body: C.hbars({
@@ -757,7 +783,7 @@ function category(ctx) {
       })).sort((a, b) => b.value - a.value),
       fmt: v => F.exact(v),
     }),
-  }) + U.panel({
+  }) + panel({
     col: 6, title: 'Traffic against conversion',
     note: 'A store with traffic and no conversion is a different problem from one with neither.',
     body: C.scatter({
@@ -765,7 +791,7 @@ function category(ctx) {
       xFmt: v => F.num(v), yFmt: v => F.pct(v, 0),
       xLabel: 'Visitors', yLabel: 'Conversion', height: 290,
     }),
-  }) + U.panel({
+  }) + panel({
     col: 12, title: 'Sales and margin together',
     body: C.line({
       series: [
@@ -803,7 +829,7 @@ function primeCost(ctx) {
   };
   /* the ranked list runs a row per location, so it takes the full width and
      the two charts share the row under it rather than one stranded beside it */
-  return U.panel({
+  return panel({
     col: 12, title: 'Prime cost by location',
     note: `Food plus labor as a share of sales. The mark is the ${PRIME_TARGET}% most groups hold themselves to.`,
     body: C.hbars({
@@ -816,7 +842,7 @@ function primeCost(ctx) {
     }),
     foot: `Each point over ${PRIME_TARGET}% on this month’s sales is worth
       <b>${F.money(q.factAt('sales') / 100)}</b> to the group.`,
-  }) + U.panel({
+  }) + panel({
     col: 5, title: 'Average check against table turns',
     note: 'Dining rooms only. A room that turns slowly has to sell a bigger check to earn the same seat.',
     body: C.scatter({
@@ -824,7 +850,7 @@ function primeCost(ctx) {
       xFmt: v => F.num(v, 1), yFmt: v => F.exact(v, 2),
       xLabel: 'Turns a day', yLabel: 'Average check', height: 300,
     }),
-  }) + U.panel({
+  }) + panel({
     col: 7, title: 'Prime cost, month by month',
     body: C.line({
       series: [{ name: 'Prime cost', values: months.map(groupPrime) }],
@@ -850,7 +876,7 @@ function throughput(ctx) {
   const rows = q.unitRows();
   const months = q.months.slice(-18);
   const lost = rows.reduce((a, r) => a + ((r.f.hoursAvl || 0) - (r.f.hoursRun || 0)), 0);
-  return U.panel({
+  return panel({
     col: 7, title: 'OEE by line',
     note: 'Availability times quality. The mark is the plant target of 80%.',
     body: C.hbars({
@@ -861,7 +887,7 @@ function throughput(ctx) {
       fmt: v => F.pct(v, 1), max: 100,
     }),
     foot: `<b>${F.num(lost, 0)}</b> machine hours were available and not run this month.`,
-  }) + U.panel({
+  }) + panel({
     col: 5, title: 'Scrap against cost per unit',
     note: 'Scrap and unit cost move together, which is the argument for fixing quality before buying capacity.',
     body: C.scatter({
@@ -871,7 +897,7 @@ function throughput(ctx) {
       xFmt: v => F.pct(v, 1), yFmt: v => F.exact(v, 2),
       xLabel: 'Scrap rate', yLabel: 'Cost per unit', height: 300,
     }),
-  }) + U.panel({
+  }) + panel({
     col: 12, title: 'Units produced and scrapped',
     body: C.stack({
       rows: months.map(m => ({ good: q.factSum('produced', [m]) - q.factSum('scrap', [m]), scrap: q.factSum('scrap', [m]) })),
@@ -909,11 +935,11 @@ function lanes(ctx) {
     color: (v.miles ? v.rev / v.miles : 0) < 2.1 ? 'var(--warn)' : 'var(--accent)',
   })).sort((a, b) => b.value - a.value);
 
-  return U.panel({
+  return panel({
     col: 6, title: 'Revenue per mile by lane',
     note: `A lane under ${F.exact(2.1, 2)} is not paying for itself once overhead is counted.`,
     body: C.hbars({ rows: laneRows, fmt: v => F.exact(v, 2) }),
-  }) + U.panel({
+  }) + panel({
     col: 6, title: 'Deadhead against revenue per mile',
     note: 'Empty miles are the cheapest margin available: they cost fuel and earn nothing.',
     body: C.scatter({
@@ -923,7 +949,7 @@ function lanes(ctx) {
       xFmt: v => F.pct(v, 0), yFmt: v => F.exact(v, 2),
       xLabel: 'Deadhead', yLabel: 'Revenue per mile', height: 290,
     }),
-  }) + U.panel({
+  }) + panel({
     col: 12, title: 'Trucks ranked by what they keep',
     note: 'Revenue per mile less fuel and maintenance per mile. Before overhead.',
     body: C.hbars({
@@ -951,7 +977,7 @@ function retention(ctx) {
   const { q } = ctx;
   const months = q.months.slice(-24);
   const rows = q.unitRows();
-  return U.panel({
+  return panel({
     col: 7, title: 'ARR movement',
     note: 'New against churned, month by month. The net is what the business actually gained.',
     body: C.stack({
@@ -959,7 +985,7 @@ function retention(ctx) {
       keys: ['newArr', 'churn'], names: { newArr: 'New ARR', churn: 'Churned ARR' },
       labels: months.map(mN), fmt: v => F.money(v), height: 250,
     }),
-  }) + U.panel({
+  }) + panel({
     col: 5, title: 'By product',
     note: 'ARR and the churn running against it.',
     body: C.hbars({
@@ -969,7 +995,7 @@ function retention(ctx) {
       })).sort((a, b) => b.value - a.value),
       fmt: v => F.money(v),
     }),
-  }) + U.panel({
+  }) + panel({
     col: 12, title: 'ARR and seats',
     body: C.line({
       series: [
@@ -995,7 +1021,7 @@ export function detail(ctx) {
   const ind = s.industry;
   const u = q.units.find(x => x.id === arg) || q.allUnits.find(x => x.id === arg);
   if (!u) {
-    return U.pageHead({ eyebrow: 'Operations', title: 'Not in scope' }) +
+    return pageHead({ eyebrow: 'Operations', title: 'Not in scope' }) +
       `<section class="panel"><div class="empty">That ${esc(ind.unit.one)} is not in this
       view level\u2019s scope. A unit-scoped role sees only its own.</div></section>`;
   }
@@ -1017,45 +1043,28 @@ export function detail(ctx) {
   const backTo = ctx.detailFrom || 'ops-home';
   const backName = (s.pages().find(p => p.id === backTo) || {}).name || 'Operations';
 
-  return `<nav class="backbar">
-      <button class="btn sm ghost" data-act="go" data-arg="${esc(backTo)}">
+  return `<nav class="cm-ops-back">
+      <button class="cm-ops-backbtn" data-act="go" data-arg="${esc(backTo)}">
         ${icon('arrow', 14)}Back to ${esc(backName)}</button>
-      <span class="bb-where">${esc(ind.unit.one)} · ${esc(entity)}</span>
-    </nav>` + U.verdict({
-    title: verdictText.title,
-    body: verdictText.body,
-    figs: measures.slice(0, 4).map(m => ({
-      label: m.name, value: fmtOf(m)(f[m.id]),
-    })),
-  }) + `<div class="grid">` +
+    </nav>` + M.head({ eyebrow: `${ind.unit.one} · ${entity}`, title: u.name,
+      line: verdictText.title, stamp: `${esc(u.status)} · ${esc(u.owner)}<br>${STAMP}` }) +
+    M.figures(measures.slice(0, 4).map(m => ({ label: m.name, value: fmtOf(m)(f[m.id]) }))) +
+    `<div class="cm-ops-grid">` +
 
     /* the chain that produces this unit's result, as a bridge */
-    U.panel({
-      col: 7, title: 'How it arrives',
-      note: 'The arithmetic behind the headline, in the order it happens.',
+    panel({
+      col: 12, title: 'How it arrives',
+      note: verdictText.body || 'The arithmetic behind the headline, in the order it happens.',
       body: C.waterfall({ items: chain(u, f, ind), fmt: v => F.money(v), height: 260 }),
       foot: chainNote(u, f, ind),
+      aside: `<span class="cm-eyebrow">Since ${esc(F.monthName(prevMonth, true))}</span>` + M.facts(measures.map(m => {
+        const now = f[m.id], was = prev[m.id];
+        const pc = Number.isFinite(now) && Number.isFinite(was) && was !== 0 ? (now - was) / Math.abs(was) * 100 : NaN;
+        return { k: m.name, sub: `was ${fmtOf(m)(was)}`, v: F.deltaTag(pc) };
+      })),
     }) +
 
-    U.panel({
-      col: 5, title: 'This month against last', pad: false,
-      note: `${esc(F.monthName(month, true))} beside ${esc(F.monthName(prevMonth, true))}.`,
-      body: U.table({
-        cols: [{ name: 'Measure' }, { name: 'Now', n: true }, { name: 'Last', n: true },
-        { name: 'Change', n: true }],
-        rows: measures.map(m => {
-          const now = f[m.id], was = prev[m.id];
-          const pc = Number.isFinite(now) && Number.isFinite(was) && was !== 0
-            ? (now - was) / Math.abs(was) * 100 : NaN;
-          return {
-            cells: [esc(m.name), fmtOf(m)(now), fmtOf(m)(was), F.deltaTag(pc)],
-          };
-        }),
-      }),
-      foot: `${esc(u.status)} \u00b7 ${esc(u.owner)} \u00b7 booked to ${esc(entity)}`,
-    }) +
-
-    U.panel({
+    panel({
       col: 12, title: 'Eighteen months',
       note: 'Every measure this ' + esc(ind.unit.one) + ' carries, on its own scale.',
       body: C.multiples({
@@ -1068,26 +1077,20 @@ export function detail(ctx) {
       }),
     }) +
 
-    U.panel({
+    panel({
       col: 12, title: `Against the other ${esc(ind.unit.many)}`,
-      note: 'This one is marked. A single figure means little without the spread it sits in.',
-      body: C.hbars({
-        rows: q.unitRows().map(r => ({
-          name: r.short || r.name,
-          value: r.f.rev || 0,
-          color: r.id === u.id ? 'var(--accent)' : 'var(--rule)',
-          note: r.id === u.id ? 'this one' : '',
-        })).sort((a, b) => b.value - a.value),
-        fmt: v => F.money(v),
-      }),
-      foot: (() => {
-        const rows = q.unitRows().map(r => r.f.rev || 0).sort((a, b) => b - a);
-        const mine = f.rev || 0;
-        const rank = rows.indexOf(mine) + 1;
-        return rank > 0
-          ? `Ranked ${rank} of ${rows.length} by revenue this month.`
-          : 'Not carrying revenue this month.';
+      note: (() => {
+        const all = q.unitRows().map(r => r.f.rev || 0).sort((a, b) => b - a);
+        const rank = all.indexOf(f.rev || 0) + 1;
+        return (f.rev || 0) > 0 && rank > 0 ? `Ranked <b>${rank} of ${all.length}</b> by revenue this month.` : 'Not carrying revenue this month.';
       })(),
+      body: '',
+      fold: C.hbars({
+        rows: q.unitRows().map(r => ({ name: r.short || r.name, value: r.f.rev || 0,
+          color: r.id === u.id ? 'var(--accent)' : 'var(--rule)', note: r.id === u.id ? 'this one' : '' }))
+          .sort((a, b) => b.value - a.value),
+        fmt: v => F.money(v) }),
+      foldLabel: `See every ${ind.unit.one} beside it`,
     }) + `</div>`;
 }
 
@@ -1317,7 +1320,7 @@ export function grid(ctx) {
   })).filter(r => r.values.some(Number.isFinite));
 
   if (!rows.length) {
-    return U.pageHead({ eyebrow: 'Operations', title: name, motif: motif(ind.id, s.data.brand.palette) }) +
+    return pageHead({ eyebrow: 'Operations', title: name, motif: motif(ind.id, s.data.brand.palette) }) +
       `<section class="panel"><div class="empty">No ${esc(ind.unit.many)} in scope carry
        ${esc(g.name.toLowerCase())} over these months.</div></section>`;
   }
@@ -1341,7 +1344,7 @@ export function grid(ctx) {
   const lastCol = rows.map(r => r.values[r.values.length - 1]).filter(Number.isFinite);
   const spread = Math.max(...lastCol) - Math.min(...lastCol);
 
-  return U.pageHead({
+  return pageHead({
     eyebrow: 'Operations',
     title: name,
     motif: motif(ind.id, s.data.brand.palette),
@@ -1353,8 +1356,8 @@ export function grid(ctx) {
       : `Nothing went backwards: the least movement was <b>${esc(worst.name)}</b>,
          which sat at <b>${esc(g.fmt(worst.to))}</b> throughout.`}
       The spread across ${esc(ind.unit.many)} this month is <b>${esc(g.fmt(spread))}</b>.`,
-  }) + U.fresh(q, s) + `<div class="grid">` +
-    U.panel({
+  }) + fresh() + `<div class="cm-ops-grid">` +
+    panel({
       col: 12, title: `${esc(g.name)} by ${esc(ind.unit.one)}, month by month`,
       note: 'One cell per reading, darker for higher. Click a row to open it.',
       body: C.heatmap({
@@ -1366,7 +1369,7 @@ export function grid(ctx) {
         ${F.num(rows.length * months.length)} readings. Color says more or less, not better
         or worse: these measures carry no target.`,
     }) +
-    U.panel({
+    panel({
       col: 7, title: `Each ${esc(ind.unit.one)} on one scale`,
       note: 'Every chart shares an axis, so the shapes can be compared rather than only read.',
       body: C.multiples({
@@ -1374,7 +1377,7 @@ export function grid(ctx) {
         fmt: g.fmt, labels: months.map(mN),
       }),
     }) +
-    U.panel({
+    panel({
       col: 5, title: 'What moved', pad: false,
       note: `From ${esc(F.monthName(months[0], true))} to ${esc(F.monthName(months[months.length - 1], true))}.`,
       body: U.table({
@@ -1438,9 +1441,7 @@ export function watch(ctx) {
   const ind = s.industry;
   const rows = q.unitRows();
   const found = flags(q, rows, ind);
-  const bad = found.filter(f => f.kind === 'bad');
   const warn = found.filter(f => f.kind === 'warn');
-  const atStakeAll = found.reduce((a, f) => a + Math.max(0, f.value || 0), 0);
 
   /* Worst first, and worst means money where a rule carries money, severity
      where it does not. */
@@ -1478,42 +1479,30 @@ export function watch(ctx) {
       </span>
     </div>`;
 
-  return U.verdict({
-    title: found.length
-      ? `<b>${found.length}</b> of <b>${rows.length}</b> ${esc(ind.unit.many)} are outside their
-         band, <b>${bad.length}</b> of them badly${atStakeAll > 0
-        ? `, with <b>${F.money(atStakeAll)}</b> at stake` : ''}.`
-      : `Every one of <b>${rows.length}</b> ${esc(ind.unit.many)} is inside its band this month.`,
-    body: first
-      ? `Start with <b>${esc(first.name)}</b>: ${endSentence(first.why)} Everything below it is
-         ordered by what it costs, and each line can be opened, snoozed or marked done.`
-      : found.length
-        ? `Every line is marked done or snoozed. The rules are listed below, so a cleared list
-           can be read rather than taken on trust.`
-        : `The rules are listed below, so an empty list can be read rather than taken on trust.`,
-    figs: [
-      { label: 'Open', value: String(open.length) },
-      { label: 'Serious', value: String(open.filter(f => f.kind === 'bad').length) },
-      { label: 'At stake', value: (() => { const v = open.reduce((a, f) => a + Math.max(0, f.value || 0), 0); return v > 0 ? F.money(v) : '—'; })() },
-      { label: 'Clear', value: String(rows.length - found.length) },
-    ],
-  }) + `<div class="grid">` +
-    U.panel({
-      col: 8, ico: 'check', title: 'Your list', pad: false,
-      note: found.length
-        ? `Worst first, by what it costs. Snoozed and finished lines drop to the bottom and
-           stop counting against you.`
-        : '',
+  const openValue = open.reduce((a, f) => a + Math.max(0, f.value || 0), 0);
+  return pageHead({ eyebrow: 'Operations', title: pageName(ind, 'ops-watch', 'What needs you'),
+    answer: first
+      ? `Start with <b>${esc(first.name)}</b>: ${endSentence(first.why)}`
+      : found.length ? 'Every line is marked done or snoozed.'
+        : `Every ${esc(ind.unit.one)} is inside its band this month.` }) +
+    M.figures([
+      { label: 'Open', value: String(open.length), sub: 'lines not done or snoozed' },
+      { label: 'Serious', value: String(open.filter(f => f.kind === 'bad').length), sub: 'marked red' },
+      { label: 'At stake', value: openValue > 0 ? F.money(openValue) : 'None', sub: 'on the open lines' },
+      { label: 'Clear', value: String(rows.length - found.length), sub: `${esc(ind.unit.many)} in band` },
+    ]) + `<div class="cm-ops-grid">` +
+    panel({
+      col: 8, title: 'Your list',
+      note: found.length ? 'Worst first, by what it costs. Done and snoozed lines drop to the bottom.' : '',
       body: found.length
         ? `<div class="tasks">${queue.map((f, i) => taskRow(f, i + 1)).join('')}</div>`
         : `<div class="empty">Nothing is outside its band. The month is clean.</div>`,
       foot: found.length
-        ? `Done and Snooze are remembered in this browser only, which is what a page with no
-           server can honestly offer. A deployment writes them where everyone sees the same list.`
+        ? 'Done and Snooze are remembered in this browser. A deployment keeps one list for everyone.'
         : '',
     }) +
-    U.panel({
-      col: 4, ico: 'people', title: 'Who it lands on',
+    panel({
+      col: 4, title: 'Who it lands on',
       note: 'Each person and what their open lines are worth.',
       body: owners.length
         ? `<div class="rows">${owners.map(o => `
@@ -1524,13 +1513,12 @@ export function watch(ctx) {
           </div>`).join('')}</div>`
         : `<div class="empty">Nobody has anything open.</div>`,
     }) +
-    U.panel({
-      col: 12, ico: 'list', title: 'The rules',
-      note: `What this ${esc(ind.unit.one)} list is tested against. A company sets its own
-        thresholds at deployment; these are the build’s, and the page says so rather than
-        implying they are yours.`,
-      body: `<ol class="steps">${(RULES[ind.id] || []).map(r =>
-        `<li>${esc(r)}</li>`).join('')}</ol>`,
+    panel({
+      col: 12, title: 'The rules',
+      note: `What each ${esc(ind.unit.one)} is tested against. These are the build\u2019s thresholds, and a company sets its own at deployment.`,
+      body: '',
+      fold: `<ol class="steps">${(RULES[ind.id] || []).map(r => `<li>${esc(r)}</li>`).join('')}</ol>`,
+      foldLabel: 'Show the rules',
     }) + `</div>`;
 }
 
@@ -1583,7 +1571,7 @@ export function people(ctx) {
   })).sort((a, b) => b.rev - a.rev);
 
   if (!owners.length) {
-    return U.pageHead({ eyebrow: 'Operations', title: 'Who carries what' }) +
+    return pageHead({ eyebrow: 'Operations', title: 'Who carries what' }) +
       `<section class="panel"><div class="empty">Nothing is assigned in this scope.</div></section>`;
   }
 
@@ -1599,7 +1587,7 @@ export function people(ctx) {
   const behind = owners.filter(o => o.position < 0);
   const unit1 = esc(ind.unit.one), unitN = esc(ind.unit.many);
 
-  return U.pageHead({
+  return pageHead({
     eyebrow: 'Operations',
     title: name,
     motif: motif(ind.id, s.data.brand.palette),
@@ -1610,9 +1598,9 @@ export function people(ctx) {
       ${weakest && weakest.gm < houseGm - 2
       ? `<b>${esc(weakest.name)}</b> is the one to look at: <b>${F.pct(weakest.gm)}</b> margin against the house's <b>${F.pct(houseGm)}</b>.`
       : `Margin is within two points of the house across everyone.`}`,
-  }) + U.fresh(q, s) + `<div class="grid">` +
+  }) + fresh() + `<div class="cm-ops-grid">` +
 
-    U.panel({
+    panel({
       col: 12, ico: 'people', title: 'The scorecard', pad: false,
       note: `Each person's work over the window, then where their ${unitN} stand today. Billing position is what has been billed less what the work has earned, so a negative figure is work done and not yet invoiced.`,
       body: `<div class="sc">${owners.map(o => {
@@ -1642,7 +1630,7 @@ export function people(ctx) {
       foot: `${behind.length} of ${owners.length} are billing behind the work they have done, for ${F.money(Math.abs(behind.reduce((a, o) => a + o.position, 0)))} in all.`,
     }) +
 
-    U.panel({
+    panel({
       col: 7, ico: 'bars', title: 'Load against margin',
       note: 'Across is what they carry, up is the margin it earns. The line is the house margin, so anyone below it is carrying work that pays less than the company average.',
       body: C.scatter({
@@ -1654,7 +1642,7 @@ export function people(ctx) {
       foot: `House margin is ${F.pct(houseGm)}.`,
     }) +
 
-    U.panel({
+    panel({
       col: 5, ico: 'list', title: 'Load',
       note: 'The mark is the average, so a bar short of it is carrying less than its share.',
       body: C.hbars({
@@ -1706,7 +1694,7 @@ export function season(ctx) {
   const trough = MON[shape.indexOf(Math.min(...shape.filter(Number.isFinite)))];
   const swing = Math.max(...shape.filter(Number.isFinite)) - Math.min(...shape.filter(Number.isFinite));
 
-  return U.pageHead({
+  return pageHead({
     eyebrow: 'Operations',
     title: 'Pattern by month',
     motif: motif(ind.id, s.data.brand.palette),
@@ -1715,8 +1703,8 @@ export function season(ctx) {
       ${swing > 30
         ? 'A business this seasonal cannot be read month on month: the calendar moves it more than the work does.'
         : 'The calendar moves this business less than the work does, so a month-on-month read is fair.'}`,
-  }) + U.fresh(q, s) + `<div class="grid">` +
-    U.panel({
+  }) + fresh() + `<div class="cm-ops-grid">` +
+    panel({
       col: 12, title: `${esc(label)} by calendar month`,
       note: 'One row per year. Reading down a column shows the same month in different years.',
       body: C.heatmap({
@@ -1724,7 +1712,7 @@ export function season(ctx) {
       }),
       foot: `A gap is a month the extract does not reach, not a month of nothing.`,
     }) +
-    U.panel({
+    panel({
       col: 12, title: 'The shape of the year',
       note: 'Each calendar month against the average month, averaged over every year in the extract.',
       body: C.bars({
@@ -1765,6 +1753,6 @@ export function season(ctx) {
 }
 
 export const opsPages = {
-  'ops-home': home, 'ops-watch': watch, 'ops-units': units, 'ops-grid': grid,
-  'ops-season': season, 'ops-people': people, 'ops-second': second, 'ops-detail': detail,
+  'ops-home': calm(home), 'ops-watch': calm(watch), 'ops-units': calm(units), 'ops-grid': calm(grid),
+  'ops-season': calm(season), 'ops-people': calm(people), 'ops-second': calm(second), 'ops-detail': calm(detail),
 };
