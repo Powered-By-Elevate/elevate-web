@@ -6,7 +6,7 @@
    persists to this browser and exports as a JSON file, which is the file a
    real deployment is built from. That is the CMS: one object, one apply(). */
 
-import { brandVars } from './color.js?v=9843449aa8';
+import { brandVars } from './color.js?v=a2aa80d688';
 
 const KEY = 'hub.settings.v2';
 
@@ -233,11 +233,26 @@ export class Settings {
     const pages = this.pages();
     const mods = this.cfg.product.modules;
     const seen = new Map();
+    /* A page with `tabOf` is a tab on its parent (Matt chose "fewer pages",
+       2026-11-16): it keeps its address and its permissions, and the menu
+       lists only the parent while the parent is offered. */
+    const ids = new Set(pages.map(p => p.id));
     for (const p of pages) {
+      if (p.tabOf && ids.has(p.tabOf)) continue;
       if (!seen.has(p.module)) seen.set(p.module, { id: p.module, ...mods[p.module], pages: [] });
       seen.get(p.module).pages.push(p);
     }
     return [...seen.values()].sort((a, b) => a.order - b.order);
+  }
+
+  /* The tabs a page shows: its parent first, then the pages that are tabs on
+     it, each only where this level is offered it. One page alone has none. */
+  tabsOf(id) {
+    const pages = this.pages(), me = pages.find(p => p.id === id);
+    if (!me) return [];
+    const head = me.tabOf && pages.find(p => p.id === me.tabOf) ? me.tabOf : id;
+    const group = pages.filter(p => p.id === head || p.tabOf === head);
+    return group.length > 1 ? group : [];
   }
 
   /* the file a real deployment is built from */

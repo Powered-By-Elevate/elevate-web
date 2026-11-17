@@ -2,11 +2,13 @@
    lands on, so it carries the industry switch, the figures that matter today,
    and a door to each place. */
 
-import * as F from '../fmt.js?v=9843449aa8';
-import * as C from '../chart.js?v=9843449aa8';
-import * as U from '../ui.js?v=9843449aa8';
-import { esc, icon, brandMark, connTile, INDUSTRY_ICON } from '../icons.js?v=9843449aa8';
-import { scene, motif } from '../scenes.js?v=9843449aa8';
+import * as F from '../fmt.js?v=a2aa80d688';
+import * as C from '../chart.js?v=a2aa80d688';
+import * as U from '../ui.js?v=a2aa80d688';
+import * as M from '../calm.js?v=a2aa80d688';
+import { flags } from './ops.js?v=a2aa80d688';
+import { esc, icon, brandMark, connTile, INDUSTRY_ICON } from '../icons.js?v=a2aa80d688';
+import { scene, motif } from '../scenes.js?v=a2aa80d688';
 
 /* ⛔ TRUNCATE WHERE THE INFORMATION IS NOT.
 
@@ -50,124 +52,71 @@ function filedName(raw) {
 }
 
 export function start(ctx) {
-  const { q, s, cfg } = ctx;
-  const ind = s.industry;
-  const role = s.role;
-  const w = q.window();
-  const rev = q.revenue(w);
-  const kpis = ctx.strip || ind.kpis.slice(0, 5);
-  const last12 = q.months.slice(-12);
-  const revSeries = q.unitScoped
-    ? last12.map(m => q.factSum('rev', [m]))
-    : q.series('rev', last12);
-  const prior = q.months.length >= 24
-    ? q.revenue(q.months.slice(-24, -12)) : null;
-  const budRaw = q.unitScoped ? null : q.series('rev', last12, q.scopeEntities, 'bud');
-  const budSeries = budRaw && budRaw.some(v => Number.isFinite(v) && v) ? budRaw : null;
-  const bRev = budSeries ? budSeries.reduce((a, v) => a + (v || 0), 0) : null;
+  /* ⚖️ Matt, 2026-11-16, on the whole Hub: *"i would never use the current
+     financial dashboard we have because it is so overwhelming that it doesnt
+     feel useful"*, *"this goes for the entire thing"*. Start here repeated the
+     dashboard (a revenue banner, a figure strip, a twelve-month chart) and then
+     added a door grid, an industry strip and a wall of connectors. It is now a
+     briefing: how the company stands in four figures, what needs a look today,
+     and where to go next. The revenue chart lives on the dashboard. */
+  const { q, s } = ctx;
+  const ind = s.industry, role = s.role;
+  const kpis = (ctx.strip || ind.kpis).slice(0, 4);
+  const month = esc(F.monthName(q.view.month, true));
+  const status = !q.closed ? 'No month is signed off yet'
+    : q.view.month > q.closed ? `Signed off through ${esc(F.monthName(q.closed, true))}` : 'Signed off';
 
-  /* one door per module first, then fill from what is left: a map of the whole
-     product reads better here than the first six pages of one module */
-  const offered = s.pages().filter(p => !['home', 'settings'].includes(p.id));
-  const firstOfModule = [];
-  const seenModule = new Set();
-  for (const p of offered) {
-    if (seenModule.has(p.module)) continue;
-    seenModule.add(p.module);
-    firstOfModule.push(p);
-  }
-  const doors = firstOfModule
-    .concat(offered.filter(p => !firstOfModule.includes(p)))
-    .slice(0, 6)
-    .map(p => `<button class="door" data-act="go" data-arg="${esc(p.id)}">
-      <span class="door-ico">${icon(p.icon || 'grid', 17)}</span>
-      <b>${esc(p.name)}</b>
-      <span>${esc(doorWhy(p.id, ind))}</span>
-    </button>`).join('');
+  const head = M.head({
+    mark: s.data.brand.logo ? `<img src="${esc(s.data.brand.logo)}" alt="">` : brandMark(s.data.brand, 46),
+    eyebrow: `${greeting()} · ${role.name} view`,
+    title: s.data.company,
+    line: esc((ind.headline.says || '{v}').replace('{v}', U.display(q.kpi(ind.headline.metric)))) + '.',
+    stamp: `Books as of ${month}<br>${status}`,
+  });
+
+  const figs = `<div class="cm-strip">` + U.strip(kpis.map((id, slot) => {
+    const k = q.kpi(id);
+    const options = q.kpiIds().map(oid => {
+      const ok = q.kpi(oid);
+      return { id: oid, label: ok.label, value: U.display(ok), note: ok.note || '' };
+    });
+    return { id, slot, options, label: k.label, value: U.display(k), note: k.note ? esc(k.note) : '', spark: k.spark };
+  })) + `</div>`;
+
+  const found = flags(q, q.unitRows(), ind).sort((x, y) => (y.value || 0) - (x.value || 0));
+  const row = f => `<div class="cm-task" data-click="unit:${esc(f.id)}" tabindex="0">
+      ${U.statusTag(f.tag, f.kind)}
+      <span class="t"><b>${esc(f.name)}</b><span>${f.why}</span></span>
+      <span class="o">${esc(f.owner || 'Unassigned')}</span><span class="go">${icon('arrow', 14)}</span></div>`;
+  const needs = M.section({
+    title: 'What needs a look',
+    note: found.length
+      ? `${F.countWord(found.length, true)} of your ${esc(ind.unit.many)}, the most at stake first.`
+      : `Nothing on your ${esc(ind.unit.many)} needs attention this month.`,
+    right: found.length ? U.btn('See them all', { act: 'go', arg: 'ops-watch', sm: true, ico: 'arrow' }) : '',
+    body: found.length ? `<div class="cm-tasks">${found.slice(0, 5).map(row).join('')}</div>` : '',
+    fold: found.length > 5 ? `<div class="cm-tasks">${found.slice(5).map(row).join('')}</div>` : '',
+    foldLabel: `${found.length - 5} more`,
+  });
+
+  const offered = s.pages().filter(p => !['home', 'settings', 'ops-detail', 'hr-person'].includes(p.id));
+  const seen = new Set();
+  const firsts = offered.filter(p => !seen.has(p.module) && seen.add(p.module));
+  const go = M.section({
+    title: 'Where to go',
+    note: `What the ${esc(role.name.toLowerCase())} level can open.`,
+    body: `<div class="cm-doors" style="--n:${Math.min(firsts.length, 5)}">${firsts.map(p => `<button class="cm-door" data-act="go" data-arg="${esc(p.id)}">
+        <span class="i">${icon(p.icon || 'grid', 16)}</span><b>${esc(p.name)}</b><span>${esc(doorWhy(p.id, ind))}</span></button>`).join('')}</div>`,
+  });
 
   const connected = Object.keys(s.data.connectors).map(id => s.connector(id)).filter(Boolean);
-  const live = connected.filter(c => c.status === 'live');
+  const reads = connected.length
+    ? `<p class="cm-reads">Every figure is read from ${connected.slice(0, 4).map(c => `<b>${esc(c.name)}</b>`).join(', ')}${connected.length > 4 ? ` and ${connected.length - 4} more` : ''}. <button class="cm-link" data-act="go" data-arg="settings">See every connection</button></p>`
+    : '';
 
-  return `<section class="cover">
-    <div class="cover-scene">${scene(ind.id, s.data.brand.palette, { height: 340 })}</div>
-    <div class="cover-greet">${esc(greeting())} · ${esc(role.name)} view</div>
-    <h1>${esc((ind.headline.says || '{v}')
-      .replace('{v}', U.display(q.kpi(ind.headline.metric))))}</h1>
-    <p>${esc(s.data.company)} at ${esc(F.monthName(q.view.month, true))}.
-      ${!q.closed ? 'No month is signed off yet, so every figure is tentative.' : q.view.month > q.closed
-        ? 'This month is still tentative: the ledger is closed through ' + esc(F.monthName(q.closed, true)) + '.'
-        : 'Signed off through ' + esc(F.monthName(q.closed, true)) + '.'}</p>
-  </section>` +
-    U.strip(kpis.map((id, slot) => {
-      const k = q.kpi(id);
-      /* every option carries its own live value, so hovering one shows the
-         real figure in place rather than a name to be checked afterwards */
-      const options = q.kpiIds().map(oid => {
-        const ok = q.kpi(oid);
-        return { id: oid, label: ok.label, value: U.display(ok), note: ok.note || '' };
-      });
-      return {
-        id, slot, options,
-        label: k.label, value: U.display(k), note: k.note ? esc(k.note) : '',
-      };
-    })) +
-    `<div class="grid">` +
-    U.panel({
-      col: 12, title: 'Where to go', ico: 'compass',
-      note: `${F.countWord(Math.min(6, offered.length), true)} places, cut to what the ${esc(role.name.toLowerCase())} level may see.`,
-      body: `<div class="doors">${doors}</div>`,
-    }) +
-    /* ⚖️ Matt, 2026-11-02: *"the revenue section looks out of place like a
-       small puzzle piece in a big empty space"*. It was a 230px chart in a
-       seven-column panel with nothing beside it, so the panel was mostly air.
-       The year now takes the FULL width and says something: the shape of the
-       twelve months, the plan over it where one is loaded, and a sentence that
-       reads the result. A chart with a verdict fills a panel. A chart alone
-       never does, at any width. */
-    U.panel({
-      col: 12, title: `The year so far`, ico: 'clock',
-      note: `${F.monthsWord(last12.length, true)} to ${esc(F.monthName(q.view.month, true))}.${
-        budSeries ? ' The bars are what happened, the line is the plan.' : ''}`,
-      right: U.btn('Open the dashboard', { act: 'go', arg: 'fin-dash', sm: true, ico: 'arrow' }),
-      body: `<p class="lede">${yearRead(q, rev, prior, bRev, last12.length)}</p>` + C.bars({
-        values: revSeries, labels: last12.map(m => F.monthName(m)),
-        overlay: budSeries, overlayName: 'Plan', fmt: v => F.money(v), height: 300,
-      }),
-    }) +
-    (s.tenant ? '' : U.panel({
-      col: 7, title: 'The same build, another industry', ico: 'grid',
-      note: 'One codebase. The company, the brand, the unit of work, the measures and the connected software all move together.',
-      right: U.btn(`See all ${F.countWord(cfg.industries.industries.length)}`, { act: 'chooser', kind: 'primary', ico: 'grid', sm: true }),
-      body: `<div class="ind-strip">${cfg.industries.industries.map(i => {
-        const b = cfg.brands.brands[i.brand];
-        const on = i.id === s.data.industry;
-        return `<button class="ind-chip" data-act="industry" data-arg="${esc(i.id)}"
-          aria-current="${on}" style="--c:${b.palette.accent}">
-          <span class="m">${brandMark(b, 22)}</span>
-          <span><b>${esc(i.short)}</b><span>${esc(i.unit.collection)}</span></span>
-        </button>`;
-      }).join('')}</div>`,
-    })) +
-    /* ⚖️ Same day: *"i appreciate the connections section but ... it looks like
-       clutter"*. It was a list of rows with a status tag each, which reads as
-       a monitoring panel and is not one: this is the catalog of what the
-       build is wired to, and the detail belongs in Settings. Here it is a wall
-       of marks and one sentence, which says the same thing in a glance. */
-    U.panel({
-      col: s.tenant ? 12 : 5, title: 'Live connections', ico: 'link',
-      note: 'What every figure on every page is read from.',
-      right: U.btn('Manage', { act: 'go', arg: 'settings', sm: true }),
-      body: connected.length ? `<div class="conn-wall">${connected.map(c => `
-        <span class="conn-chip ${c.status}" title="${esc(c.name)} · ${esc(statusWord(c.status))}">
-          ${connTile(c)}<b>${esc(c.name)}</b></span>`).join('')}</div>`
-        : `<div class="empty">Nothing is connected yet. Settings &rsaquo; Integrations.</div>`,
-      foot: s.tenant ? (connected.length ? 'Read only. Nothing here writes back to these systems.' : '')
-        : connected.length
-        ? `<b>${live.length} of ${connected.length}</b> have been run against a real company’s
-           data in production. The rest are adapters built or cataloged, and the page says
-           which on every figure that depends on one.`
-        : '',
-    }) + `</div>`;
+  /* the demo's way back to the other industries (the probe reopens the chooser from here) */
+  const other = s.tenant ? '' : `<p class="cm-reads">The same build runs ${F.countWord(ctx.cfg.industries.industries.length)} industries. <button class="cm-link" data-act="chooser">${icon('grid', 13)} See the other industries</button></p>`;
+  return M.page(head + figs + needs + go + reads + other);
 }
 
 /* One sentence that reads the twelve months, so the band has a verdict rather
@@ -198,7 +147,6 @@ function doorWhy(id, ind) {
     'ops-home': `How the ${ind.unit.many} are running`,
     'ops-units': `Every ${ind.unit.one}, with the money on it`,
     'ops-second': 'The operational read behind the revenue',
-    'people-home': 'Headcount, labor cost and turnover',
     'pipeline-home': 'What is coming, and what it is worth weighted',
     'docs-home': 'The paperwork behind the figures',
   }[id] || '';
@@ -211,146 +159,6 @@ function greeting() {
 
 export function statusWord(status) {
   return { live: 'Live', built: 'Adapter built', cataloged: 'Available' }[status] || status;
-}
-
-/* ------------------------------------------------------------------ people */
-
-export function people(ctx) {
-  const { q, s } = ctx;
-  const p = q.data.people;
-  const w = q.window();
-  const rev = q.sum('rev', w) || 1;
-  /* Payroll has TWO homes. The overhead line is only the people who are not
-     doing the work; the rest sits inside cost of revenue. Reading the overhead
-     line alone put "payroll at 4.6% of revenue" on a page whose own department
-     table added to five times that, which is exactly the kind of disagreement
-     the Core BI formula audit existed to find. So the headline is the ALL-IN
-     figure and the page says where each half lives. */
-  const pay = p.payroll || { allIn: 0, direct: 0, overhead: 0 };
-  const annualRev = q.sum('rev', q.months.slice(-12)) || 1;
-  const hist = p.history || [];
-  const roles = p.roles || [];
-  const last12 = hist.slice(-12);
-
-  /* Whether the team is growing with the work or ahead of it. Both sides are
-     put on the same base so the comparison is a real one: revenue per head
-     this year against revenue per head a year ago. */
-  const yearly = rev * (12 / Math.max(1, w.length));
-  const perHead = yearly / p.headcount;
-  const headAgo = (hist[hist.length - 13] || hist[0] || {}).head || p.headcount;
-  const headDelta = p.headcount - headAgo;
-  const joined12 = last12.reduce((a, m) => a + m.joined, 0);
-  const left12 = last12.reduce((a, m) => a + m.left, 0);
-
-  /* What the empty seats cost. A count of open roles says nothing about
-     whether that is a week of recruiting or a structural hole, so the page
-     carries the money and the oldest vacancy beside the count. */
-  const vacancyCost = roles.reduce((a, r) => a + r.cost * (r.days / 365), 0);
-  const oldest = roles[0];
-
-  const worstDept = p.departments.slice()
-    .sort((a, b) => b.turnover - a.turnover)[0];
-
-  return U.pageHead({
-    eyebrow: 'People',
-    title: 'People & labor',
-    answer: `<b>${F.num(p.headcount)}</b> people carry <b>${F.money(yearly)}</b> of annual revenue,
-      or <b>${F.money(perHead)}</b> each. All-in payroll runs at
-      <b>${F.pct(pay.allIn / annualRev * 100)}</b> of revenue, turnover at <b>${F.pct(p.turnover)}</b>,
-      and <b>${F.num(roles.length)}</b> seats are open
-      ${oldest ? `with the oldest unfilled for <b>${oldest.days}</b> days` : ''}.`,
-  }) + U.fresh(q, s) + U.strip([
-    {
-      label: 'Headcount', value: F.num(p.headcount),
-      note: headDelta === 0 ? 'flat on last year'
-        : `<span class="delta ${headDelta > 0 ? 'up' : 'down'}">${headDelta > 0 ? '↑' : '↓'} ${Math.abs(headDelta)}</span> on last year`,
-    },
-    { label: 'Revenue per head', value: F.money(perHead), note: 'a year' },
-    {
-      label: 'Payroll of revenue', value: F.pct(pay.allIn / annualRev * 100),
-      note: `${F.money(pay.allIn)} all in`,
-    },
-    { label: 'Turnover', value: F.pct(p.turnover), note: `${left12} left, ${joined12} joined` },
-    { label: 'Open seats', value: F.num(roles.length), note: `${F.money(vacancyCost)} of vacancy so far` },
-  ]) + `<div class="grid">` +
-
-    U.panel({
-      col: 7, ico: 'people', title: 'The team, month by month',
-      note: 'Headcount as the line. The bars below the axis are people who joined and people who left, so a flat line made of churn does not read as stability.',
-      body: C.line({
-        series: [{ name: 'Headcount', values: last12.map(m => m.head) }],
-        labels: last12.map(m => F.monthName(m.m)), fmt: v => F.num(v), height: 170,
-        rule: (() => { const v = last12.map(m => m.head).filter(Number.isFinite);
-          return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; })(),
-        ruleLabel: 'average over the year',
-        /* ⛔ Headcount is never zero-based. A team of 148 that lost 11 people
-           drew as a perfectly flat line against an axis starting at zero, which
-           is the opposite of what happened. A count that never approaches zero
-           is read by its change, so the axis starts where the data does. */
-        zeroBase: false, legend: false,
-      }) + C.churn({
-        labels: last12.map(m => F.monthName(m.m, true)),
-        up: last12.map(m => m.joined), down: last12.map(m => m.left),
-      }) + `<div class="ch-key"><span><i class="sw in"></i>Joined</span><span><i class="sw out"></i>Left</span></div>`,
-      foot: `${joined12} joined and ${left12} left over the twelve months, on a team of ${F.num(p.headcount)}.`,
-    }) +
-
-    U.panel({
-      col: 5, ico: 'bars', title: 'Where the cost sits',
-      note: 'Each department by its all-in annual payroll. The five add to the whole company payroll, direct and overhead together.',
-      pad: false,
-      body: U.table({
-        cols: [{ name: 'Department' }, { name: 'People', n: true },
-        { name: 'Payroll', n: true }, { name: 'Turnover', n: true }],
-        rows: p.departments.slice().sort((a, b) => b.cost - a.cost).map(d => ({
-          cells: [`<b>${esc(d.name)}</b>${d.open ? `<div class="sub">${d.open} open</div>` : ''}`,
-            F.num(d.fte), F.money(d.cost),
-          `<span class="${d.turnover > p.turnover * 1.25 ? 'delta down' : d.turnover < p.turnover * 0.75 ? 'delta up' : 'delta flat'}">${F.pct(d.turnover, 0)}</span>`],
-        })),
-      }),
-      foot: `${F.money(pay.allIn)} all in, of which ${F.money(pay.direct)} sits inside the cost
-        of the work and ${F.money(pay.overhead)} in overhead.${worstDept
-        ? ` ${esc(worstDept.name)} is losing people fastest, at ${F.pct(worstDept.turnover, 0)} a year.` : ''}`,
-    }) +
-
-    U.panel({
-      col: 12, ico: 'pulse', title: 'Payroll against revenue',
-      note: 'The question is whether labor grows with the work or ahead of it. Both lines are money on the same scale, so the gap between them is the margin the work leaves.',
-      body: C.line({
-        series: [
-          { name: 'Revenue', values: q.series('rev', q.months.slice(-18)) },
-          { name: 'Payroll & benefits', values: q.series('labor', q.months.slice(-18)) },
-        ],
-        labels: q.months.slice(-18).map(m => F.monthName(m)), fmt: v => F.money(v), height: 230,
-      }),
-    }) +
-
-    /* ⛔ A TABLE, FULL WIDTH, not a stacked list in a narrow column.
-
-       Every open seat carries four facts (the role, its department, how long
-       it has been open and what the vacancy has cost), and four facts stacked
-       in a five-column panel ran to 859px beside a 302px chart on five of six
-       industries. Four facts across is a table, which is both shorter and the
-       shape a reader can sort by eye. */
-    U.panel({
-      col: 12, ico: 'clock', title: 'Open seats', pad: false,
-      note: 'What is unfilled, how long it has been unfilled, and what the empty seat has cost so far.',
-      body: roles.length ? U.table({
-        cols: [{ name: 'Role', w: '34%' }, { name: 'Department' },
-        { name: 'Open', n: true }, { name: 'Cost a year', n: true }, { name: 'Cost so far', n: true }],
-        rows: roles.map(r => ({
-          cells: [`<b>${esc(r.title)}</b>`, esc(r.dept),
-          `<span class="agepill ${r.days > 120 ? 'bad' : r.days > 60 ? 'warn' : ''}">${r.days}d</span>`,
-          F.money(r.cost), F.money(r.cost * (r.days / 365))],
-        })),
-      }) : `<div class="empty">Nothing open.</div>`,
-      foot: `${F.money(vacancyCost)} of salary unspent, which is work not being done rather than money saved.`,
-    }) +
-
-    U.panel({
-      col: 12, title: 'Where this comes from',
-      body: connectorNote(s, 'people', 'Headcount and labor cost arrive from the payroll system. Until one is connected these figures are the sample set.'),
-    }) + `</div>`;
 }
 
 /* --------------------------------------------------- marketing & enrollment */
@@ -392,75 +200,57 @@ function marketing(ctx) {
   const steps = [['Inquiries', inq], ['Tours', tours], ['Applications', apps], ['Enrolled', enr]];
   const widest = Math.max(1, inq);
 
-  return U.pageHead({
-    eyebrow: 'Marketing & enrollment',
-    title: 'Marketing & enrollment',
-    answer: `<b>${F.num(enr)}</b> new students enrolled in the last twelve months from
-      <b>${F.num(inq)}</b> family inquiries, at <b>${F.money(cpe)}</b> of paid marketing per enrolled student.
-      ${best ? `${esc(best.ch)} is the cheapest paid channel at ${F.money(best.cpe)} per student.` : ''}
-      Next year, <b>${F.pct(fillNext, 0)}</b> of the ${F.num(open)} open seats already have an accepted offer${behind.length
-      ? `, and ${behind.length === 1 ? esc(behind[0].name) + ' is' : behind.length + ' campuses are'} behind` : ''}.`,
-  }) + `<div class="src-line">${icon('link', 14)}<span>Read from ${esc(srcNames(cfg, ['google-ads', 'meta-ads', 'google-analytics', 'hubspot', 'powerschool']))}.
-      Spend ties to the Sales &amp; marketing line in ${esc(srcNames(cfg, ['sage-intacct']))}. Nothing on this page is typed in.</span></div>`
-    + U.strip([
-      { label: 'Paid marketing', value: F.money(spend), note: 'last 12 months' },
-      { label: 'Inquiries', value: F.num(inq), note: `${F.money(inq ? spend / inq : 0)} each` },
-      { label: 'Tours', value: F.num(tours), note: `${F.pct(inq ? tours / inq * 100 : 0, 0)} of inquiries` },
-      { label: 'Applications', value: F.num(apps), note: `${F.pct(tours ? apps / tours * 100 : 0, 0)} of tours` },
-      { label: 'Enrolled', value: F.num(enr), note: `${F.pct(apps ? enr / apps * 100 : 0, 0)} of applications` },
-      { label: 'Cost per enrollment', value: F.money(cpe), note: 'paid spend ÷ enrolled' },
-    ]) + `<div class="grid">` +
-    U.panel({
-      col: 7, ico: 'funnel', title: 'The enrollment funnel',
-      note: 'Every family, from the first inquiry to a signed enrollment, over the last twelve months.',
-      body: `<div class="fun">${steps.map(([name, v], i) => {
-        const prev = steps[i - 1];
-        const keep = prev && prev[1] ? v / prev[1] * 100 : null;
-        return `<div class="fun-row">
-          <span class="fun-name">${esc(name)}</span>
-          <span class="fun-track"><i style="width:${Math.max(2, v / widest * 100).toFixed(1)}%"></i></span>
-          <span class="fun-val">${F.num(v)}</span>
-          <span class="fun-drop">${keep === null ? '<i class="muted">entry</i>' : `<i class="${keep < 40 ? 'down' : ''}">${keep.toFixed(0)}%</i>`}</span>
-        </div>`;
-      }).join('')}</div>`,
-      foot: S(['hubspot', 'powerschool']),
-    }) +
-    U.panel({
-      col: 5, ico: 'plan', title: 'Inquiries by month',
-      note: 'Enrollment season runs January to April for an August start.',
-      body: C.bars({ values: months.map(m => sum('inquiries', rows.filter(r => r.m === m))),
-        labels: months.map(m => F.monthName(m)), fmt: v => F.num(v), height: 200 }),
-      foot: S(['hubspot']),
-    }) +
-    U.panel({
-      col: 12, ico: 'target', title: 'By channel', pad: false,
-      note: 'What each channel cost and what it brought in. Free channels carry no cost per student.',
-      body: U.table({
-        cols: [{ name: 'Channel' }, { name: 'Spend', n: true }, { name: 'Inquiries', n: true },
-          { name: 'Enrolled', n: true }, { name: 'Inquiry to enrolled', n: true }, { name: 'Cost per student', n: true }],
-        rows: byCh.map(x => ({ cells: [
-          `<b>${esc(x.ch)}</b>${srcNames(cfg, [x.src]) === x.ch ? '' : `<div class="sub">from ${esc(srcNames(cfg, [x.src]))}</div>`}`,
-          x.spend ? F.money(x.spend) : '<span class="muted">free</span>', F.num(x.inq), F.num(x.enr),
-          F.pct(x.conv, 1), x.cpe ? F.money(x.cpe) : '<span class="muted">n/a</span>'] })),
-      }),
-      foot: S(['google-ads', 'meta-ads', 'google-analytics', 'hubspot']),
-    }) +
-    U.panel({
-      col: 12, ico: 'school', title: 'Next year, campus by campus', pad: false,
-      note: 'Seats less returning students are the open seats. Accepted offers against them is how full each campus will open.',
-      body: U.table({
-        cols: [{ name: 'Campus' }, { name: 'Seats', n: true }, { name: 'Returning', n: true }, { name: 'Open', n: true },
-          { name: 'Applications', n: true }, { name: 'Accepted', n: true }, { name: 'Open seats filled', n: true }, { name: 'Waitlist', n: true }],
-        rows: camp.map(c => {
-          const f = c.open ? c.accepted / c.open * 100 : 100;
-          return { cells: [`<b>${esc(c.name)}</b>`, F.num(c.seats), F.num(c.returning), F.num(c.open),
-            F.num(c.applications), F.num(c.accepted),
-            `<span class="${f >= 60 ? 'delta up' : f < 45 ? 'delta down' : 'delta flat'}">${F.pct(f, 0)}</span>`,
-            c.waitlist ? F.num(c.waitlist) : '<span class="muted">none</span>'] };
-        }),
-      }),
-      foot: S(['powerschool', 'hubspot']),
-    }) + `</div>`;
+  /* ⚖️ The calm pass: will the campuses open full, and what does each new
+     student cost to find. Six figures became four, the funnel and next year's
+     campuses are the two pictures, the channel table sits in its own block. */
+  const funnelHtml = `<div class="fun">${steps.map(([name, v], i) => {
+    const prev = steps[i - 1];
+    const keep = prev && prev[1] ? v / prev[1] * 100 : null;
+    return `<div class="fun-row"><span class="fun-name">${esc(name)}</span>
+      <span class="fun-track"><i style="width:${Math.max(2, v / widest * 100).toFixed(1)}%"></i></span>
+      <span class="fun-val">${F.num(v)}</span>
+      <span class="fun-drop">${keep === null ? '<i class="muted">entry</i>' : `<i class="${keep < 40 ? 'down' : ''}">${keep.toFixed(0)}%</i>`}</span></div>`;
+  }).join('')}</div>`;
+  const figs = M.figures([
+    { label: 'Enrolled', value: F.num(enr), sub: `from <b>${F.num(inq)}</b> inquiries, last 12 months` },
+    { label: 'Cost per enrollment', value: F.money(cpe), sub: `<b>${F.money(spend)}</b> of paid marketing` },
+    { label: 'Next year filled', value: F.pct(fillNext, 0), sub: `of <b>${F.num(open)}</b> open seats have an accepted offer` },
+    { label: 'Cheapest channel', value: best ? F.money(best.cpe) : 'n/a', sub: best ? `per student, <b>${esc(best.ch)}</b>` : '' },
+  ]);
+  const funnel = M.section({
+    title: 'Where families drop off', src: srcNames(cfg, ['hubspot', 'powerschool']),
+    note: 'Every family from the first inquiry to a signed enrollment, over the last twelve months.',
+    body: funnelHtml,
+    aside: M.facts([
+      { k: 'Inquiries', v: F.num(inq), sub: `${F.money(inq ? spend / inq : 0)} each` },
+      { k: 'Toured', v: F.pct(inq ? tours / inq * 100 : 0, 0), sub: 'of inquiries' },
+      { k: 'Applied', v: F.pct(tours ? apps / tours * 100 : 0, 0), sub: 'of tours' },
+      { k: 'Enrolled', v: F.pct(apps ? enr / apps * 100 : 0, 0), sub: 'of applications', hl: true },
+    ]),
+    fold: C.bars({ values: months.map(m => sum('inquiries', rows.filter(r => r.m === m))), labels: months.map(m => F.monthName(m)), fmt: v => F.num(v), height: 200 }),
+    foldLabel: 'Inquiries by month',
+  });
+  const campuses = M.section({
+    title: 'Will each campus open full', src: srcNames(cfg, ['powerschool']),
+    note: 'Open seats are seats less returning students. Accepted offers against them is how full each campus will open.',
+    body: U.table({ cols: [{ name: 'Campus', w: '24%' }, { name: 'Seats', n: true }, { name: 'Returning', n: true }, { name: 'Open', n: true },
+      { name: 'Accepted', n: true }, { name: 'Filled', n: true }, { name: 'Waitlist', n: true }],
+      rows: camp.map(c => { const f = c.open ? c.accepted / c.open * 100 : 100;
+        return { cells: [`<b>${esc(c.name)}</b>`, F.num(c.seats), F.num(c.returning), F.num(c.open), F.num(c.accepted),
+          `<span class="${f >= 60 ? 'delta up' : f < 45 ? 'delta down' : 'delta flat'}">${F.pct(f, 0)}</span>`,
+          c.waitlist ? F.num(c.waitlist) : '<span class="muted">none</span>'] }; }) }),
+  });
+  const channels = M.section({
+    title: 'What each channel brings in', src: srcNames(cfg, ['google-ads', 'meta-ads', 'google-analytics']),
+    note: 'Free channels carry no cost per student.',
+    body: U.table({ cols: [{ name: 'Channel', w: '28%' }, { name: 'Spend', n: true }, { name: 'Inquiries', n: true },
+      { name: 'Enrolled', n: true }, { name: 'Inquiry to enrolled', n: true }, { name: 'Cost per student', n: true }],
+      rows: byCh.map(x => ({ cells: [`<b>${esc(x.ch)}</b>`, x.spend ? F.money(x.spend) : '<span class="muted">free</span>', F.num(x.inq), F.num(x.enr),
+        F.pct(x.conv, 1), x.cpe ? F.money(x.cpe) : '<span class="muted">n/a</span>'] })) }),
+  });
+  return M.page(M.head({ eyebrow: 'Marketing & enrollment', title: 'Marketing & enrollment',
+    line: `<b>${F.pct(fillNext, 0)}</b> of next year's open seats are filled${behind.length ? `, and ${behind.length === 1 ? esc(behind[0].name) + ' is' : behind.length + ' campuses are'} behind` : ''}.`,
+    stamp: `Spend ties to ${esc(srcNames(cfg, ['sage-intacct']))}` }) + figs + funnel + campuses + channels);
 }
 
 /* ---------------------------------------------------------------- pipeline */
@@ -511,143 +301,80 @@ export function pipeline(ctx) {
        ${thin ? 'That is under the 3× a pipeline usually needs to land a plan, so this is thin.'
       : 'That is at or above the 3× a pipeline usually needs to land a plan.'}`;
 
-  const ageRows = p.rows.slice().sort((a, b) => b.age - a.age).slice(0, 6);
+  const ageRows = p.rows.slice().sort((a, b) => b.age - a.age).slice(0, 5);
+  const crm = (s.connectedIn('crm')[0] || {}).name || '';
+  const lostRows = (() => {
+    const why = {};
+    for (const c of closed.filter(c => !c.won)) why[c.why] = (why[c.why] || 0) + c.value;
+    return Object.entries(why).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
+  })();
+  const byMonth = {};
+  for (const r of p.rows) byMonth[r.close] = (byMonth[r.close] || 0) + r.weighted;
+  const landMonths = Object.keys(byMonth).sort();
 
-  return U.pageHead({
-    eyebrow: 'Pipeline',
-    title: 'Pipeline',
-    answer: verdictBody,
-  }) + U.strip([
-      { label: 'Open opportunity', value: F.money(total), note: `${p.rows.length} pursuits` },
-      { label: 'Weighted', value: F.money(weighted), note: 'by stage' },
-      {
-        label: 'Coverage', value: coverage === null ? '—' : `${coverage.toFixed(1)}×`,
-        note: coverage === null ? 'plan already covered'
-          : thin ? '<span class="delta down">thin, under 3×</span>' : 'at or above 3×',
-      },
-      { label: 'Win rate', value: winRate === null ? '—' : F.pct(winRate), note: `${won.length} of ${closed.length} closed` },
-      { label: 'Gap to plan', value: F.money(gap), note: `plan ${F.money(target)}` },
-    ]) + `<div class="grid">` +
-    U.panel({
-      col: 7, ico: 'funnel', title: 'The funnel',
-      note: 'Each stage is its open value. The step down from one to the next is where work is being lost.',
-      body: `<div class="fun">${byStage.map((st, i) => {
-        const prev = byStage[i - 1];
-        const drop = prev && prev.value ? (1 - st.value / prev.value) * 100 : null;
-        return `<div class="fun-row">
-          <span class="fun-name">${esc(st.name)}<i>${Math.round(st.weight * 100)}% weight</i></span>
-          <span class="fun-track"><i style="width:${Math.max(2, st.value / widest * 100).toFixed(1)}%"></i></span>
-          <span class="fun-val">${F.money(st.value)}<i>${st.n} open${st.stuck ? ` · ${st.stuck} stalled` : ''}</i></span>
-          <span class="fun-drop">${drop === null ? '<i class="muted">entry</i>'
-            : `<i class="${drop > 55 ? 'down' : ''}">${drop > 0 ? '−' : '+'}${Math.abs(drop).toFixed(0)}%</i>`}</span>
-        </div>`;
-      }).join('')}</div>`,
-      foot: 'Stage weights are the build’s until a company sets its own, and the page says so rather than implying they are the company’s.',
-    }) +
-
-    U.panel({
-      col: 5, ico: 'clock', title: 'Sitting longest',
-      note: 'A pursuit that has not moved in four months is usually not a pursuit.',
-      body: `<div class="rows">${ageRows.map(r => `
-        <div class="row-item">
-          <span class="grow"><b>${esc(r.name)}</b><div class="sub">${esc(r.stage)} · ${esc(r.owner)}</div></span>
-          <span class="agepill ${r.age > 120 ? 'bad' : r.age > 60 ? 'warn' : ''}">${r.age}d</span>
-        </div>`).join('')}</div>`,
-      foot: `${p.rows.filter(r => r.age > 120).length} of ${p.rows.length} pursuits are past 120 days.`,
-    }) +
-
-    U.panel({
-      col: 6, ico: 'people', title: 'By owner',
-      note: 'Open value is what they are carrying. Win rate is what they have actually closed.',
-      pad: false,
-      body: U.table({
-        cols: [{ name: 'Owner' }, { name: 'Open', n: true }, { name: 'Weighted', n: true },
-        { name: 'Won', n: true }, { name: 'Win rate', n: true }],
-        rows: (p.owners || []).map(o => ({
-          cells: [`<b>${esc(o.name)}</b><div class="sub">${o.open} open · ${o.won + o.lost} closed</div>`,
-            F.money(o.openValue), F.money(o.weighted), F.money(o.wonValue),
-          `<span class="${o.winRate >= 40 ? 'delta up' : o.winRate < 25 ? 'delta down' : 'delta flat'}">${F.pct(o.winRate, 0)}</span>`],
-        })),
-      }),
-    }) +
-
-    U.panel({
-      col: 6, ico: 'pulse', title: 'Why we lose',
-      note: 'The reason recorded on every pursuit closed in the last twelve months.',
-      body: (() => {
-        const lost = closed.filter(c => !c.won);
-        const why = {};
-        for (const c of lost) why[c.why] = (why[c.why] || 0) + c.value;
-        const rows = Object.entries(why).map(([name, value]) => ({ name, value }))
-          .sort((a, b) => b.value - a.value);
-        if (!rows.length) return `<div class="empty">Nothing closed lost in the window.</div>`;
-        return C.hbars({ rows, fmt: v => F.money(v) });
-      })(),
-      foot: `${F.money(closed.filter(c => !c.won).reduce((a, c) => a + c.value, 0))} of work closed lost against ${F.money(won.reduce((a, c) => a + c.value, 0))} won.`,
-    }) +
-
-    /* The donut and its legend measured 497px against this chart's 234px on all
-       six industries. A legend is a list and grows with its parts, so it never
-       matches a fixed-height chart: they take a row each. */
-    U.panel({
-      col: 12, ico: 'plan', title: 'When it lands',
-      note: 'Weighted value by the month each pursuit expects to close.',
-      body: (() => {
-        const byMonth = {};
-        for (const r of p.rows) byMonth[r.close] = (byMonth[r.close] || 0) + r.weighted;
-        const months = Object.keys(byMonth).sort();
-        return C.bars({
-          values: months.map(m => byMonth[m]),
-          labels: months.map(m => F.monthName(m)),
-          fmt: v => F.money(v), height: 200,
-        });
-      })(),
-    }) +
-
-    U.panel({
-      col: 12, ico: 'link', title: 'Where it comes from',
-      note: 'Open value by how the pursuit reached us.',
-      body: (() => {
-        const by = {};
-        for (const r of p.rows) by[r.source] = (by[r.source] || 0) + r.value;
-        const parts = Object.entries(by).map(([name, value]) => ({ name, value }))
-          .sort((a, b) => b.value - a.value);
-        /* ⛔ A RANKED BREAKDOWN IS A RANKING, NOT A RING. Five sources in five
-           rainbow hues made the reader match a colour to a legend to learn an
-           order the chart already knew. This is the treatment the financial
-           dashboard took: the total said once, then the parts in rank with
-           their share, one hue in steps. */
-        const total = parts.reduce((a, x) => a + x.value, 0) || 1;
-        return C.hbars({
-          rows: parts.map((x, i) => ({
-            name: x.name, value: x.value,
-            note: `${(x.value / total * 100).toFixed(0)}%`,
-            color: C.ramp('var(--accent)', parts.length, i),
-          })),
-          fmt: v => F.money(v), stacked: true,
-        });
-      })(),
-    }) +
-
-    U.panel({
-      col: 12, ico: 'list', title: 'Every pursuit', pad: false,
-      body: U.table({
-        cols: [{ name: 'Opportunity' }, { name: 'Stage' }, { name: 'Owner' }, { name: 'Source' },
-        { name: 'Age', n: true }, { name: 'Value', n: true }, { name: 'Weighted', n: true },
-        { name: 'Expected', n: true }],
-        rows: p.rows.slice().sort((a, b) => b.weighted - a.weighted).map(r => ({
-          cells: [`<b>${esc(r.name)}</b>`, U.statusTag(r.stage, r.stage === 'Committed' ? 'good' : ''),
-          esc(r.owner), esc(r.source),
-          `<span class="${r.age > 120 ? 'delta down' : ''}">${r.age}d</span>`,
-          F.money(r.value), F.money(r.weighted), esc(F.monthName(r.close, true))],
-        })),
-      }),
-    }) +
-
-    U.panel({
-      col: 12, title: 'Where this comes from',
-      body: connectorNote(s, 'crm', 'Pipeline is read from the CRM. It never enters a statement: a pursuit is not a fact.'),
-    }) + `</div>`;
+  /* ⚖️ The calm pass (Matt, 2026-11-16). One question: will the pipeline land
+     the plan. The funnel is the picture, coverage sits beside it, and the
+     stalled pursuits, the owners and the full list follow, each its own block. */
+  const figs = M.figures([
+    { label: 'Open opportunity', value: F.money(total), sub: `<b>${p.rows.length}</b> pursuits` },
+    { label: 'Weighted', value: F.money(weighted), sub: 'by stage' },
+    { label: 'Coverage', value: coverage === null ? 'Covered' : `${coverage.toFixed(1)}×`,
+      sub: coverage === null ? 'plan already covered by booked work' : thin ? '<b class="cm-down">thin</b>, under the usual 3×' : 'at or above the usual 3×' },
+    { label: 'Win rate', value: winRate === null ? 'n/a' : F.pct(winRate, 0), sub: `<b>${won.length}</b> of ${closed.length} closed` },
+  ]);
+  const funnel = M.section({
+    title: 'Is there enough to land the plan', src: crm,
+    note: 'Each stage is its open value. The step down from one to the next is where work is lost.',
+    body: `<div class="fun">${byStage.map((st, i) => {
+      const prev = byStage[i - 1];
+      const drop = prev && prev.value ? (1 - st.value / prev.value) * 100 : null;
+      return `<div class="fun-row">
+        <span class="fun-name">${esc(st.name)}<i>${Math.round(st.weight * 100)}% weight</i></span>
+        <span class="fun-track"><i style="width:${Math.max(2, st.value / widest * 100).toFixed(1)}%"></i></span>
+        <span class="fun-val">${F.money(st.value)}<i>${st.n} open${st.stuck ? ` · ${st.stuck} stalled` : ''}</i></span>
+        <span class="fun-drop">${drop === null ? '<i class="muted">entry</i>'
+          : `<i class="${drop > 55 ? 'down' : ''}">${drop > 0 ? '−' : '+'}${Math.abs(drop).toFixed(0)}%</i>`}</span></div>`;
+    }).join('')}</div>`,
+    aside: M.facts([
+      { k: 'Plan for the year', v: F.money(target) },
+      { k: 'Booked so far', v: F.money(booked) },
+      { k: 'Gap to plan', v: F.money(gap), hl: true },
+      { k: 'Open against the gap', v: coverage === null ? 'Covered' : `${coverage.toFixed(1)}×`, sub: 'a pipeline usually needs 3×' },
+    ]),
+  });
+  const stuck = M.section({
+    title: 'What has stopped moving', src: crm,
+    note: `${p.rows.filter(r => r.age > 120).length} of ${p.rows.length} pursuits are past 120 days, the oldest first.`,
+    body: `<div class="cm-tasks">${ageRows.map(r => `<div class="cm-task is-static">
+      ${U.statusTag(`${r.age} days`, r.age > 120 ? 'bad' : r.age > 60 ? 'warn' : '')}
+      <span class="t"><b>${esc(r.name)}</b><span>${esc(r.stage)} · ${F.money(r.value)}</span></span>
+      <span class="o">${esc(r.owner)}</span><span></span></div>`).join('')}</div>`,
+  });
+  const owners = M.section({
+    title: 'Who is carrying it', src: crm,
+    note: 'Open value is what they carry. Win rate is what they have closed.',
+    body: U.table({ cols: [{ name: 'Owner', w: '28%' }, { name: 'Open', n: true }, { name: 'Weighted', n: true }, { name: 'Won', n: true }, { name: 'Win rate', n: true }],
+      rows: (p.owners || []).map(o => ({ cells: [`<b>${esc(o.name)}</b><div class="sub">${o.open} open · ${o.won + o.lost} closed</div>`,
+        F.money(o.openValue), F.money(o.weighted), F.money(o.wonValue),
+        `<span class="${o.winRate >= 40 ? 'delta up' : o.winRate < 25 ? 'delta down' : 'delta flat'}">${F.pct(o.winRate, 0)}</span>`] })) }),
+    fold: lostRows.length ? C.hbars({ rows: lostRows, fmt: v => F.money(v) }) : '',
+    foldLabel: 'Why we lose',
+  });
+  const lands = M.section({
+    title: 'When it lands', src: crm, note: 'Weighted value by the month each pursuit expects to close.',
+    body: C.bars({ values: landMonths.map(m => byMonth[m]), labels: landMonths.map(m => F.monthName(m)), fmt: v => F.money(v), height: 200 }),
+    fold: U.table({
+      cols: [{ name: 'Opportunity' }, { name: 'Stage' }, { name: 'Owner' }, { name: 'Source' }, { name: 'Age', n: true },
+        { name: 'Value', n: true }, { name: 'Weighted', n: true }, { name: 'Expected', n: true }],
+      rows: p.rows.slice().sort((a, b) => b.weighted - a.weighted).map(r => ({ cells: [`<b>${esc(r.name)}</b>`,
+        U.statusTag(r.stage, r.stage === 'Committed' ? 'good' : ''), esc(r.owner), esc(r.source),
+        `<span class="${r.age > 120 ? 'delta down' : ''}">${r.age}d</span>`, F.money(r.value), F.money(r.weighted), esc(F.monthName(r.close, true))] })) }),
+    foldLabel: `Every pursuit (${p.rows.length})`,
+  });
+  return M.page(M.head({ eyebrow: 'Pipeline', title: 'Pipeline',
+    line: coverage === null ? 'The plan is already covered by booked work, so the pipeline is upside.'
+      : `<b>${F.money(total)}</b> open against a <b>${F.money(gap)}</b> gap to plan, ${thin ? '<b class="cm-down">thin</b>' : 'enough'} at <b>${coverage.toFixed(1)}×</b>.`,
+    stamp: `As of ${esc(F.monthName(q.view.month, true))}` }) + figs + funnel + stuck + owners + lands);
 }
 
 /* --------------------------------------------------------------- documents */
@@ -753,61 +480,31 @@ export function docs(ctx) {
         : 'Nothing here.'}</div>`;
   }
 
-  return U.pageHead({
-    eyebrow: 'Documents',
-    title: 'Documents',
-    answer: `<b>${F.num(total)}</b> documents and <b>${d.sizeGb}GB</b> filed under one scheme:
-      the same <b>${d.disciplines.length}</b> folders on every ${esc(ind.unit.one)} and on the
-      company itself. Each row is readable only by the people who can already read it where it
-      lives, and the index holds no copies.`,
-  }) + `<div class="grid">` +
-    U.panel({
-      col: 8, ico: 'folder', title: 'Browse', pad: false,
-      right: `<div class="fold-order" role="group" aria-label="Folder order">
-          <button class="${by === 'type' ? 'on' : ''}" data-act="docs-by" data-arg="type">By type</button>
-          <button class="${by === 'unit' ? 'on' : ''}" data-act="docs-by" data-arg="unit">By ${esc(ind.unit.one)}</button>
-        </div>
-        <nav class="crumbs">${crumbs.map((c, i) => i === crumbs.length - 1
-        ? `<span aria-current="page">${esc(c.label)}</span>`
-        : `<button data-act="docs-open" data-arg="${esc(c.to)}">${esc(c.label)}</button>${icon('chevron', 12)}`
-      ).join('')}</nav>`,
-      note: heading,
-      body,
-    }) +
-    /* ⛔ One line per filing, not two.
-
-       A filename plus a second line of metadata, in a four-column panel, wraps
-       to about 100px a row: seven of them measured 677px to 915px beside a
-       342px folder grid on every industry. A "just filed" strip is a glance,
-       not a record, so the name is one truncated line with its folder and
-       filer beneath it at a size that fits. The full name is on the row's
-       hover readout and in the folder itself. */
-    U.panel({
-      col: 4, ico: 'clock', title: 'Just filed',
-      body: `<div class="jf">${(d.recent || []).slice(0, 7).map(r => `
-        <div class="jf-row" data-r="${esc(r.name)} · ${esc(r.unitName)} › ${esc(r.disc)} · filed ${esc(r.when)} by ${esc(r.by)}">
-          ${icon('doc', 15)}
-          <span class="jf-n">${filedName(r.name).line}</span>
-          <span class="jf-m">${[filedName(r.name).when, esc(r.disc), esc(r.by)]
-            .filter(Boolean).join(' · ')}</span>
-        </div>`).join('')}</div>`,
-      foot: 'Newest first. A filing appears here the moment it lands in its folder.',
-    }) +
-    U.panel({
-      col: 12, ico: 'lock', title: 'How the index works',
-      body: `<ol class="steps">
-        <li><b>Read, never copy.</b> The index records a pointer and the file stays where it is,
-          so storage does not double and nothing is migrated.</li>
-        <li><b>One scheme everywhere.</b> The same ${d.disciplines.length} folders sit on every
-          ${esc(ind.unit.one)}, which is what makes a filing scheme worth having. A company with
-          a different scheme per ${esc(ind.unit.one)} has no scheme.</li>
-        <li><b>Either way round.</b> Most people look for a kind of document, so that is the
-          default. Someone who thinks ${esc(ind.unit.one)}-first can switch the order, and it is
-          the same filing underneath.</li>
-        <li><b>The page trims itself.</b> Two people on the same page see different rows, which is
-          a permission decision, not a filter.</li>
-      </ol>` + connectorNote(s, 'docs', 'Nothing is indexed until a document store is connected.'),
-    }) + `</div>`;
+  const store = (s.connectedIn('docs')[0] || {}).name || '';
+  const order = `<div class="fold-order" role="group" aria-label="Folder order">
+      <button class="${by === 'type' ? 'on' : ''}" data-act="docs-by" data-arg="type">By type</button>
+      <button class="${by === 'unit' ? 'on' : ''}" data-act="docs-by" data-arg="unit">By ${esc(ind.unit.one)}</button></div>`;
+  const crumbNav = `<nav class="crumbs cm-crumbs">${crumbs.map((c, i) => i === crumbs.length - 1
+    ? `<span aria-current="page">${esc(c.label)}</span>`
+    : `<button data-act="docs-open" data-arg="${esc(c.to)}">${esc(c.label)}</button>${icon('chevron', 12)}`).join('')}</nav>`;
+  const recent = `<span class="cm-eyebrow">Just filed</span><div class="jf">${(d.recent || []).slice(0, 6).map(r => `
+      <div class="jf-row" data-r="${esc(r.name)} · ${esc(r.unitName)} › ${esc(r.disc)} · filed ${esc(r.when)} by ${esc(r.by)}">
+        ${icon('doc', 15)}<span class="jf-n">${filedName(r.name).line}</span>
+        <span class="jf-m">${[filedName(r.name).when, esc(r.disc), esc(r.by)].filter(Boolean).join(' · ')}</span></div>`).join('')}</div>`;
+  const browse = M.section({
+    title: 'Where is it', src: store, note: heading, right: order,
+    body: crumbNav + body, aside: recent,
+    fold: `<ol class="steps">
+      <li><b>Read, never copy.</b> The index records a pointer and the file stays where it is.</li>
+      <li><b>One scheme everywhere.</b> The same ${d.disciplines.length} folders sit on every ${esc(ind.unit.one)}.</li>
+      <li><b>Either way round.</b> Look by kind of document, or ${esc(ind.unit.one)} first. It is the same filing underneath.</li>
+      <li><b>The page trims itself.</b> Two people see different rows, which is a permission decision, not a filter.</li>
+    </ol>`,
+    foldLabel: 'How the index works',
+  });
+  return M.page(M.head({ eyebrow: 'Documents', title: 'Documents',
+    line: `<b>${F.num(total)}</b> documents filed under the same <b>${d.disciplines.length}</b> folders on every ${esc(ind.unit.one)}.`,
+    stamp: `${d.sizeGb}GB indexed, no copies` }) + browse);
 }
 
 function sizeOf(mb) {
@@ -827,5 +524,5 @@ function connectorNote(s, cat, fallback) {
 }
 
 export const miscPages = {
-  home: start, 'people-home': people, 'pipeline-home': pipeline, 'docs-home': docs,
+  home: start, 'pipeline-home': pipeline, 'docs-home': docs,
 };

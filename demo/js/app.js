@@ -7,30 +7,29 @@
    a single figure on the page is shown disabled with its reason, rather than
    offered and then doing nothing. */
 
-import { Settings, paletteFrom } from './settings.js?v=9843449aa8';
-import { Q, loadData } from './query.js?v=9843449aa8';
-import * as F from './fmt.js?v=9843449aa8';
-import * as C from './chart.js?v=9843449aa8';
-import * as U from './ui.js?v=9843449aa8';
-import { esc, icon, brandMark } from './icons.js?v=9843449aa8';
-import { financePages } from './pages/finance.js?v=9843449aa8';
-import { opsPages } from './pages/ops.js?v=9843449aa8';
-import { miscPages } from './pages/misc.js?v=9843449aa8';
-import { hrPages } from './pages/hr.js?v=9843449aa8';
-import { mashPages, hrAct, hrWire } from './pages/hrmash.js?v=9843449aa8';
-import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=9843449aa8';
-import * as Chooser from './chooser.js?v=9843449aa8';
-import * as Present from './present.js?v=9843449aa8';
-import * as World from './world.js?v=9843449aa8';
-import * as Gate from './gate.js?v=9843449aa8';
-import * as Site from './site.js?v=9843449aa8';
+import { Settings, paletteFrom } from './settings.js?v=a2aa80d688';
+import { Q, loadData } from './query.js?v=a2aa80d688';
+import * as F from './fmt.js?v=a2aa80d688';
+import * as C from './chart.js?v=a2aa80d688';
+import * as U from './ui.js?v=a2aa80d688';
+import { esc, icon, brandMark } from './icons.js?v=a2aa80d688';
+import { financePages } from './pages/finance.js?v=a2aa80d688';
+import { opsPages } from './pages/ops.js?v=a2aa80d688';
+import { miscPages } from './pages/misc.js?v=a2aa80d688';
+import { hrPages, HR_PAGES } from './pages/hr.js?v=a2aa80d688';
+import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=a2aa80d688';
+import * as Chooser from './chooser.js?v=a2aa80d688';
+import * as Present from './present.js?v=a2aa80d688';
+import * as World from './world.js?v=a2aa80d688';
+import * as Gate from './gate.js?v=a2aa80d688';
+import * as Site from './site.js?v=a2aa80d688';
 
 const BASIS = [
   { id: 'month', name: 'Month' }, { id: 'ytd', name: 'YTD' },
   { id: 'ttm', name: 'TTM' }, { id: 'fy', name: 'FY' },
 ];
 
-const PAGES = { ...financePages, ...opsPages, ...miscPages, ...hrPages, ...mashPages, settings: settingsPage };
+const PAGES = { ...financePages, ...opsPages, ...miscPages, ...hrPages, settings: settingsPage };
 
 const app = {
   cfg: null, s: null, q: null, data: {},
@@ -257,7 +256,7 @@ function readOnly(host) {
   const brand = app.page === 'settings' && (app.subtab || 'brand') === 'brand';
   if (brand) return;
   host.querySelectorAll('input, textarea, select').forEach(el => {
-    if (el.type === 'search' || el.dataset.filter || el.closest('.hx-search')) return;
+    if (el.type === 'search' || el.dataset.filter) return;
     el.disabled = true;
     el.title = 'Read only in the demo. Every figure comes from connected software.';
   });
@@ -270,7 +269,7 @@ function render() {
 
   const pages = s.pages();
   /* the employee profile is a drill-down too, offered to whoever can open the directory */
-  const drill = app.page === 'ops-detail' || (app.page === 'hr-person' && pages.find(p => p.id === 'hr-directory'));
+  const drill = app.page === 'ops-detail' || (app.page === 'hr-person' && pages.find(p => p.id === 'hr-people'));
   if (!pages.find(p => p.id === app.page) && !drill) {
     app.page = pages[0] ? pages[0].id : 'home';
   }
@@ -292,11 +291,10 @@ function render() {
       <b>That page could not be drawn.</b><br>${esc(err.message)}</div></section>`;
     console.error(err);
   }
-  html = withSource(html);
+  html = withSource(pageTabs(html));
   host.innerHTML = (s.data.showDemoNote && app.q.data.meta.notice ? demoNote() : '') + html;
   C.wire(host);
   U.wireStrip(host, (slot, id) => { placeKpi(slot, id); render(); });
-  hrWire(host, render);
   World.arm(host);
   if (Site.locked(s)) readOnly(host);
   /* After the markup is in and the charts are wired, so the measurement sees
@@ -314,9 +312,7 @@ function render() {
    documents stay empty until a source supplies them. */
 const NEEDS = {
   'fin-budget': ['budget', 'a budget', 'finance'],
-  'people-home': ['people', 'payroll and headcount', 'people'],
-  ...Object.fromEntries(['hr-home', 'hr-inbox', 'hr-attendance', 'hr-payroll', 'hr-directory', 'hr-time', 'hr-hiring', 'hr-compliance', 'hr-reviews', 'hr-org', 'hr-talent', 'hr-onboarding', 'hr-reports']
-    .map(id => [id, ['people', 'employee records', 'people']])),
+  ...Object.fromEntries(HR_PAGES.map(id => [id, ['people', 'employee records', 'people']])),
   'pipeline-home': ['pipeline', 'the pipeline', 'crm'],
   'docs-home': ['docs', 'documents', 'docs'],
   'fin-close': ['closedThrough', 'a close record', 'finance'],
@@ -326,15 +322,17 @@ const NEEDS = {
    *"we need to really think hard about where all this information is coming
    from. we need to be able to derive everything from outside softwares with
    no manual entry"*). Finance, operations and pipeline are read from the
-   company's own software. Documents and HR are hosted inside the Hub, so
-   they say that instead. A page that already names its sources keeps its own. */
+   company's own software. Documents are hosted inside the Hub, so they say
+   that instead. HR pages draw their own line, naming the HR system with a way
+   into it (pages/hr.js), and a page that already names its sources keeps its own. */
 const SOURCE_CATS = { start: ['finance', 'systems'], finance: ['finance'], ops: ['systems', 'projects', 'inventory'],
   pipeline: ['crm'] };
 
 function sourceLine(page) {
   const mod = (app.cfg.product.pages[page] || {}).module;
   if (mod === 'people') {
-    return `Hosted in the ${esc(app.s.data.productName)}: employee records, time, payroll runs and reviews are kept here, not imported.`;
+    const on = app.s.connectedIn('people').map(k => k.name);
+    return on.length ? `From ${esc(on.join(' · '))}, read only.` : '';
   }
   if (mod === 'docs') {
     return `Hosted in the ${esc(app.s.data.productName)}: documents are stored and filed here.`;
@@ -347,8 +345,9 @@ function sourceLine(page) {
 }
 
 function withSource(html) {
-  if (html.includes('class="src-line"')) return html;
+  if (html.includes('class="src-line')) return html;
   const line = sourceLine(app.page);
+  if (line && html.includes('<!--src-->')) return html.replace('<!--src-->', `<span class="cm-src"><i class="dot"></i>${line}</span>`);
   const at = html.indexOf('</header>');
   if (!line || at < 0) return html;
   const cut = at + '</header>'.length;
@@ -390,7 +389,8 @@ function rail(pages) {
   const who = s.data.session;
   const mods = s.modulesWithPages();
   const open = (PAGES[app.page] && app.cfg.product.pages[app.page])
-    ? app.cfg.product.pages[app.page].module : 'start';
+    ? app.cfg.product.pages[app.page].module
+    : (app.page === 'ops-detail' ? 'ops' : app.page === 'hr-person' ? 'people' : 'start');
   return `<div class="rail-head">
       <span class="rail-mark">${s.data.brand.logo
       ? `<img src="${esc(s.data.brand.logo)}" alt="">` : brandMark(s.data.brand, 34)}</span>
@@ -399,11 +399,12 @@ function rail(pages) {
     </div>
     <div class="rail-places">
       ${mods.map(m => `<button class="place" data-act="go" data-arg="${esc(m.pages[0].id)}"
-        aria-current="${m.id === open}">
+        aria-current="${m.id === open}" aria-expanded="${m.id === open && m.pages.length > 1}">
         <span class="place-ico">${icon(m.pages[0].icon || 'grid', 18)}</span>
         <span>${esc(m.name)}</span>
         ${m.pages.length > 1 ? `<span class="place-count">${m.pages.length}</span>` : ''}
-      </button>`).join('')}
+      </button>${m.id === open && (m.pages.length > 1 || openUnit()) ? `<div class="place-sub">${openUnit()}${m.pages.map(p =>
+        `<button class="sub-tab" data-act="go" data-arg="${esc(p.id)}" aria-current="${p.id === app.page || (pages.find(x => x.id === app.page) || {}).tabOf === p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}`).join('')}
     </div>
     <div class="rail-foot">
       ${who && who.kind === 'person' ? `<b>${esc(who.name)}</b><br>` : ''}
@@ -415,53 +416,44 @@ function rail(pages) {
     </div>`;
 }
 
-function tabs(pages) {
-  const open = app.cfg.product.pages[app.page]
-    ? app.cfg.product.pages[app.page].module
-    : (app.page === 'ops-detail' ? 'ops' : 'start');
-  const mine = pages.filter(p => p.module === open);
-  const mod = app.cfg.product.modules[open];
-  if (!mine.length) return '';
-  /* An open unit gets a tab of its own, with a close on it.
+/* ⚖️ One menu (Matt, 2026-11-16: the Hub was "a throw-up of data"; the second
+   white column of page names beside the navy rail was half of that on every
+   screen). The open module's pages now sit under it in the rail, and the
+   white column is gone. A drill-down (a unit, a person) is a place, so it
+   shows as the first item under its module with a close on it. */
+function tabs() { return ''; }
 
-     Matt, 2026-11-02: *"when i click into one of these objects, it takes me to
-     a screen that is just out in the ether with no tab or way to get back and
-     it feels completely separated from everything"*. He is right: `ops-detail`
-     is a hidden page, so the strip drew Operations' tabs with NONE of them
-     current and no sign of where he actually was. A drill-down is a place, and
-     a place needs a tab. */
-  let open_unit = '';
+/* The tabs of a page grouped with others (tabOf), set under its header, so
+   Margin is a tab on Profit & loss rather than a page of its own. */
+function pageTabs(html) {
+  const group = app.s.tabsOf(app.page);
+  if (!group.length) return html;
+  const strip = `<nav class="cm-tabs" aria-label="Views of this page">${group.map(p =>
+    `<button class="cm-tab" data-act="go" data-arg="${esc(p.id)}" aria-current="${p.id === app.page}">${esc(p.name)}</button>`).join('')}</nav>`;
+  const at = html.indexOf('</header>');
+  return at < 0 ? strip + html : html.slice(0, at + 9) + strip + html.slice(at + 9);
+}
+
+function openUnit() {
   if (app.page === 'ops-detail' && app.arg && app.q) {
-    const u = (app.q.units || []).find(x => x.id === app.arg)
-      || (app.q.allUnits || []).find(x => x.id === app.arg);
+    const u = (app.q.units || []).find(x => x.id === app.arg) || (app.q.allUnits || []).find(x => x.id === app.arg);
     if (u) {
-      const back = app.detailFrom && app.cfg.product.pages[app.detailFrom]
-        ? app.detailFrom : (mine[0] && mine[0].id);
-      open_unit = `<span class="tab open-unit" aria-current="true">
-        ${esc(u.short || u.name)}
-        <button class="tab-x" data-act="go" data-arg="${esc(back)}"
-          aria-label="Close ${esc(u.short || u.name)}">${icon('close', 12)}</button></span>`;
+      const firstOps = (app.s.pages().find(p => p.module === 'ops') || {}).id;
+      const back = app.detailFrom && app.cfg.product.pages[app.detailFrom] ? app.detailFrom : firstOps;
+      return `<span class="sub-tab open-unit" aria-current="true"><span>${esc(u.short || u.name)}</span>
+        <button class="tab-x" data-act="go" data-arg="${esc(back)}" aria-label="Close ${esc(u.short || u.name)}">${icon('close', 12)}</button></span>`;
     }
   }
   if (app.page === 'hr-person' && app.arg && app.q) {
     const hr = (app.q.data.people || {}).hr;
     const r = hr && hr.roster.find(x => x.id === app.arg);
     if (r) {
-      const back = app.detailFrom && app.cfg.product.pages[app.detailFrom] && app.detailFrom !== 'hr-person'
-        ? app.detailFrom : 'hr-directory';
-      open_unit = `<span class="tab open-unit" aria-current="true">${esc(r.n)}
-        <button class="tab-x" data-act="go" data-arg="${esc(back)}"
-          aria-label="Close ${esc(r.n)}">${icon('close', 12)}</button></span>`;
+      const back = app.detailFrom && app.cfg.product.pages[app.detailFrom] && app.detailFrom !== 'hr-person' ? app.detailFrom : 'hr-people';
+      return `<span class="sub-tab open-unit" aria-current="true"><span>${esc(r.n)}</span>
+        <button class="tab-x" data-act="go" data-arg="${esc(back)}" aria-label="Close ${esc(r.n)}">${icon('close', 12)}</button></span>`;
     }
   }
-  return `<div class="tabs-title">${esc(mod ? mod.name : '')}</div>` + open_unit +
-    mine.map(p => `<button class="tab" data-act="go" data-arg="${esc(p.id)}"
-      aria-current="${p.id === app.page}">${esc(p.name)}</button>`).join('') +
-    (open === 'settings' ? '' : `<hr class="r">
-      <div class="tabs-title">Period</div>
-      <button class="tab opens" data-act="menu" data-arg="month" aria-haspopup="listbox"
-        aria-current="false"><span>${esc(F.monthName(app.s.data.month, true))}</span>
-        ${icon('caret', 13)}</button>`);
+  return '';
 }
 
 function bar() {
@@ -1014,8 +1006,6 @@ async function onClick(ev) {
       await useIndustry(arg);
       go('fin-dash'); render(); break;
     case 'settab': app.subtab = arg; render(); break;
-    /* The HR screens' own view state (a picked inbox item, a payroll step, an org-chart move). */
-    case 'hr': hrAct(arg); render(); break;
     case 'connect': if (Site.locked(app.s)) break; {
       const c = app.s.connector(arg);
       if (c) openSheet(connectSheet(c, app.s));
@@ -1325,6 +1315,8 @@ function api() {
     bal: line => app.q.bal(line),
     unitCount: () => app.q.units.length,
     connected: () => Object.keys(app.s.data.connectors),
+    /* switch one connector, as the settings console does, so a test can see a page with it off */
+    connector: (id, on) => { app.s.setConnector(id, !!on); render(); return app.s.isOn(id); },
     settings: () => app.s.data,
     config: () => JSON.parse(app.s.exportJSON()),
     ties: () => ties(),

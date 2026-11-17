@@ -9,7 +9,7 @@
    Every page works, because every page is already built from the same
    furniture: a verdict or a page head, then panels. */
 
-import { esc, icon, brandMark } from './icons.js?v=9843449aa8';
+import { esc, icon, brandMark } from './icons.js?v=a2aa80d688';
 
 const state = { on: false, at: 0, slides: [], ctx: null };
 
@@ -46,7 +46,7 @@ export function exit() {
 export function collect() {
   const page = document.getElementById('page');
   if (!page) { state.slides = []; return; }
-  const found = [...page.querySelectorAll(':scope > .verdict, :scope > .page-head, :scope > .strip, :scope > .grid > .panel, :scope > .panel')];
+  const found = [...page.querySelectorAll(':scope > .verdict, :scope > .page-head, :scope > .strip, :scope > .grid > .panel, :scope > .panel, :scope > .cm > .cm-head, :scope > .cm > .cm-figs, :scope > .cm > .cm-strip, :scope > .cm > .cm-card, :scope > .cm > .cm-ops-grid > .cm-card')];
   state.slides = found;
   found.forEach((el, i) => el.setAttribute('data-slide', String(i)));
   if (state.at >= found.length) state.at = Math.max(0, found.length - 1);

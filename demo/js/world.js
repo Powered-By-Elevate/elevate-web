@@ -56,7 +56,7 @@ function light() {
    did nothing on the pages people actually look at: Claude in Chrome saw no
    word-by-word entrance anywhere on the live site and was right. */
 function splitTitle(host) {
-  for (const h of host.querySelectorAll('.page-title, .verdict h2')) {
+  for (const h of host.querySelectorAll('.page-title, .verdict h2, .cm-h1')) {
     if (h.dataset.split) continue;
     let n = 0;
     for (const node of [...h.childNodes]) {
