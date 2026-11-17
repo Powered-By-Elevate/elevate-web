@@ -2,12 +2,12 @@
    and the unit detail all come from the industry profile, which is what makes
    the same build read as a construction dashboard and a fleet dashboard. */
 
-import * as F from '../fmt.js?v=3265746c78';
-import * as C from '../chart.js?v=3265746c78';
-import * as U from '../ui.js?v=3265746c78';
-import { esc, icon } from '../icons.js?v=3265746c78';
-import { motif } from '../scenes.js?v=3265746c78';
-import * as M from '../calm.js?v=3265746c78';
+import * as F from '../fmt.js?v=a2aa80d688';
+import * as C from '../chart.js?v=a2aa80d688';
+import * as U from '../ui.js?v=a2aa80d688';
+import { esc, icon } from '../icons.js?v=a2aa80d688';
+import { motif } from '../scenes.js?v=a2aa80d688';
+import * as M from '../calm.js?v=a2aa80d688';
 
 /* ⚖️ The calm pass (Matt, 2026-11-16: *"i would never use the current financial
    dashboard we have because it is so overwhelming that it doesnt feel useful"*,
@@ -217,7 +217,12 @@ export function home(ctx) {
         </div>`;
 };
   const isSettled = x => (x.bar || 0) >= 0.999 && !x.flag;
-  const live = book.filter(x => !isSettled(x)), settled = book.filter(isSettled);
+  /* A dozen open at most, every flagged one among them (2026-11-17): the
+     freight book listed 60 routes open and ran three times the length of any
+     other industry's page. The rest wait in the fold, largest first. */
+  const live0 = book.filter(x => !isSettled(x)), settled = book.filter(isSettled);
+  const OPEN = 12, keep = new Set([...live0.filter(x => x.flag), ...live0].slice(0, Math.max(OPEN, live0.filter(x => x.flag).length)));
+  const live = live0.filter(x => keep.has(x)), more = live0.filter(x => !keep.has(x));
   const pctDone = Math.round(done / (total || 1) * 100);
   return pageHead({ eyebrow: 'Operations', title: pageName(ind, 'ops-home', 'Operations'),
     answer: flagged.length
@@ -247,8 +252,8 @@ export function home(ctx) {
       col: 12, title: `Every ${esc(ind.unit.one)}`,
       note: `Largest first. Open any row for its arithmetic.`,
       body: `<div class="pf">${live.map(pfRow).join('')}</div>`,
-      fold: settled.length ? `<div class="pf">${settled.map(pfRow).join('')}</div>` : '',
-      foldLabel: `${settled.length} finished and in band`,
+      fold: more.length || settled.length ? `<div class="pf">${more.concat(settled).map(pfRow).join('')}</div>` : '',
+      foldLabel: more.length ? `${more.length + settled.length} more${settled.length ? `, ${settled.length} of them finished` : ''}` : `${settled.length} finished and in band`,
       right: flagged.length ? U.btn(`${flagged.length} need you`, { act: 'go', arg: 'ops-watch', sm: true, ico: 'arrow' }) : '',
     }) +
     panel({
@@ -1357,33 +1362,32 @@ export function grid(ctx) {
          which sat at <b>${esc(g.fmt(worst.to))}</b> throughout.`}
       The spread across ${esc(ind.unit.many)} this month is <b>${esc(g.fmt(spread))}</b>.`,
   }) + fresh() + `<div class="cm-ops-grid">` +
-    panel({
-      col: 12, title: `${esc(g.name)} by ${esc(ind.unit.one)}, month by month`,
-      note: 'One cell per reading, darker for higher. Click a row to open it.',
-      body: C.heatmap({
-        rows, cols: months.map(m => F.monthName(m).split(' ')[0]),
-        fmt: g.fmt, label: g.name.toLowerCase(), good: g.good,
-      }),
-      foot: `${rows.length} ${esc(ind.unit.many)} over ${months.length} months to
-        ${esc(F.monthName(months[months.length - 1], true))},
-        ${F.num(rows.length * months.length)} readings. Color says more or less, not better
-        or worse: these measures carry no target.`,
-    }) +
-    panel({
-      col: 7, title: `Each ${esc(ind.unit.one)} on one scale`,
-      note: 'Every chart shares an axis, so the shapes can be compared rather than only read.',
-      body: C.multiples({
-        rows: rows.map(r => ({ ...r, note: '' })),
-        fmt: g.fmt, labels: months.map(mN),
-      }),
-    }) +
-    panel({
-      col: 5, title: 'What moved', pad: false,
-      note: `From ${esc(F.monthName(months[0], true))} to ${esc(F.monthName(months[months.length - 1], true))}.`,
-      body: U.table({
+    /* Fifteen rows open at most, and the charts and the table name the eight
+       that moved most (2026-11-17): with every unit listed three times the
+       freight grid ran 6,000px, four times the median page. */
+    (() => {
+      const CAP = 15, cols = months.map(m => F.monthName(m).split(' ')[0]);
+      const hm = rs => C.heatmap({ rows: rs, cols, fmt: g.fmt, label: g.name.toLowerCase(), good: g.good });
+      return panel({
+        col: 12, title: `${esc(g.name)} by ${esc(ind.unit.one)}, month by month`,
+        note: 'One cell per reading, darker for higher. Click a row to open it.',
+        body: hm(rows.slice(0, CAP)),
+        fold: rows.length > CAP ? hm(rows.slice(CAP)) : '',
+        foldLabel: `${rows.length - CAP} more ${esc(ind.unit.many)}`,
+        foot: `${rows.length} ${esc(ind.unit.many)} over ${months.length} months to
+          ${esc(F.monthName(months[months.length - 1], true))},
+          ${F.num(rows.length * months.length)} readings. Color says more or less, not better
+          or worse: these measures carry no target.`,
+      });
+    })() +
+    (() => {
+      const TOP = 8;
+      const big = movers.slice().sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+      const named = new Set(big.slice(0, TOP).map(m => m.name));
+      const moveTable = list => U.table({
         cols: [{ name: ind.unit.key }, { name: 'Then', n: true }, { name: 'Now', n: true },
         { name: g.isPct ? 'Change (points)' : 'Change', n: true }],
-        rows: movers.slice().reverse().map(m => ({
+        rows: list.map(m => ({
           cells: [esc(m.name), g.fmt(m.from), g.fmt(m.to),
           g.isPct
             ? `<span class="delta ${Math.abs(m.change) < 0.05 ? 'flat'
@@ -1392,8 +1396,24 @@ export function grid(ctx) {
                 : `${m.change > 0 ? '↑' : '↓'} ${Math.abs(m.change).toFixed(0)}pt`}</span>`
             : F.deltaTag(m.pct, { invert: g.good !== 'high' })],
         })),
-      }),
-    }) + `</div>`;
+      });
+      const many = movers.length > TOP;
+      return panel({
+        col: 7, title: many ? `The ${TOP} that moved most, on one scale` : `Each ${esc(ind.unit.one)} on one scale`,
+        note: 'Every chart shares an axis, so the shapes can be compared rather than only read.',
+        body: C.multiples({
+          rows: rows.filter(r => !many || named.has(r.name)).map(r => ({ ...r, note: '' })),
+          fmt: g.fmt, labels: months.map(mN),
+        }),
+      }) +
+      panel({
+        col: 5, title: 'What moved',
+        note: `From ${esc(F.monthName(months[0], true))} to ${esc(F.monthName(months[months.length - 1], true))}${many ? `, the ${TOP} largest moves` : ''}.`,
+        body: moveTable(many ? big.slice(0, TOP) : movers.slice().reverse()),
+        fold: many ? moveTable(movers.slice().reverse()) : '',
+        foldLabel: `Every ${esc(ind.unit.one)}, ${movers.length} in all`,
+      });
+    })() + `</div>`;
 }
 
 

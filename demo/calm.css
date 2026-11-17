@@ -430,3 +430,13 @@
 .cm-task:has(.cm-hr-face)::before { background: var(--accent); opacity: .55; }
 .cm-task:has(.cm-hr-face) { grid-template-columns: 52px 1fr auto 30px; }
 .cm-hr-two .cm-fold-b { background: var(--paper); padding: 10px; }
+
+/* Tabs on a page that gathers others (tabOf, 2026-11-17): one segmented
+   control under the header, the open view filled, each a real button. */
+.cm-tabs { display: flex; width: fit-content; max-width: 100%; justify-self: start; align-self: flex-start; flex-wrap: wrap; gap: 4px; margin: 4px 0 18px; padding: 4px;
+  border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); }
+.cm-tab { all: unset; cursor: pointer; padding: 7px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600;
+  color: var(--ink-soft, var(--ink)); transition: background .15s, color .15s; }
+.cm-tab:hover { background: var(--tint); color: var(--ink); }
+.cm-tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cm-tab[aria-current="true"] { background: var(--accent-deep); color: #fff; }

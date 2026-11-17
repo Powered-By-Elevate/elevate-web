@@ -7,8 +7,8 @@
    Series colors come from the validated dataviz palette on :root, never from
    a brand accent, because a brand color has no contrast guarantee. */
 
-import { esc, hash } from './icons.js?v=3265746c78';
-import { mix } from './color.js?v=3265746c78';
+import { esc, hash } from './icons.js?v=a2aa80d688';
+import { mix } from './color.js?v=a2aa80d688';
 
 const W = 720;
 let uid = 0;
