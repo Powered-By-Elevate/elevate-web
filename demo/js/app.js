@@ -7,22 +7,22 @@
    a single figure on the page is shown disabled with its reason, rather than
    offered and then doing nothing. */
 
-import { Settings, paletteFrom } from './settings.js?v=3265746c78';
-import { Q, loadData } from './query.js?v=3265746c78';
-import * as F from './fmt.js?v=3265746c78';
-import * as C from './chart.js?v=3265746c78';
-import * as U from './ui.js?v=3265746c78';
-import { esc, icon, brandMark } from './icons.js?v=3265746c78';
-import { financePages } from './pages/finance.js?v=3265746c78';
-import { opsPages } from './pages/ops.js?v=3265746c78';
-import { miscPages } from './pages/misc.js?v=3265746c78';
-import { hrPages, HR_PAGES } from './pages/hr.js?v=3265746c78';
-import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=3265746c78';
-import * as Chooser from './chooser.js?v=3265746c78';
-import * as Present from './present.js?v=3265746c78';
-import * as World from './world.js?v=3265746c78';
-import * as Gate from './gate.js?v=3265746c78';
-import * as Site from './site.js?v=3265746c78';
+import { Settings, paletteFrom } from './settings.js?v=a2aa80d688';
+import { Q, loadData } from './query.js?v=a2aa80d688';
+import * as F from './fmt.js?v=a2aa80d688';
+import * as C from './chart.js?v=a2aa80d688';
+import * as U from './ui.js?v=a2aa80d688';
+import { esc, icon, brandMark } from './icons.js?v=a2aa80d688';
+import { financePages } from './pages/finance.js?v=a2aa80d688';
+import { opsPages } from './pages/ops.js?v=a2aa80d688';
+import { miscPages } from './pages/misc.js?v=a2aa80d688';
+import { hrPages, HR_PAGES } from './pages/hr.js?v=a2aa80d688';
+import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=a2aa80d688';
+import * as Chooser from './chooser.js?v=a2aa80d688';
+import * as Present from './present.js?v=a2aa80d688';
+import * as World from './world.js?v=a2aa80d688';
+import * as Gate from './gate.js?v=a2aa80d688';
+import * as Site from './site.js?v=a2aa80d688';
 
 const BASIS = [
   { id: 'month', name: 'Month' }, { id: 'ytd', name: 'YTD' },
@@ -291,7 +291,7 @@ function render() {
       <b>That page could not be drawn.</b><br>${esc(err.message)}</div></section>`;
     console.error(err);
   }
-  html = withSource(html);
+  html = withSource(pageTabs(html));
   host.innerHTML = (s.data.showDemoNote && app.q.data.meta.notice ? demoNote() : '') + html;
   C.wire(host);
   U.wireStrip(host, (slot, id) => { placeKpi(slot, id); render(); });
@@ -404,7 +404,7 @@ function rail(pages) {
         <span>${esc(m.name)}</span>
         ${m.pages.length > 1 ? `<span class="place-count">${m.pages.length}</span>` : ''}
       </button>${m.id === open && (m.pages.length > 1 || openUnit()) ? `<div class="place-sub">${openUnit()}${m.pages.map(p =>
-        `<button class="sub-tab" data-act="go" data-arg="${esc(p.id)}" aria-current="${p.id === app.page}">${esc(p.name)}</button>`).join('')}</div>` : ''}`).join('')}
+        `<button class="sub-tab" data-act="go" data-arg="${esc(p.id)}" aria-current="${p.id === app.page || (pages.find(x => x.id === app.page) || {}).tabOf === p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}`).join('')}
     </div>
     <div class="rail-foot">
       ${who && who.kind === 'person' ? `<b>${esc(who.name)}</b><br>` : ''}
@@ -422,6 +422,17 @@ function rail(pages) {
    white column is gone. A drill-down (a unit, a person) is a place, so it
    shows as the first item under its module with a close on it. */
 function tabs() { return ''; }
+
+/* The tabs of a page grouped with others (tabOf), set under its header, so
+   Margin is a tab on Profit & loss rather than a page of its own. */
+function pageTabs(html) {
+  const group = app.s.tabsOf(app.page);
+  if (!group.length) return html;
+  const strip = `<nav class="cm-tabs" aria-label="Views of this page">${group.map(p =>
+    `<button class="cm-tab" data-act="go" data-arg="${esc(p.id)}" aria-current="${p.id === app.page}">${esc(p.name)}</button>`).join('')}</nav>`;
+  const at = html.indexOf('</header>');
+  return at < 0 ? strip + html : html.slice(0, at + 9) + strip + html.slice(at + 9);
+}
 
 function openUnit() {
   if (app.page === 'ops-detail' && app.arg && app.q) {
