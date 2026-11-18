@@ -31,7 +31,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .logo svg{width:40px;height:31px}
 .logo b{display:block;font:500 22px/1 var(--serif);letter-spacing:.14em}.logo small{display:block;font:600 8.5px/1 var(--sans);letter-spacing:.32em;margin-top:5px;color:var(--ink2)}
 .nav__links{display:none;gap:28px;align-items:center;font:500 15px/1 var(--sans)}
-.nav__links a{text-decoration:none}.nav__links a:not(.btn):hover{color:var(--teal)}
+.nav__links a{text-decoration:none}.nav__links a:not(.btn):hover,.nav__links a[aria-current]{color:var(--teal)}
 @media(min-width:960px){.nav__links{display:flex}}
 
 /* hero: the headline, then a wide team photo that opens to full width as you scroll */
@@ -60,6 +60,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .dev__clip{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .dev__screen{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:#f4f7f8}
 .dev__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
+.dev__screen img.fill{height:100%;object-fit:cover;object-position:top}
 .dev__frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .dev__shadow{position:absolute;left:14%;right:10%;bottom:-4%;height:8%;border-radius:50%;background:radial-gradient(closest-side,rgba(6,58,71,.38),rgba(6,58,71,0));filter:blur(8px)}
 /* the device: a titanium body with real thickness (stacked layers behind the face), a thin
@@ -256,17 +257,16 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .rv{opacity:0;transform:translateY(26px)}
 @media(prefers-reduced-motion:reduce){.tilt{--ry:-10deg;--rx:4deg;--rz:1deg}.rv{opacity:1;transform:none}.marq__track,.phone--loop img{animation:none}}
 </style></head><body><div class="grain" aria-hidden="true"></div>
-<nav class="nav" id="nav"><div class="shell"><a class="logo" href="/next/" aria-label="Elevate Managed Services"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mn" x1="0" y1="1" x2="1" y2="0">
+<nav class="nav" id="nav"><div class="shell"><a class="logo" href="index.html" aria-label="Elevate Managed Services"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mn" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mn)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
-<div class="nav__links"><a href="/services">Services</a><a href="/education">Education</a><a href="/dashboard">BI Dashboard</a><a href="/portal">Client Portal</a><a class="btn btn--teal" href="/contact">Book a call</a></div><a class="btn btn--teal nav__cta" href="/contact">Book a call</a></div></nav>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><div class="nav__links"><a href="services.html">Services</a><a href="education.html">Education</a><a href="dashboard.html">BI Dashboard</a><a href="portal.html">Client Portal</a><a class="btn btn--teal" href="contact.html">Book a call</a></div><a class="btn btn--teal nav__cta" href="contact.html">Book a call</a></div></nav>
 
 <header class="hero"><div class="hero__wash"></div><div class="shell hero__top">
 <div><span class="eyebrow rv-in">Back office for companies and schools</span>
 <h1 class="display rv-in" style="margin-top:22px">Capacity for <em>today.</em></h1></div>
 <div class="side"><p class="lede rv-in">Finance, payroll, HR, marketing and a live dashboard, run by one team so your leaders can lead.</p>
-<div class="btns rv-in"><a class="btn btn--teal" href="/contact">Book a discovery call</a><a class="btn btn--ghost" href="/dashboard">See the dashboard</a></div></div></div>
+<div class="btns rv-in"><a class="btn btn--teal" href="contact.html">Book a discovery call</a><a class="btn btn--ghost" href="dashboard.html">See the dashboard</a></div></div></div>
 <div class="hero__frame"><div class="hero__img"></div>
 <div class="chip chip--a"><i>&#10003;</i><span>Close signed off<small>Every month, on the calendar</small></span></div>
 <div class="chip chip--b"><i>&#8599;</i><span>Board package<small>Ready before the meeting</small></span></div></div></header>
@@ -287,7 +287,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 
 <section class="dash"><div class="shell"><div class="dash__copy"><span class="eyebrow rv">Business intelligence</span><h2 class="h2 rv">Leaders see the answer. <em>Finance sees the detail.</em></h2>
 <p class="lede rv">One dashboard for every entity, cut to each person&rsquo;s role.</p>
-<div class="rv"><a class="btn btn--teal" href="/dashboard">Take the tour</a></div><p class="dash__note rv">Figures from the sample school network in the demo.</p></div>
+<div class="rv"><a class="btn btn--teal" href="dashboard.html">Take the tour</a></div><p class="dash__note rv">Figures from the sample school network in the demo.</p></div>
 <div class="lap"><div class="devwrap devwrap--laptop"><div class="dev dev--laptop" data-w="1005" data-h="1044" data-sw="1280" data-sh="832" data-quad="[[9.8, 191.3], [685.4, 18.2], [767.8, 438.5], [120.0, 631.1]]" style="aspect-ratio:1005/1044"><span class="dev__shadow"></span><div class="dev__stage" style="width:1005px;height:1044px"><div class="dev__clip" style="-webkit-mask-image:url(img/device-laptop-mask.png);mask-image:url(img/device-laptop-mask.png)"><div class="dev__screen" style="width:1280px;height:832px"><img src="img/bi-desk-education-home.jpg" alt="The Elevate BI dashboard on a sample school network" loading="lazy"></div></div><img class="dev__frame" src="img/device-laptop.png" alt=""></div></div></div>
 <div class="stat stat--a"><small>Revenue</small><b data-to="21.9" data-dec="1" data-pre="$" data-suf="M">$21.9M</b><em>Year to date</em></div>
 <div class="stat stat--b"><small>Seats filled</small><b data-to="86.6" data-dec="1" data-suf="%">86.6%</b><em>Across six campuses</em></div>
@@ -301,14 +301,14 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mf)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg>
 <h2 class="h2">Ready to give your leaders <em>their time back?</em></h2>
-<div class="end__row"><a class="btn btn--gold" href="/contact">Book a discovery call</a><a class="btn" style="color:#fff;border:1px solid rgba(255,255,255,.3)" href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a></div>
-<div class="end__links"><div><a class="logo" href="/next/"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mf2" x1="0" y1="1" x2="1" y2="0">
+<div class="end__row"><a class="btn btn--gold" href="contact.html">Book a discovery call</a><a class="btn" style="color:#fff;border:1px solid rgba(255,255,255,.3)" href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a></div>
+<div class="end__links"><div><a class="logo" href="index.html"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mf2" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mf2)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a></div>
-<div><h4>Services</h4><a href="/services">Business services</a><a href="/education">Education services</a><a href="/dashboard">BI Dashboard</a></div>
-<div><h4>Company</h4><a href="/about">About</a><a href="/about#team">Team</a><a href="/contact">Contact</a></div>
-<div><h4>Clients</h4><a href="/portal">Client Portal</a><small style="display:block;margin-top:18px;color:#9fc0c6">&copy; 2026 Elevate Managed Services</small></div></div>
+<div><h4>Services</h4><a href="services.html">Business services</a><a href="education.html">Education services</a><a href="dashboard.html">BI Dashboard</a></div>
+<div><h4>Company</h4><a href="about.html">About</a><a href="about.html#team">Team</a><a href="contact.html">Contact</a></div>
+<div><h4>Clients</h4><a href="portal.html">Client Portal</a><small style="display:block;margin-top:18px;color:#9fc0c6">&copy; 2026 Elevate Managed Services</small></div></div>
 </div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
