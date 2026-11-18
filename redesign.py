@@ -276,7 +276,10 @@ def footer():
 <small>&copy; 2026 Elevate Managed Services</small></div></div></footer>'''
 
 JS = """<script>
-(function(){var h=document.getElementById('hdr');if(document.body.classList.contains('home')){var f=function(){h.classList.toggle('solid',scrollY>40)};addEventListener('scroll',f,{passive:true});f();}
+(function(){/* every page and tab opens at the top, also when you come back to it (Matt's standing rule, 2026-11-18) */
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+function toTop(){if(location.hash)return;scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;if(window.__lenis)window.__lenis.scrollTo(0,{immediate:true});try{document.body.scrollIntoView({block:'start'})}catch(e){}}toTop();addEventListener('DOMContentLoaded',toTop);addEventListener('load',toTop);addEventListener('pageshow',toTop);
+var h=document.getElementById('hdr');if(document.body.classList.contains('home')){var f=function(){h.classList.toggle('solid',scrollY>40)};addEventListener('scroll',f,{passive:true});f();}
 var b=document.getElementById('burger'),n=document.getElementById('nav');b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o)});
 document.querySelectorAll('.dd>button').forEach(function(x){x.addEventListener('click',function(){if(innerWidth<1120){var o=x.parentNode.classList.toggle('open');x.setAttribute('aria-expanded',o)}else{location.href=x.parentNode.querySelector('.dd__panel a').href}})});
 document.querySelectorAll('[data-tabs]').forEach(function(t){var bs=t.querySelectorAll('[role=tab]'),ps=t.querySelectorAll('[role=tabpanel]');
