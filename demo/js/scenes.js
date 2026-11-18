@@ -14,7 +14,7 @@
    The drawing is decoration and says nothing about the data. Nothing here
    should ever be read as a figure. */
 
-import { esc } from './icons.js?v=a2aa80d688';
+import { esc } from './icons.js?v=4f9513663c';
 
 let seq = 0;
 
@@ -311,6 +311,10 @@ export function motif(industryId, palette, size = 46) {
     logistics: `<rect x="4" y="14" width="17" height="13" fill="currentColor" opacity=".4"/>
       <path d="M21 18h7l5 6v3H21Z" fill="currentColor" opacity=".55"/>
       <circle cx="11" cy="30" r="3.4" fill="currentColor"/><circle cx="28" cy="30" r="3.4" fill="currentColor"/>`,
+    econdev: `<rect x="5" y="18" width="8" height="16" fill="currentColor" opacity=".35"/>
+      <rect x="15" y="11" width="9" height="23" fill="currentColor" opacity=".45"/>
+      <rect x="26" y="15" width="9" height="19" fill="currentColor" opacity=".35"/>
+      <path d="M4 12l9-6 6 4 13-7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
     healthcare: `<rect x="5" y="12" width="30" height="22" fill="currentColor" opacity=".35"/>
       <path d="M20 15v12M14 21h12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>`,
     tech: `<rect x="5" y="9" width="30" height="20" rx="3" fill="currentColor" opacity=".35"/>

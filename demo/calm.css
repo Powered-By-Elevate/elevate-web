@@ -273,6 +273,7 @@
   font: 500 11.5px/1.2 var(--font-body); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-soft); cursor: pointer; }
 .cm-strip .fig-open:hover { border-color: var(--accent); color: var(--ink); }
 .cm-strip .fig-open span { overflow: hidden; text-overflow: ellipsis; }
+.cm-strip .fig-open svg { flex: none; width: 11px; height: 11px; }
 .cm-fig:has(.cm-fig-go) { padding-bottom: 56px; }
 
 /* two tables side by side inside a fold */

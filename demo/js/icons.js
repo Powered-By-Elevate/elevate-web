@@ -1,4 +1,4 @@
-import { esc } from './fmt.js?v=a2aa80d688';
+import { esc } from './fmt.js?v=4f9513663c';
 
 /* esc lives in fmt.js. It is re-exported here because every drawing module
    needs both, and one import line per file is one fewer thing to get wrong. */

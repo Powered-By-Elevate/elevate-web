@@ -8,12 +8,12 @@
    and auth route are confirmed and the adapter is a day or two of work. A demo
    that blurs those three is a demo that gets caught. */
 
-import * as U from './ui.js?v=a2aa80d688';
-import * as F from './fmt.js?v=a2aa80d688';
-import { esc, icon, brandMark, connTile } from './icons.js?v=a2aa80d688';
-import { paletteFrom, contrast, mix } from './settings.js?v=a2aa80d688';
-import { statusWord } from './pages/misc.js?v=a2aa80d688';
-import { locked } from './site.js?v=a2aa80d688';
+import * as U from './ui.js?v=4f9513663c';
+import * as F from './fmt.js?v=4f9513663c';
+import { esc, icon, brandMark, connTile } from './icons.js?v=4f9513663c';
+import { paletteFrom, contrast, mix } from './settings.js?v=4f9513663c';
+import { statusWord } from './pages/misc.js?v=4f9513663c';
+import { locked } from './site.js?v=4f9513663c';
 
 /* ⚖️ Matt, 2026-11-02: *"i would also love for the settings pages to be
    intentionally built out in a very user friendly and pleasing to the eye kind
@@ -85,7 +85,7 @@ export function settings(ctx) {
   return U.pageHead({
     eyebrow: 'Settings',
     title: 'Settings',
-    answer: s.tenant ? `How this Hub looks and who sees what. A change here shows in this browser,
+    answer: s.tenant ? `How BI looks and who sees what. A change here shows in this browser,
       and the next build follows the settings file your administrator keeps.`
       : `Make this demo yours: name, logo, colors and type. It stays in this browser only.
       Every figure is read from connected software, so nothing else here can be edited.`,
@@ -115,7 +115,7 @@ function brandTab(ctx) {
 
   return U.panel({
     title: 'Identity', ico: 'compass',
-    note: 'What this Hub is called and what it wears.',
+    note: 'What BI is called and what it wears.',
     body:
       srow({
         id: 'f-company', name: 'Company name',
@@ -200,9 +200,9 @@ function connsTab(ctx) {
   const missing = counts.filter(x => !x.on && x.all);
 
   const header = U.panel({
-    title: 'What this Hub reads',
-    note: s.tenant ? 'What this Hub is connected to. A page whose source is not connected says so rather than showing a number from nowhere.'
-      : `Where every figure in this demo comes from. Finance, CRM, marketing and pipeline are read from the company's own software with no manual entry. Documents and HR are hosted inside the Hub. Read only in the demo.`,
+    title: 'What BI reads',
+    note: s.tenant ? 'What BI is connected to. A page whose source is not connected says so rather than showing a number from nowhere.'
+      : `Where every figure in this demo comes from. Finance, CRM, marketing and pipeline are read from the company's own software with no manual entry. Documents and HR are hosted inside BI. Read only in the demo.`,
     body: `<div class="strip" style="margin:4px 0 0">
       ${counts.map(x => `<div class="strip-item">
         <div class="strip-label">${esc(x.c.name)}</div>
@@ -311,13 +311,13 @@ function stepsFor(c) {
     return [
       `You are sent to <b>${esc(c.name)}</b> to sign in as yourself.`,
       `${esc(c.name)} asks you to approve the read scopes listed below. Nothing else is requested.`,
-      `The token comes back to the Hub and is stored encrypted. The password never reaches us.`,
+      `The token comes back to BI and is stored encrypted. The password never reaches us.`,
       `A first read runs immediately so you can see the figures land, then it refreshes on the schedule you set.`,
     ];
   }
   if (auth.includes('certificate')) {
     return [
-      `Your IT provider issues a certificate for the Hub’s application registration.`,
+      `Your IT provider issues a certificate for BI’s application registration.`,
       `An administrator grants the read permissions below, scoped to the sites and companies you name.`,
       `The private key is held as a secret, never in a file beside the code.`,
       `A first read proves the grant, and the result is written into the dashboard’s feed table.`,
@@ -328,11 +328,11 @@ function stepsFor(c) {
       `You create a read-only key inside ${esc(c.name)}.`,
       `Paste it here once. It is stored encrypted and never shown again.`,
       `We read on a schedule and record every read, so a figure can always be traced to the pull that produced it.`,
-      `Revoking the key in ${esc(c.name)} stops the Hub reading, immediately and completely.`,
+      `Revoking the key in ${esc(c.name)} stops BI reading, immediately and completely.`,
     ];
   }
   return [
-    `A read-only user is created in ${esc(c.name)} for the Hub.`,
+    `A read-only user is created in ${esc(c.name)} for BI.`,
     `The credentials are stored as secrets.`,
     `A first read runs and ties its totals to a report you already trust before anything goes on a page.`,
     `From then on it reads on a schedule.`,
