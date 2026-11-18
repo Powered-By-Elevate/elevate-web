@@ -323,3 +323,22 @@
 .ed-facts > div { display: grid; gap: 4px; padding: 14px 16px; border-radius: 12px; background: var(--tint); }
 .ed-facts b { font: 600 26px/1 var(--font-display); color: var(--accent-deep); }
 .ed-facts span { font-size: 12.5px; color: var(--ink-soft); }
+
+/* --- phone width (the 2026-11-18 audit): every demo scrolled sideways on a phone. Calm's own
+   520px rule stacks .cm-head, but the detail block below it in calm.css sets the head's columns
+   again and wins on order, so the stamp sat beside the title and pushed the page 60px wide. The
+   three-figure row never stacked, and a strip label could not wrap inside its grid cell. Loaded
+   last, so this is the rule that holds. */
+.cm > *, .cm-split > *, .cm-main, .cm-aside, .cm-titles { min-width: 0; }
+.strip-item, .strip-label, .fig-open { min-width: 0; }
+@media (max-width: 520px) {
+  .cm-head, .cm-head:not(:has(.cm-mark)) { grid-template-columns: minmax(0, 1fr); }
+  .cm-head:has(.cm-mark) { grid-template-columns: auto minmax(0, 1fr); }
+  .cm-head > .cm-stamp { grid-column: 1 / -1; text-align: left; }
+  .cm-figs.n3 { grid-template-columns: minmax(0, 1fr); }
+  .strip-item { flex-basis: 0; }
+  .strip-label, .fig-open, .cm-strip .fig-open span { white-space: normal; text-align: left; overflow: visible; text-overflow: clip; }
+  :root[data-look="bright"] .cm-strip .strip-item { grid-template-columns: minmax(0, 1fr); padding: 16px 16px 14px; }
+  :root[data-look="bright"] .cm-strip .strip-label { margin-top: 12px; }
+  :root[data-look="bright"] .cm-strip .strip-value { margin-top: 6px; font-size: 30px; }
+}

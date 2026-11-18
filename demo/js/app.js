@@ -7,22 +7,27 @@
    a single figure on the page is shown disabled with its reason, rather than
    offered and then doing nothing. */
 
-import { Settings, paletteFrom } from './settings.js?v=831769d7d1';
-import { Q, loadData } from './query.js?v=831769d7d1';
-import * as F from './fmt.js?v=831769d7d1';
-import * as C from './chart.js?v=831769d7d1';
-import * as U from './ui.js?v=831769d7d1';
-import { esc, icon, brandMark } from './icons.js?v=831769d7d1';
-import { financePages } from './pages/finance.js?v=831769d7d1';
-import { opsPages } from './pages/ops.js?v=831769d7d1';
-import { miscPages } from './pages/misc.js?v=831769d7d1';
-import { hrPages, HR_PAGES } from './pages/hr.js?v=831769d7d1';
-import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=831769d7d1';
-import * as Chooser from './chooser.js?v=831769d7d1';
-import * as Present from './present.js?v=831769d7d1';
-import * as World from './world.js?v=831769d7d1';
-import * as Gate from './gate.js?v=831769d7d1';
-import * as Site from './site.js?v=831769d7d1';
+import { Settings, paletteFrom } from './settings.js?v=c00326536b';
+import { Q, loadData } from './query.js?v=c00326536b';
+import * as F from './fmt.js?v=c00326536b';
+import * as C from './chart.js?v=c00326536b';
+import * as U from './ui.js?v=c00326536b';
+import { esc, icon, brandMark } from './icons.js?v=c00326536b';
+import { financePages } from './pages/finance.js?v=c00326536b';
+import { opsPages } from './pages/ops.js?v=c00326536b';
+import { miscPages } from './pages/misc.js?v=c00326536b';
+import { hrPages, HR_PAGES } from './pages/hr.js?v=c00326536b';
+import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=c00326536b';
+import * as Chooser from './chooser.js?v=c00326536b';
+import * as Present from './present.js?v=c00326536b';
+import * as World from './world.js?v=c00326536b';
+import * as Gate from './gate.js?v=c00326536b';
+import * as Site from './site.js?v=c00326536b';
+
+/* Every tab opens at the top, also when you come back to it with Back (Matt's standing rule,
+   2026-11-18). The page scrolls to the top on every route, and the browser may not put an old
+   position back afterwards. */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 const BASIS = [
   { id: 'month', name: 'Month' }, { id: 'ytd', name: 'YTD' },

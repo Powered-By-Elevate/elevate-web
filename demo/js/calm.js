@@ -12,9 +12,9 @@
    5. Hairlines, not boxes. One accent for "done", one second tone for "ahead",
       grey for the plan. The same meaning on every page. */
 
-import { esc } from './icons.js?v=831769d7d1';
-import * as F from './fmt.js?v=831769d7d1';
-import { spark } from './chart.js?v=831769d7d1';
+import { esc } from './icons.js?v=c00326536b';
+import * as F from './fmt.js?v=c00326536b';
+import { spark } from './chart.js?v=c00326536b';
 
 export function head({ eyebrow, title, line = '', stamp = '', mark = '' }) {
   return `<header class="cm-head">${mark ? `<span class="cm-mark">${mark}</span>` : ''}
