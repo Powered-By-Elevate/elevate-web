@@ -406,8 +406,13 @@ function travel(){document.querySelectorAll('.phone--loop').forEach(function(p){
 addEventListener('resize',travel);travel();
 if(reduce||!window.gsap){document.querySelectorAll('.rv').forEach(function(e){e.style.opacity=1;e.style.transform='none'});return;}
 gsap.registerPlugin(ScrollTrigger);
-var lenis=new Lenis({lerp:.11});window.__lenis=lenis;lenis.on('scroll',ScrollTrigger.update);
-gsap.ticker.add(function(t){lenis.raf(t*1000)});gsap.ticker.lagSmoothing(0);
+/* smooth scrolling only with a mouse or trackpad. On a phone, iOS scrolls the page itself:
+   a second scroller fighting it inside a frame is what made the page jump (Matt's recording,
+   2026-11-18), and the toolbar showing or hiding must not re-measure every animation. */
+var touch=matchMedia('(pointer: coarse)').matches;
+ScrollTrigger.config({ignoreMobileResize:true});
+if(!touch){var lenis=new Lenis({lerp:.11});window.__lenis=lenis;lenis.on('scroll',ScrollTrigger.update);
+gsap.ticker.add(function(t){lenis.raf(t*1000)});gsap.ticker.lagSmoothing(0);}
 var EASE='power3.out';
 /* the device mockups: scale each stage to its box and map the screen into the glass */
 function homog(s,d){var A=[],B=[];for(var i=0;i<4;i++){var x=s[i][0],y=s[i][1],u=d[i][0],v=d[i][1];
@@ -444,7 +449,7 @@ gsap.utils.toArray('.beat__photo > div').forEach(function(d){gsap.fromTo(d,{yPer
 gsap.utils.toArray('.beat__copy').forEach(function(c){gsap.from(c.children,{y:26,opacity:0,duration:.9,ease:EASE,stagger:.07,scrollTrigger:{trigger:c,start:'top 82%'}})});
 document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelector('.devwrap'),s=h.querySelector('.dev__screen'),img=s.querySelector('img');
  ScrollTrigger.create({trigger:h,start:'top bottom',end:'bottom top',onUpdate:function(self){var k=self.progress;
-  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});gsap.set(tl,{y:30-60*k,rotate:-2+3*k});}});});
+  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});if(!touch)gsap.set(tl,{y:30-60*k,rotate:-2+3*k});}});});
 /* the dashboard: lid opens, the screen scrolls, the figures float up and count */
 (function(){var lap=document.querySelector('.devwrap--laptop');if(!lap)return;var scr=lap.querySelector('.dev__screen'),img=scr.querySelector('img');
  gsap.fromTo(lap,{y:80,rotate:-3,opacity:0},{y:0,rotate:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.lap',start:'top 95%',end:'top 50%',scrub:.7}});
