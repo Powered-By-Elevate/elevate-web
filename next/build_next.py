@@ -26,20 +26,20 @@ def mark(i):
 BEATS = [
     ("finance", "Financial management", "A close you can set a clock by.",
      "The close, the reporting and the forecast, run on a fixed calendar.",
-     B.BIZ[0][3][:4], "bi-education-fin-dash.jpg", "Financial dashboard"),
+     B.BIZ[0][3][:4], ("photo", "team-papers.jpg", "Month-end close, signed off"), ""),
     ("people", "HR, payroll &amp; people", "One home base for every employee.",
      "Payroll, onboarding and personnel records, handled by people who know your team.",
-     B.BIZ[3][3], "bi-education-hr-home.jpg", "HR home"),
+     B.BIZ[3][3], ("photo", "team-laugh.jpg", "One home base for every employee"), ""),
     ("marketing", "Marketing", "Campaigns on the same cadence as the books.",
      "Brand, collateral and campaigns, measured against what they bring in.",
-     B.BIZ[4][3] + ["Enrollment marketing for schools"], "bi-education-pipeline-home.jpg", "Marketing &amp; enrollment"),
+     B.BIZ[4][3] + ["Enrollment marketing for schools"], ("photo", "team-plan.jpg", "Campaigns held to a calendar"), ""),
     ("bi", "Business intelligence", "Every number, live.",
      "One dashboard for every entity, read straight from the systems you already use.",
-     B.BIZ[5][3], "bi-construction-home.jpg", "Start here"),
+     B.BIZ[5][3], ("phone", "bi-construction-home.jpg", "The real dashboard, on a sample company"), ""),
     ("schools", "Education", "The complete back office for schools.",
      "Accounting, payroll, compliance and enrollment, from the planning year to every audit after.",
      ["Monthly board financial reports", "Payroll and tax filings", "Grants and compliance", "New school launch"],
-     "bi-education-ops-second.jpg", "Enrollment &amp; attendance"),
+     ("photo", "school-chalk.jpg", "From planning year to every audit"), ""),
 ]
 
 CSS = r"""
@@ -129,27 +129,34 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .beat__copy ul{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:10px}
 .beat__copy li{display:flex;gap:12px;align-items:baseline;color:var(--ink)}
 .beat__copy li::before{content:"";flex:none;width:18px;height:1.5px;background:var(--gold);translate:0 -4px}
-.beat .phone{width:min(280px,72vw);margin-inline:auto}
+.beat .phone{width:min(260px,68vw);margin-inline:auto}
+.beat__photo{position:relative;aspect-ratio:4/3;border-radius:24px;overflow:hidden;box-shadow:0 40px 70px -45px rgba(6,58,71,.5)}
+.beat__photo>div{position:absolute;inset:-6%;background-size:cover;background-position:center}
+.pill{position:absolute;left:18px;bottom:18px;z-index:2;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-radius:99px;padding:10px 16px;font:500 14px/1 var(--sans);color:var(--ink);box-shadow:0 14px 30px -18px rgba(6,58,71,.6)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--gold)}
 .chips{display:none}
-.story__phone{display:none}
+.story__visual{display:none}
 .nav__cta{display:inline-flex;padding:11px 18px;font-size:14px}
 @media(min-width:960px){.nav__cta{display:none}}
 @media(min-width:1000px){
  .story.pinned .story__stage{height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:60px}
  .story.pinned .story__beats{position:relative;display:block;padding:0;height:62vh}
  .story.pinned .beat{position:absolute;inset:0;opacity:0;visibility:hidden}
- .story.pinned .beat .phone{display:none}
+ .story.pinned .beat .beat__vis{display:none}
  .story.pinned .beat.on{opacity:1;visibility:visible}
- .story.pinned .story__phone{display:block;position:relative;justify-self:center;width:clamp(270px,22vw,320px)}
+ .story.pinned .story__visual{display:block;position:relative;width:100%;height:min(66vh,560px)}
  .story.pinned .chips{display:flex;gap:8px;position:absolute;top:calc(76px + 18px);left:0;right:0;flex-wrap:wrap}
 }
 .chips button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:9px 15px;font:500 13.5px/1 var(--sans);color:var(--ink2);cursor:pointer;transition:all .3s var(--ease)}
 .chips button.on{background:var(--teal);border-color:var(--teal);color:#fff}
-.story__phone .phone__screen img{opacity:0;transition:opacity .5s var(--ease)}
-.story__phone .phone__screen img.on{opacity:1}
-.story__phone .cap{position:absolute;left:50%;bottom:-46px;translate:-50% 0;white-space:nowrap;font:500 13px/1 var(--sans);color:var(--ink2);display:flex;gap:8px;align-items:center}
-.story__phone .cap i{width:7px;height:7px;border-radius:50%;background:#2fb36f}
-.story__glow{position:absolute;inset:-12%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,rgba(47,157,168,.25),transparent);transition:background .8s var(--ease)}
+.vis{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .7s var(--ease),visibility .7s,transform .9s var(--ease);transform:scale(.97)}
+.vis.on{opacity:1;visibility:visible;transform:none}
+.vis--photo{border-radius:28px;overflow:hidden;box-shadow:0 50px 90px -55px rgba(6,58,71,.55)}
+.vis--photo>div{position:absolute;inset:-8%;background-size:cover;background-position:center;will-change:transform}
+.vis--phone{display:grid;place-items:center}
+.vis--phone::before{content:"";position:absolute;inset:4% 8%;border-radius:28px;background:radial-gradient(70% 60% at 50% 45%,rgba(47,157,168,.22),transparent 70%),linear-gradient(160deg,var(--tint),#fff)}
+.vis--phone .phone{position:absolute;left:50%;top:2%;translate:-50% 0;height:86%;width:auto}
+.vis--phone .pill{left:50%;translate:-50% 0;bottom:1%;white-space:nowrap}
 
 /* rhythm */
 .rhythm{background:#fff;padding:clamp(90px,10vw,140px) 0;position:relative;overflow:hidden}
@@ -249,19 +256,19 @@ var path=document.querySelector('.rhythm path');if(path){var L=path.getTotalLeng
 var mm=gsap.matchMedia();
 mm.add('(min-width: 1000px)',function(){
  var story=document.querySelector('.story'),beats=[].slice.call(story.querySelectorAll('.beat')),N=beats.length;
- var shots=[].slice.call(story.querySelectorAll('.story__phone img')),screen=story.querySelector('.story__phone .phone__screen');
- var chips=[].slice.call(story.querySelectorAll('.chips button')),cap=story.querySelector('.story__phone .cap span'),glow=story.querySelector('.story__glow');
- var GLOWS=['rgba(47,157,168,.25)','rgba(230,192,104,.30)','rgba(12,105,128,.22)','rgba(47,157,168,.30)','rgba(230,192,104,.34)'];
+ var vis=[].slice.call(story.querySelectorAll('.vis')),chips=[].slice.call(story.querySelectorAll('.chips button'));
  story.classList.add('pinned');var cur=-1;
- function show(i){if(i===cur)return;cur=i;beats.forEach(function(b,j){b.classList.toggle('on',j===i)});shots.forEach(function(s,j){s.classList.toggle('on',j===i)});
-  chips.forEach(function(c,j){c.classList.toggle('on',j===i)});cap.innerHTML=beats[i].dataset.cap;glow.style.background='radial-gradient(closest-side,'+GLOWS[i%GLOWS.length]+',transparent)';
+ function show(i){if(i===cur)return;cur=i;beats.forEach(function(b,j){b.classList.toggle('on',j===i)});vis.forEach(function(v,j){v.classList.toggle('on',j===i)});
+  chips.forEach(function(c,j){c.classList.toggle('on',j===i)});
   gsap.fromTo(beats[i].querySelectorAll('.beat__copy > *'),{y:22,opacity:0},{y:0,opacity:1,duration:.6,ease:EASE,stagger:.06,overwrite:true});}
  show(0);
+ /* within a beat the scroll drives the visual: a photo drifts and settles, the one phone scrolls its page */
+ function scrub(i,local){var v=vis[i];if(v.classList.contains('vis--photo')){gsap.set(v.firstElementChild,{scale:1.1-.1*local,yPercent:3-6*local});}
+  else{var s=v.querySelector('.phone__screen'),img=s.querySelector('img');gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*local});}}
  var st=ScrollTrigger.create({trigger:story.querySelector('.story__stage'),start:'top top',end:'+='+(N*90)+'%',pin:true,
-  onUpdate:function(self){var p=self.progress*N,i=Math.min(N-1,Math.floor(p)),local=Math.min(1,Math.max(0,(p-i-.12)/.76));show(i);
-   var img=shots[i],t=Math.max(0,img.clientHeight-screen.clientHeight);gsap.set(img,{y:-t*local});}});
+  onUpdate:function(self){var p=self.progress*N,i=Math.min(N-1,Math.floor(p)),local=Math.min(1,Math.max(0,(p-i-.08)/.84));show(i);scrub(i,local);}});
  chips.forEach(function(c,j){c.addEventListener('click',function(){lenis.scrollTo(st.start+(st.end-st.start)*(j+.15)/N)})});
- return function(){story.classList.remove('pinned');shots.forEach(function(s){gsap.set(s,{clearProps:'transform'})})};
+ return function(){story.classList.remove('pinned');vis.forEach(function(v){gsap.set(v.querySelectorAll('div,img'),{clearProps:'transform'})})};
 });
 addEventListener('load',function(){travel();ScrollTrigger.refresh()});
 })();
@@ -273,12 +280,19 @@ def phone(img, loop=False, cls=""):
 
 def build():
     beats_html = ""
-    for k, eb, title, line, bullets, shot, cap in BEATS:
+    vis = ""
+    for k, eb, title, line, bullets, (kind, f, label), _ in BEATS:
         li = "".join(f"<li>{b}</li>" for b in bullets)
-        beats_html += (f'<article class="beat" data-cap="{cap}"><div class="beat__copy"><span class="eyebrow">{eb}</span>'
-                       f'<h3>{title}</h3><p class="lede">{line}</p><ul>{li}</ul></div>{phone(shot, loop=True)}</article>')
+        pill = f'<span class="pill"><i></i>{label}</span>'
+        if kind == "phone":
+            small = f'<div class="beat__vis">{phone(f, loop=True)}</div>'
+            vis += f'<div class="vis vis--phone">{phone(f)}{pill}</div>'
+        else:
+            small = f'<div class="beat__vis beat__photo"><div style="background-image:url(/img/{f})"></div>{pill}</div>'
+            vis += f'<div class="vis vis--photo"><div style="background-image:url(/img/{f})"></div>{pill}</div>'
+        beats_html += (f'<article class="beat"><div class="beat__copy"><span class="eyebrow">{eb}</span>'
+                       f'<h3>{title}</h3><p class="lede">{line}</p><ul>{li}</ul></div>{small}</article>')
     chips = "".join(f'<button type="button">{eb}</button>' for _, eb, *_ in BEATS)
-    shots = "".join(f'<img src="img/{b[5]}" alt="">' for b in BEATS)
     logos = [("client-tnc.png", "True North Companies"), ("client-trueplaces.png", "True Places"), ("client-tnk12.png", "TNK12"),
              ("client-belton.png", "Belton Preparatory Academy"), ("client-aia.png", "American Innovation Academies")]
     one = "".join(f'<img src="/img/{f}" alt="{a}">' for f, a in logos) + "<span>Upstate Prep Academy</span>"
@@ -307,7 +321,7 @@ def build():
 <section class="story" id="services"><div class="shell"><div class="story__intro"><span class="eyebrow rv">What we run</span>
 <h2 class="h2 rv">One team behind <em>the whole back office.</em></h2></div>
 <div class="story__stage"><div class="chips">{chips}</div><div class="story__beats">{beats_html}</div>
-<div class="story__phone"><div class="story__glow"></div><div class="phone"><div class="phone__screen">{shots}<span class="phone__bar"></span></div></div><div class="cap"><i></i><span></span></div></div></div>
+<div class="story__visual">{vis}</div></div>
 </div></section>
 
 <section class="rhythm"><div class="shell"><div class="rhythm__head"><span class="eyebrow rv">How we start</span><h2 class="h2 rv">From first call to <em>a monthly rhythm.</em></h2></div>
