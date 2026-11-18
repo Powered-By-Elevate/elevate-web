@@ -97,6 +97,15 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .chip--a{left:9%;bottom:12%}.chip--b{right:9%;top:12%}
 @media(max-width:700px){.chip--b{display:none}.chip--a{left:8%;bottom:8%}}
 
+/* photographic devices (Matt's mockups): the device PNG on top, the live screen mapped into its glass
+   with a CSS matrix3d computed from the screen's four corners, clipped to the device outline */
+.dev{position:relative;width:100%}
+.dev__stage{position:absolute;left:0;top:0;transform-origin:0 0}
+.dev__clip{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.dev__screen{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:#f4f7f8}
+.dev__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
+.dev__frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.dev__shadow{position:absolute;left:14%;right:10%;bottom:-4%;height:8%;border-radius:50%;background:radial-gradient(closest-side,rgba(6,58,71,.38),rgba(6,58,71,0));filter:blur(8px)}
 /* the device: a titanium body with real thickness (stacked layers behind the face), a thin
    bezel, the island, a status bar, a diagonal glare, and a shadow on the ground under it */
 .phone{position:relative;aspect-ratio:9/19.5;transform-style:preserve-3d}
@@ -235,7 +244,10 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .dash .shell{display:grid;gap:50px;align-items:center}
 @media(min-width:1000px){.dash .shell{grid-template-columns:.75fr 1.25fr}}
 .dash__copy{display:grid;gap:20px}
-.lap{position:relative;perspective:2200px;padding:10px 0 150px}
+.lap{position:relative;padding:20px 0 40px}
+.devwrap--laptop{width:min(560px,92%);margin:0 auto}
+.devwrap--phone{width:min(300px,70vw);margin:0 auto;padding:2% 0 6%}
+@media(min-width:1000px){.beat .tilt-host .devwrap--phone{width:310px}}
 .mac{position:relative;width:86%;margin:0 auto;transform-style:preserve-3d;transform:rotateX(-18deg) rotateY(-16deg) rotateZ(1deg)}
 .lap__lid{position:relative;transform-origin:50% 100%;transform:rotateX(var(--open,-10deg));transform-style:preserve-3d;border-radius:3.2%/5%;padding:.5%;
  background:linear-gradient(135deg,#eef0f2,#b7bbc0 40%,#e2e4e7 60%,#a7abb0)}
@@ -306,6 +318,17 @@ gsap.registerPlugin(ScrollTrigger);
 var lenis=new Lenis({lerp:.11});window.__lenis=lenis;lenis.on('scroll',ScrollTrigger.update);
 gsap.ticker.add(function(t){lenis.raf(t*1000)});gsap.ticker.lagSmoothing(0);
 var EASE='power3.out';
+/* the device mockups: scale each stage to its box and map the screen into the glass */
+function homog(s,d){var A=[],B=[];for(var i=0;i<4;i++){var x=s[i][0],y=s[i][1],u=d[i][0],v=d[i][1];
+ A.push([x,y,1,0,0,0,-u*x,-u*y]);B.push(u);A.push([0,0,0,x,y,1,-v*x,-v*y]);B.push(v);}
+ for(var c=0;c<8;c++){var p=c;for(var r=c+1;r<8;r++)if(Math.abs(A[r][c])>Math.abs(A[p][c]))p=r;var t=A[c];A[c]=A[p];A[p]=t;t=B[c];B[c]=B[p];B[p]=t;
+  for(r=c+1;r<8;r++){var f=A[r][c]/A[c][c];for(var k=c;k<8;k++)A[r][k]-=f*A[c][k];B[r]-=f*B[c];}}
+ var h=new Array(8);for(c=7;c>=0;c--){var s2=B[c];for(k=c+1;k<8;k++)s2-=A[c][k]*h[k];h[c]=s2/A[c][c];}
+ return 'matrix3d('+[h[0],h[3],0,h[6],h[1],h[4],0,h[7],0,0,1,0,h[2],h[5],0,1].join(',')+')';}
+function fitDevices(){document.querySelectorAll('.dev').forEach(function(d){var W=+d.dataset.w,st=d.querySelector('.dev__stage'),sc=d.querySelector('.dev__screen');
+ st.style.transform='scale('+(d.clientWidth/W)+')';
+ if(!sc.dataset.m){var sw=+d.dataset.sw,sh=+d.dataset.sh,q=JSON.parse(d.dataset.quad);sc.style.transform=homog([[0,0],[sw,0],[sw,sh],[0,sh]],q);sc.dataset.m=1;}});}
+addEventListener('resize',fitDevices);fitDevices();
 /* hero: lines rise in, then the photo opens from a framed card to the full width as you scroll */
 gsap.from('.hero .rv-in',{y:40,opacity:0,duration:1.1,ease:EASE,stagger:.09,delay:.1});
 gsap.from('.hero__frame',{y:60,opacity:0,duration:1.3,ease:EASE,delay:.3});
@@ -328,18 +351,19 @@ gsap.utils.toArray('.step').forEach(function(s,i){gsap.from(s,{y:50,opacity:0,du
    phone scrolls its screen and straightens while it is on screen. Nothing holds the page. */
 gsap.utils.toArray('.beat__photo > div').forEach(function(d){gsap.fromTo(d,{yPercent:-5,scale:1.06},{yPercent:5,scale:1,ease:'none',scrollTrigger:{trigger:d.parentNode,start:'top bottom',end:'bottom top',scrub:.6}})});
 gsap.utils.toArray('.beat__copy').forEach(function(c){gsap.from(c.children,{y:26,opacity:0,duration:.9,ease:EASE,stagger:.07,scrollTrigger:{trigger:c,start:'top 82%'}})});
-document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelector('.tilt--r'),s=tl.querySelector('.phone__screen'),img=s.querySelector('img');
+document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelector('.devwrap'),s=h.querySelector('.dev__screen'),img=s.querySelector('img');
  ScrollTrigger.create({trigger:h,start:'top bottom',end:'bottom top',onUpdate:function(self){var k=self.progress;
-  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});gsap.set(tl,{'--ry':(26-12*k)+'deg','--rx':(10-4*k)+'deg'});}});});
+  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});gsap.set(tl,{y:30-60*k,rotate:-2+3*k});}});});
 /* the dashboard: lid opens, the screen scrolls, the figures float up and count */
-(function(){var lid=document.querySelector('.lap__lid');if(!lid)return;var scr=lid.querySelector('.lap__screen'),img=scr.querySelector('img');
- gsap.fromTo(lid,{'--open':'72deg'},{'--open':'-10deg',ease:'none',scrollTrigger:{trigger:'.lap',start:'top 95%',end:'top 40%',scrub:.7}});
- ScrollTrigger.create({trigger:'.lap',start:'top 40%',end:'bottom top',onUpdate:function(self){gsap.set(img,{y:-Math.max(0,img.clientHeight-scr.clientHeight)*self.progress})}});
+(function(){var lap=document.querySelector('.devwrap--laptop');if(!lap)return;var scr=lap.querySelector('.dev__screen'),img=scr.querySelector('img');
+ gsap.fromTo(lap,{y:80,rotate:-3,opacity:0},{y:0,rotate:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.lap',start:'top 95%',end:'top 50%',scrub:.7}});
+ gsap.to(lap,{y:-40,ease:'none',scrollTrigger:{trigger:'.lap',start:'top 50%',end:'bottom top',scrub:.8}});
+ ScrollTrigger.create({trigger:'.lap',start:'top 70%',end:'bottom top',onUpdate:function(self){gsap.set(img,{y:-Math.max(0,img.clientHeight-scr.clientHeight)*self.progress})}});
  gsap.utils.toArray('.stat').forEach(function(s,i){gsap.fromTo(s,{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:EASE,delay:.15+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'}});
   gsap.to(s,{y:[-36,24,-18][i],ease:'none',scrollTrigger:{trigger:'.lap',start:'top bottom',end:'bottom top',scrub:.8}});
   var b=s.querySelector('b'),to=parseFloat(b.dataset.to),dec=+(b.dataset.dec||0),pre=b.dataset.pre||'',suf=b.dataset.suf||'',o={v:0};
   gsap.fromTo(o,{v:0},{v:to,duration:1.6,ease:'power2.out',delay:.35+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'},onUpdate:function(){b.textContent=pre+o.v.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf}});});})();
-addEventListener('load',function(){travel();ScrollTrigger.refresh()});
+addEventListener('load',function(){travel();fitDevices();ScrollTrigger.refresh()});
 })();
 </script>"""
 
@@ -351,6 +375,20 @@ STATUS = ('<div class="phone__status"><span>9:41</span><span>'
           '<svg viewBox="0 0 16 12"><path d="M8 11.5l2.2-2.6a3.2 3.2 0 00-4.4 0zM3.4 6.3a6.8 6.8 0 019.2 0l1.6-1.9a9.4 9.4 0 00-12.4 0zM0 2.4l1.6 1.9a11.6 11.6 0 0112.8 0L16 2.4a14.2 14.2 0 00-16 0z"/></svg>'
           '<svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" opacity=".45"/></svg>'
           '</span></div>')
+
+DEV = json.loads((HERE / "devices.json").read_text())
+
+def device(kind, shot, screen_w, alt=""):
+    """One of Matt's device mockups with a live, scrollable screen."""
+    import math
+    m = DEV[kind]; q = m["quad"]
+    qw = math.dist(q[0], q[1]); qh = math.dist(q[0], q[3])
+    sw = screen_w; sh = round(screen_w * qh / qw)
+    return (f'<div class="dev dev--{kind}" data-w="{m["w"]}" data-h="{m["h"]}" data-sw="{sw}" data-sh="{sh}" data-quad="{json.dumps(q)}" style="aspect-ratio:{m["w"]}/{m["h"]}">'
+            f'<span class="dev__shadow"></span><div class="dev__stage" style="width:{m["w"]}px;height:{m["h"]}px">'
+            f'<div class="dev__clip" style="-webkit-mask-image:url(img/device-{kind}-mask.png);mask-image:url(img/device-{kind}-mask.png)">'
+            f'<div class="dev__screen" style="width:{sw}px;height:{sh}px"><img src="img/{shot}" alt="{alt}" loading="lazy"></div></div>'
+            f'<img class="dev__frame" src="img/device-{kind}.png" alt=""></div></div>')
 
 def phone(img, loop=False, cls="", depth=9):
     layers = "".join(f'<span class="phone__layer" style="transform:translateZ({-k}px)"></span>' for k in range(depth, 0, -1))
@@ -365,8 +403,7 @@ def build():
         li = "".join(f"<li>{b}</li>" for b in bullets)
         pill = f'<span class="pill"><i></i>{label}</span>'
         if kind == "phone":
-            small = (f'<div class="beat__vis tilt-host"><div class="duo">{tilt(phone("bi-construction-ops-watch.jpg", depth=7), right=False, cls="tilt--back")}'
-                     f'{tilt(phone(f), right=True)}<span class="ground"></span></div></div>')
+            small = f'<div class="beat__vis tilt-host"><div class="devwrap devwrap--phone">{device("phone", f, 390)}</div></div>'
         else:
             small = f'<div class="beat__vis beat__photo"><div style="background-image:url(/img/{f})"></div>{pill}</div>'
         beats_html += (f'<article class="beat"><div class="beat__copy"><span class="eyebrow">{eb}</span>'
@@ -425,7 +462,7 @@ def build():
 <section class="dash"><div class="shell"><div class="dash__copy"><span class="eyebrow rv">Business intelligence</span><h2 class="h2 rv">Leaders see the answer. <em>Finance sees the detail.</em></h2>
 <p class="lede rv">One dashboard for every entity, cut to each person&rsquo;s role.</p>
 <div class="rv"><a class="btn btn--teal" href="/dashboard">Take the tour</a></div><p class="dash__note rv">Figures from the sample school network in the demo.</p></div>
-<div class="lap"><span class="lap__shadow"></span><div class="mac"><div class="lap__lid"><div class="lap__bezel"><div class="lap__screen"><span class="lap__notch"></span><img src="img/bi-desk-education-home.jpg" alt="The Elevate BI dashboard on a sample school network" loading="lazy"></div></div></div><div class="lap__deck"><div class="lap__keys"><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><span class="lap__pad"></span><span class="lap__lip"></span></div></div>
+<div class="lap"><div class="devwrap devwrap--laptop">{device("laptop", "bi-desk-education-home.jpg", 1280, "The Elevate BI dashboard on a sample school network")}</div>
 <div class="stat stat--a"><small>Revenue</small><b data-to="21.9" data-dec="1" data-pre="$" data-suf="M">$21.9M</b><em>Year to date</em></div>
 <div class="stat stat--b"><small>Seats filled</small><b data-to="86.6" data-dec="1" data-suf="%">86.6%</b><em>Across six campuses</em></div>
 <div class="stat stat--c"><small>Students enrolled</small><b data-to="2582">2,582</b><em>Read from the SIS</em></div></div></div></section>
