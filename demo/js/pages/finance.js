@@ -2,11 +2,11 @@
    page opens on a sentence that answers the page's own question, and every
    figure beside it is the figure that sentence used. */
 
-import * as F from '../fmt.js?v=4f9513663c';
-import * as C from '../chart.js?v=4f9513663c';
-import * as U from '../ui.js?v=4f9513663c';
-import { esc, icon } from '../icons.js?v=4f9513663c';
-import * as M from '../calm.js?v=4f9513663c';
+import * as F from '../fmt.js?v=831769d7d1';
+import * as C from '../chart.js?v=831769d7d1';
+import * as U from '../ui.js?v=831769d7d1';
+import { esc, icon } from '../icons.js?v=831769d7d1';
+import * as M from '../calm.js?v=831769d7d1';
 
 const PL_NAMES = {};
 

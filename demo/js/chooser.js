@@ -7,11 +7,11 @@
    This is the first fifteen seconds of every demo, which is why it is a place
    of its own rather than a row of cards at the bottom of a page. */
 
-import * as F from './fmt.js?v=4f9513663c';
-import { esc, brandMark, INDUSTRY_ICON, icon } from './icons.js?v=4f9513663c';
-import { scene } from './scenes.js?v=4f9513663c';
-import { spark } from './chart.js?v=4f9513663c';
-import { PUBLIC } from './site.js?v=4f9513663c';
+import * as F from './fmt.js?v=831769d7d1';
+import { esc, brandMark, INDUSTRY_ICON, icon } from './icons.js?v=831769d7d1';
+import { scene } from './scenes.js?v=831769d7d1';
+import { spark } from './chart.js?v=831769d7d1';
+import { PUBLIC } from './site.js?v=831769d7d1';
 
 let cards = null;
 

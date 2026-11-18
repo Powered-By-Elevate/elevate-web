@@ -7,22 +7,22 @@
    a single figure on the page is shown disabled with its reason, rather than
    offered and then doing nothing. */
 
-import { Settings, paletteFrom } from './settings.js?v=4f9513663c';
-import { Q, loadData } from './query.js?v=4f9513663c';
-import * as F from './fmt.js?v=4f9513663c';
-import * as C from './chart.js?v=4f9513663c';
-import * as U from './ui.js?v=4f9513663c';
-import { esc, icon, brandMark } from './icons.js?v=4f9513663c';
-import { financePages } from './pages/finance.js?v=4f9513663c';
-import { opsPages } from './pages/ops.js?v=4f9513663c';
-import { miscPages } from './pages/misc.js?v=4f9513663c';
-import { hrPages, HR_PAGES } from './pages/hr.js?v=4f9513663c';
-import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=4f9513663c';
-import * as Chooser from './chooser.js?v=4f9513663c';
-import * as Present from './present.js?v=4f9513663c';
-import * as World from './world.js?v=4f9513663c';
-import * as Gate from './gate.js?v=4f9513663c';
-import * as Site from './site.js?v=4f9513663c';
+import { Settings, paletteFrom } from './settings.js?v=831769d7d1';
+import { Q, loadData } from './query.js?v=831769d7d1';
+import * as F from './fmt.js?v=831769d7d1';
+import * as C from './chart.js?v=831769d7d1';
+import * as U from './ui.js?v=831769d7d1';
+import { esc, icon, brandMark } from './icons.js?v=831769d7d1';
+import { financePages } from './pages/finance.js?v=831769d7d1';
+import { opsPages } from './pages/ops.js?v=831769d7d1';
+import { miscPages } from './pages/misc.js?v=831769d7d1';
+import { hrPages, HR_PAGES } from './pages/hr.js?v=831769d7d1';
+import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=831769d7d1';
+import * as Chooser from './chooser.js?v=831769d7d1';
+import * as Present from './present.js?v=831769d7d1';
+import * as World from './world.js?v=831769d7d1';
+import * as Gate from './gate.js?v=831769d7d1';
+import * as Site from './site.js?v=831769d7d1';
 
 const BASIS = [
   { id: 'month', name: 'Month' }, { id: 'ytd', name: 'YTD' },
@@ -325,7 +325,8 @@ function render() {
      wildly mismatched at 900 once the columns reflow. */
   balanceRows();
   if (Present.isOn()) Present.collect();
-  host.scrollIntoView({ block: 'start' });
+  /* framed, scrollIntoView would scroll the page around the frame as well */
+  if (!Site.EMBED) host.scrollIntoView({ block: 'start' });
   window.scrollTo({ top: 0 });
 }
 

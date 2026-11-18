@@ -2,12 +2,12 @@
    and the unit detail all come from the industry profile, which is what makes
    the same build read as a construction dashboard and a fleet dashboard. */
 
-import * as F from '../fmt.js?v=4f9513663c';
-import * as C from '../chart.js?v=4f9513663c';
-import * as U from '../ui.js?v=4f9513663c';
-import { esc, icon } from '../icons.js?v=4f9513663c';
-import { motif } from '../scenes.js?v=4f9513663c';
-import * as M from '../calm.js?v=4f9513663c';
+import * as F from '../fmt.js?v=831769d7d1';
+import * as C from '../chart.js?v=831769d7d1';
+import * as U from '../ui.js?v=831769d7d1';
+import { esc, icon } from '../icons.js?v=831769d7d1';
+import { motif } from '../scenes.js?v=831769d7d1';
+import * as M from '../calm.js?v=831769d7d1';
 
 /* ⚖️ The calm pass (Matt, 2026-11-16: *"i would never use the current financial
    dashboard we have because it is so overwhelming that it doesnt feel useful"*,
