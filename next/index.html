@@ -1,0 +1,274 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Elevate Managed Services</title><meta name="robots" content="noindex"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"><style>
+:root{--teal:#0c6980;--teal2:#2f9da8;--gold:#e6c068;--gold2:#a9822f;--ink:#2e2e2e;--ink2:#5c6668;--line:#e3e8e9;
+--paper:#fbfaf7;--grey:#f1f1f1;--tint:#eaf3f5;--cream:#f7f1e3;--deep:#063a47;
+--serif:"Bodoni Moda","Bodoni 72",Didot,Georgia,serif;--sans:"IBM Plex Sans","Segoe UI",Helvetica,Arial,sans-serif;
+--ease:cubic-bezier(.22,.8,.2,1);--shell:1240px;color-scheme:light}
+*,*::before,*::after{box-sizing:border-box}
+html.lenis,html.lenis body{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.65 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+img{max-width:100%;display:block}a{color:inherit}
+p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
+.shell{max-width:var(--shell);margin-inline:auto;padding-inline:16px}
+@media(min-width:900px){.shell{padding-inline:40px}}
+.serif{font-family:var(--serif)}
+.eyebrow{font:600 12.5px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--teal)}
+.display{font:500 clamp(46px,7.4vw,108px)/.98 var(--serif);letter-spacing:-.02em}
+.display em,.h2 em{font-style:italic;color:var(--teal)}
+.h2{font:500 clamp(34px,4.6vw,64px)/1.04 var(--serif);letter-spacing:-.015em}
+.lede{font-size:clamp(17px,1.4vw,20px);color:var(--ink2);max-width:560px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:99px;font:600 15.5px/1 var(--sans);text-decoration:none;transition:background .25s,color .25s,transform .25s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn--teal{background:var(--teal);color:#fff}.btn--teal:hover{background:var(--deep)}
+.btn--ghost{border:1px solid rgba(46,46,46,.2);color:var(--ink)}.btn--ghost:hover{border-color:var(--teal);color:var(--teal)}
+.btn--gold{background:var(--gold);color:var(--deep)}.btn--gold:hover{background:#fff}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.05;background-image:url(/img/grain-light.png);mix-blend-mode:multiply}
+
+/* nav */
+.nav{position:fixed;inset:0 0 auto;z-index:60;transition:background .4s,box-shadow .4s,backdrop-filter .4s}
+.nav.solid{background:rgba(251,250,247,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.nav .shell{display:flex;align-items:center;justify-content:space-between;min-height:76px;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.logo svg{width:40px;height:31px}
+.logo b{display:block;font:500 22px/1 var(--serif);letter-spacing:.14em}.logo small{display:block;font:600 8.5px/1 var(--sans);letter-spacing:.32em;margin-top:5px;color:var(--ink2)}
+.nav__links{display:none;gap:28px;align-items:center;font:500 15px/1 var(--sans)}
+.nav__links a{text-decoration:none}.nav__links a:not(.btn):hover{color:var(--teal)}
+@media(min-width:960px){.nav__links{display:flex}}
+
+/* hero */
+.hero{position:relative;min-height:100svh;padding-top:110px;display:grid;align-items:center;overflow:hidden}
+.hero__wash{position:absolute;inset:0;background:
+ radial-gradient(60% 55% at 85% 30%,rgba(47,157,168,.20),transparent 70%),
+ radial-gradient(45% 45% at 70% 85%,rgba(230,192,104,.22),transparent 70%),
+ linear-gradient(180deg,#fff 0%,var(--paper) 100%)}
+.hero .shell{position:relative;display:grid;gap:48px;width:100%}
+@media(min-width:1000px){.hero .shell{grid-template-columns:1.08fr .92fr;align-items:center}}
+.hero__copy{display:grid;gap:26px;align-content:center}
+.hero__copy .btns{display:flex;gap:12px;flex-wrap:wrap}
+.hero__art{position:relative;height:clamp(560px,64vw,720px)}
+@media(max-width:999px){.hero{padding-bottom:40px}.hero .phone{left:4%}}
+.hero__photo{position:absolute;inset:6% 0 10% 12%;border-radius:28px;overflow:hidden;box-shadow:0 50px 90px -50px rgba(6,58,71,.45)}
+.hero__photo div{position:absolute;inset:-12% 0;background:url(/img/team-table.jpg) center/cover}
+.hero__photo::after{content:"";position:absolute;inset:0;background:linear-gradient(200deg,rgba(255,255,255,0) 40%,rgba(6,58,71,.35))}
+.hero .phone{position:absolute;left:0;bottom:0;width:clamp(220px,22vw,290px)}
+.chip{position:absolute;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:0 18px 40px -22px rgba(6,58,71,.4);font:500 14px/1.25 var(--sans);white-space:nowrap}
+.chip i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--tint);color:var(--teal);font-style:normal;font-weight:700}
+.chip small{display:block;color:var(--ink2);font-size:12px}
+.chip--a{right:4%;top:2%}.chip--b{right:-2%;bottom:18%}
+@media(max-width:999px){.chip--b{right:2%}}
+
+/* phone */
+.phone{aspect-ratio:9/19.3;border-radius:44px;background:#121416;padding:10px;box-shadow:0 60px 80px -40px rgba(6,58,71,.55),inset 0 0 0 1.5px #3a3d40}
+.phone__screen{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:#f4f7f8}
+.phone__screen::before{content:"";position:absolute;z-index:3;top:9px;left:50%;translate:-50% 0;width:32%;height:22px;border-radius:99px;background:#121416}
+.phone__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
+.phone__bar{position:absolute;z-index:3;right:3px;top:8%;width:3px;height:16%;border-radius:3px;background:rgba(0,0,0,.28)}
+.phone--loop img{animation:scrollshot var(--loop,22s) ease-in-out infinite alternate}
+@keyframes scrollshot{0%,8%{transform:translateY(0)}92%,100%{transform:translateY(calc(-1 * var(--travel,0px)))}}
+
+/* marquee */
+.marq{padding:46px 0;border-block:1px solid var(--line);overflow:hidden;background:#fff}
+.marq__label{text-align:center;margin-bottom:26px}
+.marq__track{display:flex;width:max-content;animation:marq 38s linear infinite}
+.marq__group{display:flex;align-items:center;gap:80px;padding-right:80px}
+.marq img{height:54px;width:auto;filter:grayscale(1);opacity:.7}
+.marq span{font:500 22px/1 var(--serif);color:var(--ink2);white-space:nowrap}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* story */
+.story{position:relative;background:var(--paper)}
+.story__intro{padding:clamp(90px,10vw,140px) 0 40px;display:grid;gap:18px;max-width:900px}
+.story__stage{position:relative}
+.story__beats{display:grid;gap:80px;padding-bottom:100px}
+.beat{display:grid;gap:30px}
+.beat__copy{display:grid;gap:16px;align-content:center}
+.beat__copy h3{font:500 clamp(32px,4vw,54px)/1.05 var(--serif);letter-spacing:-.01em}
+.beat__copy ul{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:10px}
+.beat__copy li{display:flex;gap:12px;align-items:baseline;color:var(--ink)}
+.beat__copy li::before{content:"";flex:none;width:18px;height:1.5px;background:var(--gold);translate:0 -4px}
+.beat .phone{width:min(280px,72vw);margin-inline:auto}
+.chips{display:none}
+.story__phone{display:none}
+.nav__cta{display:inline-flex;padding:11px 18px;font-size:14px}
+@media(min-width:960px){.nav__cta{display:none}}
+@media(min-width:1000px){
+ .story.pinned .story__stage{height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:60px}
+ .story.pinned .story__beats{position:relative;display:block;padding:0;height:62vh}
+ .story.pinned .beat{position:absolute;inset:0;opacity:0;visibility:hidden}
+ .story.pinned .beat .phone{display:none}
+ .story.pinned .beat.on{opacity:1;visibility:visible}
+ .story.pinned .story__phone{display:block;position:relative;justify-self:center;width:clamp(270px,22vw,320px)}
+ .story.pinned .chips{display:flex;gap:8px;position:absolute;top:calc(76px + 18px);left:0;right:0;flex-wrap:wrap}
+}
+.chips button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:9px 15px;font:500 13.5px/1 var(--sans);color:var(--ink2);cursor:pointer;transition:all .3s var(--ease)}
+.chips button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.story__phone .phone__screen img{opacity:0;transition:opacity .5s var(--ease)}
+.story__phone .phone__screen img.on{opacity:1}
+.story__phone .cap{position:absolute;left:50%;bottom:-46px;translate:-50% 0;white-space:nowrap;font:500 13px/1 var(--sans);color:var(--ink2);display:flex;gap:8px;align-items:center}
+.story__phone .cap i{width:7px;height:7px;border-radius:50%;background:#2fb36f}
+.story__glow{position:absolute;inset:-12%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,rgba(47,157,168,.25),transparent);transition:background .8s var(--ease)}
+
+/* rhythm */
+.rhythm{background:#fff;padding:clamp(90px,10vw,140px) 0;position:relative;overflow:hidden}
+.rhythm__head{display:grid;gap:16px;max-width:760px;margin-bottom:64px}
+.rhythm__line{position:relative;display:grid;gap:44px}
+@media(min-width:900px){.rhythm__line{grid-template-columns:repeat(4,1fr);gap:28px}}
+.rhythm svg{position:absolute;left:0;right:0;top:9px;width:100%;height:4px;display:none}
+@media(min-width:900px){.rhythm svg{display:block}}
+.rhythm path{stroke:var(--gold);stroke-width:3;fill:none}
+.step{position:relative;display:grid;gap:10px;padding-top:44px}
+.step::before{content:"";position:absolute;top:0;left:0;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--teal)}
+.step small{font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--teal2)}
+.step h3{font:500 28px/1.1 var(--serif)}.step p{color:var(--ink2);font-size:16px}
+
+/* schools */
+.schools{position:relative;padding:clamp(90px,10vw,140px) 0;background:var(--cream);overflow:hidden}
+.schools__band{position:relative;height:clamp(300px,42vw,560px);border-radius:28px;overflow:hidden;margin-bottom:56px}
+.schools__band div{position:absolute;inset:-15% 0;background:url(/img/school-front.jpg) center/cover}
+.schools__band h2{position:absolute;left:clamp(20px,4vw,56px);bottom:clamp(20px,4vw,48px);color:#fff;max-width:760px;text-shadow:0 2px 30px rgba(0,0,0,.35)}
+.schools__band h2 em{color:var(--gold)}
+.schools__band::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,58,71,.6),transparent 60%)}
+.schools__band h2{z-index:1}
+.cards{display:grid;gap:22px}
+@media(min-width:800px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 30px 60px -45px rgba(6,58,71,.5)}
+.card div{aspect-ratio:4/3;background-size:cover;background-position:center}
+.card section{padding:20px 22px 24px;display:grid;gap:4px}
+.card h3{font:500 24px/1.15 var(--serif)}.card small{color:var(--ink2);font-size:14.5px}
+
+/* dashboard band */
+.dash{padding:clamp(90px,10vw,140px) 0;background:linear-gradient(180deg,#fff,var(--tint));overflow:hidden}
+.dash .shell{display:grid;gap:50px;align-items:center}
+@media(min-width:1000px){.dash .shell{grid-template-columns:.8fr 1.2fr}}
+.dash__copy{display:grid;gap:20px}
+.laptop{position:relative}
+.laptop__lid{border-radius:18px 18px 6px 6px;background:#121416;padding:14px 14px 18px;box-shadow:0 50px 80px -50px rgba(6,58,71,.6)}
+.laptop__lid img{border-radius:6px;width:100%;aspect-ratio:1518/1016;object-fit:cover;object-position:top}
+.laptop__base{height:16px;margin:0 -6%;border-radius:0 0 18px 18px;background:linear-gradient(#d9dee0,#b9c1c4)}
+
+/* team */
+.team{padding:clamp(90px,10vw,140px) 0;background:var(--paper)}
+.team__head{display:grid;gap:16px;max-width:760px;margin-bottom:48px}
+.people{display:grid;gap:24px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:900px){.people{grid-template-columns:repeat(4,1fr)}}
+.person .ph{aspect-ratio:4/5;border-radius:20px;background-size:cover;background-position:center 20%;filter:saturate(.9);transition:transform .6s var(--ease)}
+.person:hover .ph{transform:translateY(-6px)}
+.person h3{font:500 21px/1.2 var(--serif);margin-top:14px}.person p{color:var(--ink2);font-size:14.5px;line-height:1.4}
+
+/* footer card */
+.end{padding:0 0 28px;background:var(--paper)}
+.end__card{position:relative;border-radius:32px;background:var(--deep);color:#eef4f4;padding:clamp(40px,7vw,96px) clamp(24px,6vw,80px);overflow:hidden}
+.end__card .mark{position:absolute;right:-80px;bottom:-60px;width:520px;height:auto;opacity:.16}
+.end__card h2{color:#fff;max-width:760px}.end__card h2 em{color:var(--gold)}
+.end__row{display:flex;gap:14px;flex-wrap:wrap;margin:30px 0 60px}
+.end__links{display:grid;gap:30px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));position:relative;border-top:1px solid rgba(255,255,255,.15);padding-top:30px;font-size:15px}
+.end__links h4{margin:0 0 10px;font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.end__links a{display:block;text-decoration:none;color:#cfe0e3;margin-bottom:6px}.end__links a:hover{color:#fff}
+.end__card .logo{color:#fff}.end__card .logo small{color:#9fc0c6}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px)}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.marq__track,.phone--loop img{animation:none}}
+</style></head><body><div class="grain" aria-hidden="true"></div>
+<nav class="nav" id="nav"><div class="shell"><a class="logo" href="/next/" aria-label="Elevate Managed Services"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mn" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mn)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
+<div class="nav__links"><a href="#services">Services</a><a href="#schools">Education</a><a href="/dashboard">BI Dashboard</a><a href="/portal">Client Portal</a><a class="btn btn--teal" href="/contact">Book a call</a></div><a class="btn btn--teal nav__cta" href="/contact">Book a call</a></div></nav>
+
+<header class="hero"><div class="hero__wash"></div><div class="shell">
+<div class="hero__copy"><span class="eyebrow rv-in">Back office for companies and schools</span>
+<h1 class="display rv-in">Capacity for <em>today.</em></h1>
+<p class="lede rv-in">Finance, payroll, HR, marketing and a live dashboard, run by one team so your leaders can lead.</p>
+<div class="btns rv-in"><a class="btn btn--teal" href="/contact">Book a discovery call</a><a class="btn btn--ghost" href="/dashboard">See the dashboard</a></div></div>
+<div class="hero__art"><div class="hero__photo"><div></div></div><div class="phone phone--loop "><div class="phone__screen"><img src="img/bi-education-home.jpg" alt="" loading="lazy"><span class="phone__bar"></span></div></div>
+<div class="chip chip--a"><i>&#10003;</i><span>Close signed off<small>Every month, on the calendar</small></span></div>
+<div class="chip chip--b"><i>&#8599;</i><span>Board package<small>Ready before the meeting</small></span></div></div>
+</div></header>
+
+<section class="marq" aria-label="Organizations we serve"><div class="marq__label eyebrow">Trusted by</div><div class="marq__track"><div class="marq__group"><img src="/img/client-tnc.png" alt="True North Companies"><img src="/img/client-trueplaces.png" alt="True Places"><img src="/img/client-tnk12.png" alt="TNK12"><img src="/img/client-belton.png" alt="Belton Preparatory Academy"><img src="/img/client-aia.png" alt="American Innovation Academies"><span>Upstate Prep Academy</span><img src="/img/client-tnc.png" alt="True North Companies"><img src="/img/client-trueplaces.png" alt="True Places"><img src="/img/client-tnk12.png" alt="TNK12"><img src="/img/client-belton.png" alt="Belton Preparatory Academy"><img src="/img/client-aia.png" alt="American Innovation Academies"><span>Upstate Prep Academy</span></div><div class="marq__group" aria-hidden="true"><img src="/img/client-tnc.png" alt="True North Companies"><img src="/img/client-trueplaces.png" alt="True Places"><img src="/img/client-tnk12.png" alt="TNK12"><img src="/img/client-belton.png" alt="Belton Preparatory Academy"><img src="/img/client-aia.png" alt="American Innovation Academies"><span>Upstate Prep Academy</span><img src="/img/client-tnc.png" alt="True North Companies"><img src="/img/client-trueplaces.png" alt="True Places"><img src="/img/client-tnk12.png" alt="TNK12"><img src="/img/client-belton.png" alt="Belton Preparatory Academy"><img src="/img/client-aia.png" alt="American Innovation Academies"><span>Upstate Prep Academy</span></div></div></section>
+
+<section class="story" id="services"><div class="shell"><div class="story__intro"><span class="eyebrow rv">What we run</span>
+<h2 class="h2 rv">One team behind <em>the whole back office.</em></h2></div>
+<div class="story__stage"><div class="chips"><button type="button">Financial management</button><button type="button">HR, payroll &amp; people</button><button type="button">Marketing</button><button type="button">Business intelligence</button><button type="button">Education</button></div><div class="story__beats"><article class="beat" data-cap="Financial dashboard"><div class="beat__copy"><span class="eyebrow">Financial management</span><h3>A close you can set a clock by.</h3><p class="lede">The close, the reporting and the forecast, run on a fixed calendar.</p><ul><li>Month-end close and reconciliations</li><li>Management reporting packages</li><li>Budgets and rolling forecasts</li><li>Cash planning</li></ul></div><div class="phone phone--loop "><div class="phone__screen"><img src="img/bi-education-fin-dash.jpg" alt="" loading="lazy"><span class="phone__bar"></span></div></div></article><article class="beat" data-cap="HR home"><div class="beat__copy"><span class="eyebrow">HR, payroll &amp; people</span><h3>One home base for every employee.</h3><p class="lede">Payroll, onboarding and personnel records, handled by people who know your team.</p><ul><li>Payroll coordination</li><li>Onboarding and offboarding</li><li>Personnel documents</li><li>Manager tools</li></ul></div><div class="phone phone--loop "><div class="phone__screen"><img src="img/bi-education-hr-home.jpg" alt="" loading="lazy"><span class="phone__bar"></span></div></div></article><article class="beat" data-cap="Marketing &amp; enrollment"><div class="beat__copy"><span class="eyebrow">Marketing</span><h3>Campaigns on the same cadence as the books.</h3><p class="lede">Brand, collateral and campaigns, measured against what they bring in.</p><ul><li>Brand standards</li><li>Collateral and web</li><li>Campaign execution</li><li>Enrollment marketing for schools</li></ul></div><div class="phone phone--loop "><div class="phone__screen"><img src="img/bi-education-pipeline-home.jpg" alt="" loading="lazy"><span class="phone__bar"></span></div></div></article><article class="beat" data-cap="Start here"><div class="beat__copy"><span class="eyebrow">Business intelligence</span><h3>Every number, live.</h3><p class="lede">One dashboard for every entity, read straight from the systems you already use.</p><ul><li>Entity scorecards</li><li>Live financial dashboards</li><li>Reporting for leaders and lenders</li><li>Pipeline, HR and document add-ons</li></ul></div><div class="phone phone--loop "><div class="phone__screen"><img src="img/bi-construction-home.jpg" alt="" loading="lazy"><span class="phone__bar"></span></div></div></article><article class="beat" data-cap="Enrollment &amp; attendance"><div class="beat__copy"><span class="eyebrow">Education</span><h3>The complete back office for schools.</h3><p class="lede">Accounting, payroll, compliance and enrollment, from the planning year to every audit after.</p><ul><li>Monthly board financial reports</li><li>Payroll and tax filings</li><li>Grants and compliance</li><li>New school launch</li></ul></div><div class="phone phone--loop "><div class="phone__screen"><img src="img/bi-education-ops-second.jpg" alt="" loading="lazy"><span class="phone__bar"></span></div></div></article></div>
+<div class="story__phone"><div class="story__glow"></div><div class="phone"><div class="phone__screen"><img src="img/bi-education-fin-dash.jpg" alt=""><img src="img/bi-education-hr-home.jpg" alt=""><img src="img/bi-education-pipeline-home.jpg" alt=""><img src="img/bi-construction-home.jpg" alt=""><img src="img/bi-education-ops-second.jpg" alt=""><span class="phone__bar"></span></div></div><div class="cap"><i></i><span></span></div></div></div>
+</div></section>
+
+<section class="rhythm"><div class="shell"><div class="rhythm__head"><span class="eyebrow rv">How we start</span><h2 class="h2 rv">From first call to <em>a monthly rhythm.</em></h2></div>
+<div class="rhythm__line"><svg viewBox="0 0 1000 4" preserveAspectRatio="none" aria-hidden="true"><path d="M0 2 H1000"/></svg><div class="step rv"><small>Step one</small><h3>Discovery</h3><p>A 45 to 60 minute conversation about your entities, campuses and what is not closing today.</p></div><div class="step rv"><small>Step two</small><h3>Scoped proposal</h3><p>Within a week, a proposal built around your stage and capacity, from one service to the whole back office.</p></div><div class="step rv"><small>Step three</small><h3>30-day onboarding</h3><p>We connect your books, map your calendar of filings and reports, and take over the work in an orderly handoff.</p></div><div class="step rv"><small>Step four</small><h3>Monthly rhythm</h3><p>A close you can set a clock by, a board package on time, and a signed reconciliation review every month.</p></div></div></div></section>
+
+<section class="schools" id="schools"><div class="shell"><div class="schools__band rv"><div></div><h2 class="h2">Built for <em>charter schools.</em></h2></div>
+<div class="cards"><article class="card rv"><div style="background-image:url(/img/q3-017.jpg)"></div><section><h3>Cogito Academy</h3><small>Lancaster, SC &middot; 1,000 students</small></section></article><article class="card rv"><div style="background-image:url(/img/polaris-tech.jpg)"></div><section><h3>Polaris Tech Charter School</h3><small>Ridgeland, SC &middot; 280 students</small></section></article><article class="card rv"><div style="background-image:url(/img/q3-020.jpg)"></div><section><h3>Libertas Academy</h3><small>Colleton, SC &middot; 510 students</small></section></article></div></div></section>
+
+<section class="dash"><div class="shell"><div class="dash__copy"><span class="eyebrow rv">Business intelligence</span><h2 class="h2 rv">Every number, <em>live.</em></h2>
+<p class="lede rv">One dashboard for every entity, cut to each person&rsquo;s role. Leaders see the answer, finance sees the detail.</p>
+<div class="rv"><a class="btn btn--teal" href="/dashboard">Take the tour</a></div></div>
+<div class="laptop rv"><div class="laptop__lid"><img src="/img/dashboard-edu.png" alt="The Elevate BI dashboard on a sample school network" loading="lazy"></div><div class="laptop__base"></div></div></div></section>
+
+<section class="team"><div class="shell"><div class="team__head"><span class="eyebrow rv">The team</span><h2 class="h2 rv">The people <em>behind the numbers.</em></h2></div>
+<div class="people"><article class="person rv"><div class="ph" role="img" aria-label="Joseph Fawole" style="background-image:url(/img/team-fawole.jpg);background-size:140%;background-position:50% 14%"></div><h3>Joseph Fawole</h3><p>President</p></article><article class="person rv"><div class="ph" role="img" aria-label="Matthew Knowles" style="background-image:url(/img/team-knowles.jpg);"></div><h3>Matthew Knowles</h3><p>Financial Analyst</p></article><article class="person rv"><div class="ph" role="img" aria-label="Amanda C. Tucker" style="background-image:url(/img/team-tucker.jpg);background-size:150%;background-position:50% 22%"></div><h3>Amanda C. Tucker</h3><p>Director of Education &amp; Workforce Development</p></article><article class="person rv"><div class="ph" role="img" aria-label="Marc Davis" style="background-image:url(/img/team-davis.jpg);"></div><h3>Marc Davis</h3><p>Chief Financial Officer</p></article><article class="person rv"><div class="ph" role="img" aria-label="Anita Russell" style="background-image:url(/img/team-russell.jpg);"></div><h3>Anita Russell</h3><p>Vice President of Finance</p></article><article class="person rv"><div class="ph" role="img" aria-label="Vicki Provencher" style="background-image:url(/img/team-provencher.jpg);background-size:118%;background-position:50% 18%"></div><h3>Vicki Provencher</h3><p>Controller</p></article><article class="person rv"><div class="ph" role="img" aria-label="Will McDonald" style="background-image:url(/img/team-mcdonald.jpg);background-size:150%;background-position:50% 12%"></div><h3>Will McDonald</h3><p>Education Facilities Director</p></article><article class="person rv"><div class="ph" role="img" aria-label="Lynette Tucker" style="background-image:url(/img/team-ltucker.jpg);background-size:135%;background-position:50% 14%"></div><h3>Lynette Tucker</h3><p>Director of Enrollment &amp; Partnerships</p></article></div></div></section>
+
+<footer class="end"><div class="shell"><div class="end__card"><svg class="mark" viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mf" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mf)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg>
+<h2 class="h2">Ready to give your leaders <em>their time back?</em></h2>
+<div class="end__row"><a class="btn btn--gold" href="/contact">Book a discovery call</a><a class="btn" style="color:#fff;border:1px solid rgba(255,255,255,.3)" href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a></div>
+<div class="end__links"><div><a class="logo" href="/next/"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mf2" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
+<path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mf2)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a></div>
+<div><h4>Services</h4><a href="/services">Business services</a><a href="/education">Education services</a><a href="/dashboard">BI Dashboard</a></div>
+<div><h4>Company</h4><a href="/about">About</a><a href="/about#team">Team</a><a href="/contact">Contact</a></div>
+<div><h4>Clients</h4><a href="/portal">Client Portal</a><small style="display:block;margin-top:18px;color:#9fc0c6">&copy; 2026 Elevate Managed Services</small></div></div>
+</div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var nav=document.getElementById('nav');
+function solid(){nav.classList.toggle('solid',scrollY>30)}addEventListener('scroll',solid,{passive:true});solid();
+/* looping phones: travel = image height less screen height */
+function travel(){document.querySelectorAll('.phone--loop').forEach(function(p){var s=p.querySelector('.phone__screen'),i=s.querySelector('img');
+ if(i.complete&&i.naturalWidth){p.style.setProperty('--travel',Math.max(0,i.clientHeight-s.clientHeight)+'px')}else i.addEventListener('load',travel,{once:true})})}
+addEventListener('resize',travel);travel();
+if(reduce||!window.gsap){document.querySelectorAll('.rv').forEach(function(e){e.style.opacity=1;e.style.transform='none'});return;}
+gsap.registerPlugin(ScrollTrigger);
+var lenis=new Lenis({lerp:.11});window.__lenis=lenis;lenis.on('scroll',ScrollTrigger.update);
+gsap.ticker.add(function(t){lenis.raf(t*1000)});gsap.ticker.lagSmoothing(0);
+document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();lenis.scrollTo(t,{offset:-70})}})});
+var EASE='power3.out';
+/* hero: lines rise in, the photo drifts slower than the page, the phone lifts */
+gsap.from('.hero .rv-in',{y:40,opacity:0,duration:1.1,ease:EASE,stagger:.09,delay:.1});
+gsap.from('.hero .phone',{y:80,opacity:0,duration:1.3,ease:EASE,delay:.35});
+gsap.from('.hero .chip',{y:24,opacity:0,duration:1,ease:EASE,stagger:.15,delay:.9});
+gsap.to('.hero__photo div',{yPercent:12,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+gsap.to('.hero .phone',{y:-70,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+/* reveals */
+gsap.utils.toArray('.rv').forEach(function(el){gsap.to(el,{opacity:1,y:0,duration:1,ease:EASE,scrollTrigger:{trigger:el,start:'top 86%'}})});
+gsap.to('.schools__band div',{yPercent:14,ease:'none',scrollTrigger:{trigger:'.schools__band',start:'top bottom',end:'bottom top',scrub:true}});
+/* the rhythm line draws itself */
+var path=document.querySelector('.rhythm path');if(path){var L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;
+ gsap.to(path,{strokeDashoffset:0,ease:'none',scrollTrigger:{trigger:'.rhythm__line',start:'top 75%',end:'bottom 55%',scrub:.8}});}
+/* the services story: pinned on wide screens only. Scroll picks the beat (a timed crossfade),
+   and the screen inside the phone rides the scroll 1:1 within its beat. */
+var mm=gsap.matchMedia();
+mm.add('(min-width: 1000px)',function(){
+ var story=document.querySelector('.story'),beats=[].slice.call(story.querySelectorAll('.beat')),N=beats.length;
+ var shots=[].slice.call(story.querySelectorAll('.story__phone img')),screen=story.querySelector('.story__phone .phone__screen');
+ var chips=[].slice.call(story.querySelectorAll('.chips button')),cap=story.querySelector('.story__phone .cap span'),glow=story.querySelector('.story__glow');
+ var GLOWS=['rgba(47,157,168,.25)','rgba(230,192,104,.30)','rgba(12,105,128,.22)','rgba(47,157,168,.30)','rgba(230,192,104,.34)'];
+ story.classList.add('pinned');var cur=-1;
+ function show(i){if(i===cur)return;cur=i;beats.forEach(function(b,j){b.classList.toggle('on',j===i)});shots.forEach(function(s,j){s.classList.toggle('on',j===i)});
+  chips.forEach(function(c,j){c.classList.toggle('on',j===i)});cap.innerHTML=beats[i].dataset.cap;glow.style.background='radial-gradient(closest-side,'+GLOWS[i%GLOWS.length]+',transparent)';
+  gsap.fromTo(beats[i].querySelectorAll('.beat__copy > *'),{y:22,opacity:0},{y:0,opacity:1,duration:.6,ease:EASE,stagger:.06,overwrite:true});}
+ show(0);
+ var st=ScrollTrigger.create({trigger:story.querySelector('.story__stage'),start:'top top',end:'+='+(N*90)+'%',pin:true,
+  onUpdate:function(self){var p=self.progress*N,i=Math.min(N-1,Math.floor(p)),local=Math.min(1,Math.max(0,(p-i-.12)/.76));show(i);
+   var img=shots[i],t=Math.max(0,img.clientHeight-screen.clientHeight);gsap.set(img,{y:-t*local});}});
+ chips.forEach(function(c,j){c.addEventListener('click',function(){lenis.scrollTo(st.start+(st.end-st.start)*(j+.15)/N)})});
+ return function(){story.classList.remove('pinned');shots.forEach(function(s){gsap.set(s,{clearProps:'transform'})})};
+});
+addEventListener('load',function(){travel();ScrollTrigger.refresh()});
+})();
+</script></body></html>

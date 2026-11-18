@@ -292,7 +292,7 @@ DESC = {"index": "Elevate Managed Services runs finance, HR, marketing and live 
         "services": "Accounting and fractional CFO, HR, marketing and a live BI dashboard for growing companies.",
         "education": "Back office for charter schools: accounting, payroll, state compliance, enrollment marketing and opening readiness.",
         "contact": "Book a discovery call with Elevate Managed Services.",
-        "portal": "Client sign in for the Elevate BI dashboard, and a live demo for every industry.",
+        "portal": "Client sign in for the Elevate BI dashboard.",
         "dashboard": "The Elevate BI dashboard, highlight by highlight, on a sample company for every industry."}
 
 def page(name, title, cur, body, home=False):
@@ -465,26 +465,17 @@ def portal():
     src = B.portal()
     i = src.find("getElementById('signinForm')")
     js = src[src.rfind("<script", 0, i):src.find("</script>", i) + 9] if i > 0 else ""
-    chips = "".join(f'<a class="chip" target="_blank" rel="noopener" href="/demo/#/demo/{i}">{n}</a>' for n, i in B.INDUSTRY_DEMOS)
-    sees = [("Your Numbers, Live", "Read straight from your accounting system, so the dashboard always matches the books."),
-            ("Cut to Each Role", "Leaders see the answer, finance sees the detail, and each person sees only what their role allows."),
-            ("Every Entity in One Place", "Switch between companies or campuses, or see them all together."),
-            ("Lender and Board Ready", "Statements, packs and quarterly reports in one click.")]
-    w = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in sees)
-    body = f"""{phero("Client Portal", "Sign In to Your <span class='hl'>Dashboard</span>", "Enter your work email and we will take you to your company's BI Dashboard. Not a client yet? Explore a sample company.")}
+    # Matt, 2026-11-18: the BI Dashboard page now does the showing, so the portal is the sign-in.
+    body = f"""{phero("Client Portal", "Sign In to Your <span class='hl'>Dashboard</span>", "Enter your work email and we will take you to your company's dashboard.")}
 <section class="sec"><div class="shell two" style="align-items:stretch">
 <div class="signin-box"><span class="eyebrow">Client sign-in</span><h2 class="h2">Welcome <span class="hl">Back</span></h2>
 <form id="signinForm" class="form" novalidate><label for="email">Work email<input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label>
 <div><button class="btn btn--teal" type="submit">Continue &rarr;</button></div></form>
 <p id="msg" class="msg" role="status" aria-live="polite"></p>
 <p class="small-note">Trouble signing in? Email <a href="mailto:{EMAIL}">{EMAIL}</a>.</p></div>
-<div class="demo-box on-teal"><span class="eyebrow">Not a client yet?</span><h2 class="h2">See It With a <span class="hl">Sample Company</span></h2>
-<p>Pick an industry and explore a live dashboard built the way that business is measured. Anything you change stays in your own browser.</p>
-<div class="chips">{chips}</div><div><a class="btn btn--white" target="_blank" rel="noopener" href="/demo/#/choose">View our dashboard demo &rarr;</a></div></div></div></section>
-<section class="split"><div class="split__img" style="background-image:url({IMG}/hub-hc-signin.jpg);background-size:cover;background-position:left top"></div>
-<div class="split__copy grey"><span class="eyebrow">What you will see</span><h2 class="h2">One Dashboard for <span class="hl">Every Entity</span></h2>
-<p style="color:var(--ink2)">Every client gets a dashboard set up for their companies or campuses, their roles and the way their business is measured.</p></div></section>
-<section class="sec"><div class="shell"><div class="why">{w}</div></div></section>{js}"""
+<div class="demo-box on-teal"><span class="eyebrow">Not a client yet?</span><h2 class="h2">See the <span class="hl">Dashboard</span></h2>
+<p>A tour of the real dashboard on a sample company, for every industry we serve.</p>
+<div><a class="btn btn--white" href="{R}/dashboard">See the BI Dashboard &rarr;</a></div></div></div></section>{js}"""
     return page("portal", "Client Portal", "portal", body)
 
 # ------------------------------------------------------------------ BI dashboard tour
