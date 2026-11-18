@@ -749,6 +749,7 @@ def dashboard():
     return page("dashboard", "BI Dashboard", "dashboard", body)
 
 def build():
+    raise SystemExit("retired 2026-11-18: the live pages come from next/ (python3 next/promote.py). build_pages.py still imports this file for its copy and forms.")
     OUT.mkdir(exist_ok=True)
     for fn, html in [("index.html", home()), ("about.html", about()), ("services.html", services()),
                      ("education.html", education()), ("contact.html", contact()), ("portal.html", portal()),
