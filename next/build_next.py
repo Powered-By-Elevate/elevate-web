@@ -75,7 +75,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .logo svg{width:40px;height:31px}
 .logo b{display:block;font:500 22px/1 var(--serif);letter-spacing:.14em}.logo small{display:block;font:600 8.5px/1 var(--sans);letter-spacing:.32em;margin-top:5px;color:var(--ink2)}
 .nav__links{display:none;gap:28px;align-items:center;font:500 15px/1 var(--sans)}
-.nav__links a{text-decoration:none}.nav__links a:not(.btn):hover{color:var(--teal)}
+.nav__links a{text-decoration:none}.nav__links a:not(.btn):hover,.nav__links a[aria-current]{color:var(--teal)}
 @media(min-width:960px){.nav__links{display:flex}}
 
 /* hero: the headline, then a wide team photo that opens to full width as you scroll */
@@ -104,6 +104,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .dev__clip{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .dev__screen{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:#f4f7f8}
 .dev__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
+.dev__screen img.fill{height:100%;object-fit:cover;object-position:top}
 .dev__frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .dev__shadow{position:absolute;left:14%;right:10%;bottom:-4%;height:8%;border-radius:50%;background:radial-gradient(closest-side,rgba(6,58,71,.38),rgba(6,58,71,0));filter:blur(8px)}
 /* the device: a titanium body with real thickness (stacked layers behind the face), a thin
@@ -384,10 +385,12 @@ def device(kind, shot, screen_w, alt=""):
     m = DEV[kind]; q = m["quad"]
     qw = math.dist(q[0], q[1]); qh = math.dist(q[0], q[3])
     sw = screen_w; sh = round(screen_w * qh / qw)
+    src = shot if shot.startswith("/") else "img/" + shot
+    fill = ' class="fill"' if shot.startswith("/") else ""
     return (f'<div class="dev dev--{kind}" data-w="{m["w"]}" data-h="{m["h"]}" data-sw="{sw}" data-sh="{sh}" data-quad="{json.dumps(q)}" style="aspect-ratio:{m["w"]}/{m["h"]}">'
             f'<span class="dev__shadow"></span><div class="dev__stage" style="width:{m["w"]}px;height:{m["h"]}px">'
             f'<div class="dev__clip" style="-webkit-mask-image:url(img/device-{kind}-mask.png);mask-image:url(img/device-{kind}-mask.png)">'
-            f'<div class="dev__screen" style="width:{sw}px;height:{sh}px"><img src="img/{shot}" alt="{alt}" loading="lazy"></div></div>'
+            f'<div class="dev__screen" style="width:{sw}px;height:{sh}px"><img src="{src}"{fill} alt="{alt}" loading="lazy"></div></div>'
             f'<img class="dev__frame" src="img/device-{kind}.png" alt=""></div></div>')
 
 def phone(img, loop=False, cls="", depth=9):
@@ -396,6 +399,25 @@ def phone(img, loop=False, cls="", depth=9):
             '<span class="phone__btn v1"></span><span class="phone__btn v2"></span><span class="phone__btn v3"></span><span class="phone__btn p"></span>'
             f'<div class="phone__face"><div class="phone__bezel"><div class="phone__screen">{STATUS}<span class="phone__island"></span>'
             f'<img src="img/{img}" alt="" loading="lazy"><span class="phone__glare"></span></div></div></div></div>')
+
+LINKS = [("services", "Services"), ("education", "Education"), ("dashboard", "BI Dashboard"), ("portal", "Client Portal")]
+
+def nav(cur=""):
+    """The one nav for every /next/ page. Links are relative, so the pages work under /next/ and in a preview."""
+    cu = ' aria-current="page"'
+    ls = "".join(f'<a href="{k}.html"{cu if k == cur else ""}>{t}</a>' for k, t in LINKS)
+    return (f'<nav class="nav" id="nav"><div class="shell"><a class="logo" href="index.html" aria-label="Elevate Managed Services">{mark("n")}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>'
+            f'<div class="nav__links">{ls}<a class="btn btn--teal" href="contact.html">Book a call</a></div><a class="btn btn--teal nav__cta" href="contact.html">Book a call</a></div></nav>')
+
+def footer(h2="Ready to give your leaders <em>their time back?</em>"):
+    return f'''<footer class="end"><div class="shell"><div class="end__card">{mark("f").replace("<svg ", '<svg class="mark" ', 1)}
+<h2 class="h2">{h2}</h2>
+<div class="end__row"><a class="btn btn--gold" href="contact.html">Book a discovery call</a><a class="btn" style="color:#fff;border:1px solid rgba(255,255,255,.3)" href="mailto:{B.EMAIL}">{B.EMAIL}</a></div>
+<div class="end__links"><div><a class="logo" href="index.html">{mark("f2")}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a></div>
+<div><h4>Services</h4><a href="services.html">Business services</a><a href="education.html">Education services</a><a href="dashboard.html">BI Dashboard</a></div>
+<div><h4>Company</h4><a href="about.html">About</a><a href="about.html#team">Team</a><a href="contact.html">Contact</a></div>
+<div><h4>Clients</h4><a href="portal.html">Client Portal</a><small style="display:block;margin-top:18px;color:#9fc0c6">&copy; 2026 Elevate Managed Services</small></div></div>
+</div></div></footer>'''
 
 def build():
     beats_html = ""
@@ -433,14 +455,13 @@ def build():
     team = "".join(f'<article class="person rv"><div class="ph" role="img" aria-label="{n}" style="background-image:url({local.get(k, "/img/team-" + k + ".jpg")})"></div><h3>{n}</h3><p>{t}</p></article>'
                    for k, n, t, c in B.TEAM)
     body = f'''<div class="grain" aria-hidden="true"></div>
-<nav class="nav" id="nav"><div class="shell"><a class="logo" href="/next/" aria-label="Elevate Managed Services">{mark("n")}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>
-<div class="nav__links"><a href="/services">Services</a><a href="/education">Education</a><a href="/dashboard">BI Dashboard</a><a href="/portal">Client Portal</a><a class="btn btn--teal" href="/contact">Book a call</a></div><a class="btn btn--teal nav__cta" href="/contact">Book a call</a></div></nav>
+{nav()}
 
 <header class="hero"><div class="hero__wash"></div><div class="shell hero__top">
 <div><span class="eyebrow rv-in">Back office for companies and schools</span>
 <h1 class="display rv-in" style="margin-top:22px">Capacity for <em>today.</em></h1></div>
 <div class="side"><p class="lede rv-in">Finance, payroll, HR, marketing and a live dashboard, run by one team so your leaders can lead.</p>
-<div class="btns rv-in"><a class="btn btn--teal" href="/contact">Book a discovery call</a><a class="btn btn--ghost" href="/dashboard">See the dashboard</a></div></div></div>
+<div class="btns rv-in"><a class="btn btn--teal" href="contact.html">Book a discovery call</a><a class="btn btn--ghost" href="dashboard.html">See the dashboard</a></div></div></div>
 <div class="hero__frame"><div class="hero__img"></div>
 <div class="chip chip--a"><i>&#10003;</i><span>Close signed off<small>Every month, on the calendar</small></span></div>
 <div class="chip chip--b"><i>&#8599;</i><span>Board package<small>Ready before the meeting</small></span></div></div></header>
@@ -461,7 +482,7 @@ def build():
 
 <section class="dash"><div class="shell"><div class="dash__copy"><span class="eyebrow rv">Business intelligence</span><h2 class="h2 rv">Leaders see the answer. <em>Finance sees the detail.</em></h2>
 <p class="lede rv">One dashboard for every entity, cut to each person&rsquo;s role.</p>
-<div class="rv"><a class="btn btn--teal" href="/dashboard">Take the tour</a></div><p class="dash__note rv">Figures from the sample school network in the demo.</p></div>
+<div class="rv"><a class="btn btn--teal" href="dashboard.html">Take the tour</a></div><p class="dash__note rv">Figures from the sample school network in the demo.</p></div>
 <div class="lap"><div class="devwrap devwrap--laptop">{device("laptop", "bi-desk-education-home.jpg", 1280, "The Elevate BI dashboard on a sample school network")}</div>
 <div class="stat stat--a"><small>Revenue</small><b data-to="21.9" data-dec="1" data-pre="$" data-suf="M">$21.9M</b><em>Year to date</em></div>
 <div class="stat stat--b"><small>Seats filled</small><b data-to="86.6" data-dec="1" data-suf="%">86.6%</b><em>Across six campuses</em></div>
@@ -470,14 +491,7 @@ def build():
 <section class="team"><div class="shell"><div class="team__head"><span class="eyebrow rv">The team</span><h2 class="h2 rv">The people <em>behind the numbers.</em></h2></div>
 <div class="people">{team}</div></div></section>
 
-<footer class="end"><div class="shell"><div class="end__card">{mark("f").replace("<svg ", '<svg class="mark" ', 1)}
-<h2 class="h2">Ready to give your leaders <em>their time back?</em></h2>
-<div class="end__row"><a class="btn btn--gold" href="/contact">Book a discovery call</a><a class="btn" style="color:#fff;border:1px solid rgba(255,255,255,.3)" href="mailto:{B.EMAIL}">{B.EMAIL}</a></div>
-<div class="end__links"><div><a class="logo" href="/next/">{mark("f2")}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a></div>
-<div><h4>Services</h4><a href="/services">Business services</a><a href="/education">Education services</a><a href="/dashboard">BI Dashboard</a></div>
-<div><h4>Company</h4><a href="/about">About</a><a href="/about#team">Team</a><a href="/contact">Contact</a></div>
-<div><h4>Clients</h4><a href="/portal">Client Portal</a><small style="display:block;margin-top:18px;color:#9fc0c6">&copy; 2026 Elevate Managed Services</small></div></div>
-</div></div></footer>'''
+{footer()}'''
     fonts = ('<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
              '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">')
     html = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
