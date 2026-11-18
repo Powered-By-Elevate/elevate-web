@@ -393,6 +393,9 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 (function(){
+/* every page and tab opens at the top, also when you come back to it (Matt's standing rule, 2026-11-18) */
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+function toTop(){if(location.hash)return;scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;if(window.__lenis)window.__lenis.scrollTo(0,{immediate:true});try{document.body.scrollIntoView({block:'start'})}catch(e){}}toTop();addEventListener('DOMContentLoaded',toTop);addEventListener('load',toTop);addEventListener('pageshow',toTop);
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var nav=document.getElementById('nav');
 function solid(){nav.classList.toggle('solid',scrollY>30)}addEventListener('scroll',solid,{passive:true});solid();
@@ -414,7 +417,7 @@ gsap.registerPlugin(ScrollTrigger);
    a second scroller fighting it inside a frame is what made the page jump (Matt's recording,
    2026-11-18), and the toolbar showing or hiding must not re-measure every animation. */
 var touch=matchMedia('(pointer: coarse)').matches;
-ScrollTrigger.config({ignoreMobileResize:true});
+ScrollTrigger.config({ignoreMobileResize:true});ScrollTrigger.clearScrollMemory('manual');
 if(!touch){var lenis=new Lenis({lerp:.11});window.__lenis=lenis;lenis.on('scroll',ScrollTrigger.update);
 gsap.ticker.add(function(t){lenis.raf(t*1000)});gsap.ticker.lagSmoothing(0);}
 var EASE='power3.out';
@@ -463,7 +466,8 @@ document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelect
   gsap.to(s,{y:[-36,24,-18][i],ease:'none',scrollTrigger:{trigger:'.lap',start:'top bottom',end:'bottom top',scrub:.8}});
   var b=s.querySelector('b'),to=parseFloat(b.dataset.to),dec=+(b.dataset.dec||0),pre=b.dataset.pre||'',suf=b.dataset.suf||'',o={v:0};
   gsap.fromTo(o,{v:0},{v:to,duration:1.6,ease:'power2.out',delay:.35+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'},onUpdate:function(){b.textContent=pre+o.v.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf}});});})();
-addEventListener('load',function(){travel();fitDevices();ScrollTrigger.refresh()});
+addEventListener('load',function(){travel();fitDevices();ScrollTrigger.refresh();toTop()});
+addEventListener('pageshow',function(e){if(e.persisted){ScrollTrigger.refresh();toTop()}});
 })();
 </script><script>
 (function(){if(!window.gsap||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
