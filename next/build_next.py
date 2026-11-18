@@ -103,6 +103,9 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .dev__stage{position:absolute;left:0;top:0;transform-origin:0 0}
 .dev__clip{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .dev__screen{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;background:#f4f7f8}
+/* Safari can skip overflow clipping on a 3D-mapped box while a child moves, so the scrolling screen drew past the glass (Matt, 2026-11-18). A clip-path on the box itself holds. */
+.dev__screen{clip-path:inset(0 round 4px);-webkit-clip-path:inset(0 round 4px);isolation:isolate}
+.dev--phone .dev__screen{clip-path:inset(0 round 52px);-webkit-clip-path:inset(0 round 52px)}
 .dev__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
 .dev__screen img.fill{height:100%;object-fit:cover;object-position:top}
 .dev__frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
