@@ -22,5 +22,9 @@ for name in PAGES:
         if src.exists():
             shutil.copy(src, ROOT / "img" / img)
     html = re.sub(r'(["(])img/', r'\1/img/', html)
+    # clean addresses on the live site, as the old site had them (Matt, 2026-11-18: the ".html parts
+    # are starting to show"): index.html is /, services.html is /services, anchors kept
+    html = re.sub(r'href="index\.html(#[\w-]*)?"', lambda m: f'href="/{m.group(1) or ""}"', html)
+    html = re.sub(r'href="(' + "|".join(PAGES) + r')\.html(#[\w-]*)?"', lambda m: f'href="/{m.group(1)}{m.group(2) or ""}"', html)
     (ROOT / f"{name}.html").write_text(html)
     print("live", name, len(html))
