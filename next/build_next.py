@@ -226,8 +226,8 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 
 /* schools */
 .schools{position:relative;padding:clamp(90px,10vw,140px) 0;background:var(--cream);overflow:hidden}
-.schools__band{position:relative;height:clamp(300px,42vw,560px);border-radius:28px;overflow:hidden;margin-bottom:56px}
-.schools__band div{position:absolute;inset:-15% 0;background:url(/img/school-front.jpg) center/cover}
+.schools__band{position:relative;aspect-ratio:2000/612;min-height:280px;border-radius:28px;overflow:hidden;margin-bottom:56px}
+.schools__band div{position:absolute;inset:-6% 0;background:url(img/school-hephzibah.jpg) center/cover}
 .schools__band h2{position:absolute;left:clamp(20px,4vw,56px);bottom:clamp(20px,4vw,48px);color:#fff;max-width:760px;text-shadow:0 2px 30px rgba(0,0,0,.35)}
 .schools__band h2 em{color:var(--gold)}
 .schools__band::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,58,71,.6),transparent 60%)}
