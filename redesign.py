@@ -614,10 +614,10 @@ def dashboard():
            ("Cut to each role", "Leaders see the answer, finance sees the detail, and each person sees only what they should."),
            ("Packs on demand", "Board, lender and owner packs print from the same numbers, any month, in one click.")]
     hw = "".join(f"<div><b>{a}</b><p>{b}</p></div>" for a, b in how)
-    body = f"""{phero("BI Dashboard", 'Every Number, <span class="hl">Live</span>', "One dashboard for every entity, read straight from your accounting and operating systems and cut to each person's role. Pick your industry and walk through it below.")}
+    body = f"""{phero("BI Dashboard", 'Every Number, <span class="hl">Live</span>', "One dashboard for every entity, read straight from the systems you already use.")}
 <section class="tour" id="tour"><div class="shell">
 <div class="tour__head"><span class="eyebrow">See it in action</span><h2 class="h2">The Dashboard, <span class="hl">Highlight by Highlight</span></h2>
-<p>This is the real dashboard running on a sample company. It plays through each highlight on its own. Pick one to stop and look closer, or switch industries above it.</p></div>
+<p>The real dashboard, running on a sample company.</p></div>
 <div class="tour__inds" role="tablist" aria-label="Industry"></div>
 <div class="tour__grid"><div class="tour__steps" role="tablist" aria-label="Highlights"></div>
 <div class="win"><div class="win__top"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__brand">ELEVATE <em>BI</em></span><span class="win__crumb"></span><span class="win__live"><i></i>LIVE</span></div>
