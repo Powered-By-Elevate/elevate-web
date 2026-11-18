@@ -35,7 +35,7 @@ BEATS = [
      B.BIZ[4][3] + ["Enrollment marketing for schools"], ("photo", "team-plan.jpg", "Campaigns held to a calendar"), ""),
     ("bi", "Business intelligence", "Every number, live.",
      "One dashboard for every entity, read straight from the systems you already use.",
-     B.BIZ[5][3], ("phone", "bi-construction-home.jpg", "The real dashboard, on a sample company"), ""),
+     B.BIZ[5][3], ("phone", "bi-phone-kpis.jpg", "The figure cards of the real dashboard, on a sample company"), ""),
     ("schools", "Education", "The complete back office for schools.",
      "Accounting, payroll, compliance and enrollment, from the planning year to every audit after.",
      ["Monthly board financial reports", "Payroll and tax filings", "Grants and compliance", "New school launch"],
