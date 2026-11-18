@@ -38,7 +38,7 @@ PAGE_CSS = r"""
 /* numbered notes: the why, the grants */
 .notes{display:grid;gap:20px}
 @media(min-width:760px){.notes{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:1100px){.notes{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1100px){.notes{grid-template-columns:repeat(4,1fr)}.notes--3{grid-template-columns:repeat(3,1fr)}}
 .note{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px 24px 28px;display:grid;gap:10px;align-content:start;box-shadow:0 30px 60px -48px rgba(6,58,71,.55);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
 .note:hover{transform:translateY(-6px);box-shadow:0 40px 70px -45px rgba(6,58,71,.6)}
 .note b{font:500 46px/1 var(--serif);color:transparent;-webkit-text-stroke:1px var(--gold2)}
@@ -208,8 +208,8 @@ def services():
 
 # ------------------------------------------------------------------ education
 EDU_PH = [("team-vicki-screen.jpg", "Board reports, every month"), ("team-monitor.jpg", "Every paycheck, on time"),
-          ("team-tucker.jpg", "Every certification on file"), ("team-papers.jpg", "Audit-ready all year"),
-          ("team-russell.jpg", "Every grant dollar tracked"), ("q3-016.jpg", "Charter to opening day")]
+          ("team-laptop.jpg", "Every certification on file"), ("team-papers.jpg", "Audit-ready all year"),
+          ("team-desk-vicki.jpg", "Every grant dollar tracked"), ("q3-016.jpg", "Charter to opening day")]
 
 
 def education():
@@ -251,7 +251,7 @@ def about():
     vals = [("Relationships before reports", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", "team-laptop.jpg", "We learn the story first"),
             ("The same people, every month", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", "team-desk-vicki.jpg", "The team you meet stays"),
             ("Give leaders their time back", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", "tnc-lobby.jpg", "Hours handed back")]
-    vb = beats([(f"Value 0{i}", a, b, [], "photo", f, p) for i, (a, b, f, p) in enumerate(vals, 1)])
+    vb = notes([(a, b) for a, b, f, p in vals]).replace('class="notes"', 'class="notes notes--3"')
     local = {"provencher": "img/team-provencher.jpg"}
     team = "".join(f'<article class="person"><div class="ph" role="img" aria-label="{n}" style="background-image:url({local.get(k, "/img/team-" + k + ".jpg")})"></div><h3>{n}</h3><p>{t}</p></article>'
                    for k, n, t, c in B.TEAM)
@@ -263,7 +263,7 @@ def about():
 <p class="rv">Some weeks that meant closing the books for a construction company on a Friday and running payroll for a brand new charter school on Monday. Other weeks it meant helping a first-year school leader get ready for a board meeting, or making sure a growing company had a clear set of numbers to take to the bank.</p>
 <p class="rv">Doing that work up close taught us what leaders actually need: someone who picks up, knows the history and gets it right the first time.</p></div>
 <div class="split2__ph"><div style="background-image:url(/img/tnc-nova.jpg)"></div></div></div></section>
-<section class="story" id="values"><div class="shell"><div class="story__intro"><span class="eyebrow rv">Our values</span><h2 class="h2 rv">How we <em>show up for you.</em></h2></div>{vb}</div></section>
+<section class="sec sec--tint" id="values"><div class="shell"><div class="head"><span class="eyebrow rv">Our values</span><h2 class="h2 rv">How we <em>show up for you.</em></h2></div>{vb}</div></section>
 <section class="sec sec--cream" id="clients"><div class="shell"><div class="head"><span class="eyebrow rv">Who we serve</span><h2 class="h2 rv">Our partners, <em>built on trust.</em></h2></div>{logo_cards(B.OUR_CLIENTS, 4)}</div></section>
 <section class="team" id="team"><div class="shell"><div class="team__head"><span class="eyebrow rv">The team</span><h2 class="h2 rv">The people <em>behind the numbers.</em></h2></div><div class="people">{team}</div></div></section>'''
     return page("about", "About", body, R.DESC.get("about", ""))
@@ -342,6 +342,13 @@ BANNED = {"libertas-flag.jpg", "libertas-campus.jpg", "school-front.jpg", "q3-00
 
 def check_images():
     """No photo twice across the /next/ site (logos and headshots aside), and no banned photo."""
+    # a headshot is for the team grid only (Matt, 2026-11-18: "do not use a fucking headshot as one of our photos")
+    heads = [f"team-{k}.jpg" for k, *_ in B.TEAM]
+    for f in ["index", "services", "education", "about", "contact", "portal", "dashboard"]:
+        html = re.sub(r'<article class="person.*?</article>', "", (HERE / f"{f}.html").read_text(), flags=re.S)
+        used = [h for h in heads if h in html]
+        if used:
+            raise SystemExit(f"{f}.html uses a headshot outside the team grid: {used}")
     for f in ["index", "services", "education", "about", "contact", "portal", "dashboard"]:
         hit = [b for b in BANNED if b in (HERE / f"{f}.html").read_text()]
         if hit:

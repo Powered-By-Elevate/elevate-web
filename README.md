@@ -39,3 +39,4 @@ GitHub provisions HTTPS automatically once DNS resolves.
 ## Scroll rule (Matt's ruling)
 
 - Every page and tab opens at the top, also when you come back to it with Back or Forward (2026-11-18). `toTop()` in `next/build_next.py` and the site script in `redesign.py` do it: manual scroll restoration, ScrollTrigger's scroll memory cleared, Lenis reset, and the body scrolled into view for previews framed by another app.
+- No headshot is used as a photo outside a team grid (2026-11-18: "do not use a fucking headshot as one of our photos"). `next/build_pages.py` fails the build if one is.
