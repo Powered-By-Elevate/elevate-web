@@ -388,13 +388,15 @@ gsap.utils.toArray('.step').forEach(function(s,i){gsap.from(s,{y:50,opacity:0,du
    phone scrolls its screen and straightens while it is on screen. Nothing holds the page. */
 gsap.utils.toArray('.beat__photo > div').forEach(function(d){gsap.fromTo(d,{yPercent:-5,scale:1.06},{yPercent:5,scale:1,ease:'none',scrollTrigger:{trigger:d.parentNode,start:'top bottom',end:'bottom top',scrub:.6}})});
 gsap.utils.toArray('.beat__copy').forEach(function(c){gsap.from(c.children,{y:26,opacity:0,duration:.9,ease:EASE,stagger:.07,scrollTrigger:{trigger:c,start:'top 82%'}})});
-document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelector('.devwrap'),s=h.querySelector('.dev__screen'),img=s.querySelector('img');
- ScrollTrigger.create({trigger:h,start:'top bottom',end:'bottom top',onUpdate:function(self){var k=self.progress;
-  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});}});});
+document.querySelectorAll('.tilt-host').forEach(function(h){var s=h.querySelector('.dev__screen'),img=s.querySelector('img');
+ if(img.classList.contains('fill'))return;
+ /* a scrubbed tween, so the screen glides after the page instead of jumping each scroll tick (Matt: "the scrolling on this guy isnt smooth") */
+ gsap.fromTo(img,{y:0},{y:function(){return -Math.max(0,img.clientHeight-s.clientHeight)},ease:'none',force3D:true,
+  scrollTrigger:{trigger:h,start:'top 80%',end:'bottom 20%',scrub:1,invalidateOnRefresh:true}});});
 /* the dashboard: lid opens, the screen scrolls, the figures float up and count */
 (function(){var lap=document.querySelector('.devwrap--laptop');if(!lap)return;var scr=lap.querySelector('.dev__screen'),img=scr.querySelector('img');
  gsap.from(lap,{y:40,opacity:0,duration:1,ease:EASE,scrollTrigger:{trigger:'.lap',start:'top 80%'}});
- ScrollTrigger.create({trigger:'.lap',start:'top 70%',end:'bottom top',onUpdate:function(self){gsap.set(img,{y:-Math.max(0,img.clientHeight-scr.clientHeight)*self.progress})}});
+ gsap.fromTo(img,{y:0},{y:function(){return -Math.max(0,img.clientHeight-scr.clientHeight)},ease:'none',force3D:true,scrollTrigger:{trigger:'.lap',start:'top 70%',end:'bottom 10%',scrub:1,invalidateOnRefresh:true}});
  gsap.utils.toArray('.stat').forEach(function(s,i){gsap.fromTo(s,{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:EASE,delay:.15+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'}});
   gsap.to(s,{y:[-36,24,-18][i],ease:'none',scrollTrigger:{trigger:'.lap',start:'top bottom',end:'bottom top',scrub:.8}});
   var b=s.querySelector('b'),to=parseFloat(b.dataset.to),dec=+(b.dataset.dec||0),pre=b.dataset.pre||'',suf=b.dataset.suf||'',o={v:0};

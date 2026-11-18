@@ -68,6 +68,7 @@ PAGE_CSS = r"""
 .split2__ph{position:relative;aspect-ratio:4/5;border-radius:28px;overflow:hidden;box-shadow:0 40px 70px -45px rgba(6,58,71,.5)}
 .split2__ph>div{position:absolute;inset:-7%;background-size:cover;background-position:center}
 /* the launch: each step carries its photo */
+.beat__photo--screen{background:#f4f7f8;border:1px solid var(--line)}.beat__photo--screen>div{inset:0;background-size:cover;background-position:left top}
 .viz-ph{padding:0;background-size:cover;background-position:left top}
 /* forms */
 .form{display:grid;gap:16px}
@@ -135,6 +136,8 @@ def beats(rows):
         li = "".join(f"<li>{b}</li>" for b in bullets)
         if kind == "laptop":
             vis = f'<div class="beat__vis tilt-host"><div class="devwrap devwrap--laptop">{N.device("laptop", f if f.startswith("bi-desk") else "/img/" + f, 1280, pill)}</div></div>'
+        elif kind == "screen":  # a flat dashboard screen in the photo frame, no device (Matt: one computer mockup per page at most)
+            vis = f'<div class="beat__vis beat__photo beat__photo--screen"><div style="background-image:url(/img/{f})"></div><span class="pill"><i></i>{pill}</span></div>'
         else:
             vis = f'<div class="beat__vis beat__photo"><div style="background-image:url(/img/{f})"></div><span class="pill"><i></i>{pill}</span></div>'
         lede = f'<p class="lede">{line}</p>' if line else ""
@@ -205,12 +208,12 @@ def services():
 
 # ------------------------------------------------------------------ education
 EDU_PH = [("team-vicki-screen.jpg", "Board reports, every month"), ("team-monitor.jpg", "Every paycheck, on time"),
-          ("bi-desk-education-hiring.jpg", "Hiring in the sample school network"), ("team-papers.jpg", "Audit-ready all year"),
-          ("bi-desk-education-budget.jpg", "Budget against actual, sample school network"), ("bi-desk-education-docs.jpg", "Every document a launch needs")]
+          ("team-tucker.jpg", "Every certification on file"), ("team-papers.jpg", "Audit-ready all year"),
+          ("team-russell.jpg", "Every grant dollar tracked"), ("q3-016.jpg", "Charter to opening day")]
 
 
 def education():
-    rows = [(t.replace("&", "&amp;"), d, "", bl, "laptop" if EDU_PH[i][0].startswith("bi-desk") else "photo", EDU_PH[i][0], EDU_PH[i][1]) for i, (_, t, d, bl) in enumerate(B.EDU)]
+    rows = [(t.replace("&", "&amp;"), d, "", bl, "screen" if EDU_PH[i][0].startswith("hub-") else "photo", EDU_PH[i][0], EDU_PH[i][1]) for i, (_, t, d, bl) in enumerate(B.EDU)]
     grants = [("Title programs", "Title I, II and IV funds from application through expenditure tracking, monitoring and reporting."),
               ("IDEA", "Special education funding tracked and documented to the same calendar as the rest of the books."),
               ("Federal and state compliance", "Charter, state and federal deadlines on one calendar, with documentation ready for monitoring visits."),
@@ -219,7 +222,7 @@ def education():
               ("Six months out", "Staff and systems", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", "hub-edu-onboarding.jpg"),
               ("Ninety days out", "Facility ready", "Facility readiness, insurance, procurement and the opening budget locked.", "hub-edu-docs.jpg"),
               ("Opening day", "Doors open", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", "hub-edu-payroll.jpg")]
-    steps = "".join(f'<div class="step"><div class="viz viz-ph" style="background-image:url(/img/{ph})"></div><span class="step__n">0{n}</span><small>{a}</small><h3>{b}</h3><p>{c}</p></div>'
+    steps = "".join(f'<div class="step"><span class="step__n">0{n}</span><small>{a}</small><h3>{b}</h3><p>{c}</p></div>'
                     for n, (a, b, c, ph) in enumerate(launch, 1))
     body = f'''{phero("Education services", "The complete back office <em>for schools.</em>",
                      "Built around each school's stage, priorities and staff, from the first planning year to every audit after.",
@@ -331,7 +334,7 @@ def dashboard():
 
 # Photos Matt has ruled off the site. The Libertas Academy flag is never used (Matt, 2026-11-18:
 # "it was a specific rule to not use this flag"), and its file is deleted from img/.
-BANNED = {"libertas-flag.jpg", "libertas-campus.jpg", "school-front.jpg", "q3-002.jpg", "q3-010.jpg", "q3-016.jpg", "q3-020.jpg",
+BANNED = {"libertas-flag.jpg", "libertas-campus.jpg", "school-front.jpg", "q3-002.jpg", "q3-010.jpg", "q3-020.jpg",
           "site-block.jpg", "site-dusk.jpg", "site-trailer.jpg", "tnc-truck.jpg", "school-chalk.jpg"}
 # Libertas Academy is never shown (Matt, 2026-11-18: "again, try not to use Libertas"), and no
 # construction sites ("a construction site is a shit idea"). school-chalk is out because it may be Libertas.
