@@ -118,6 +118,24 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .pill i{width:8px;height:8px;border-radius:50%;background:var(--gold)}
 .nav__cta{display:inline-flex;padding:11px 18px;font-size:14px}
 @media(min-width:960px){.nav__cta{display:none}}
+/* the phone menu: a button beside Book a call opens every page as a sheet under the bar */
+.nav__end{display:flex;align-items:center;gap:10px}
+.burger{width:46px;height:46px;border-radius:50%;border:1px solid rgba(46,46,46,.16);background:#fff;display:grid;place-items:center;cursor:pointer;padding:0;color:var(--ink)}
+.burger span{position:relative;display:block;width:18px;height:1.5px;background:currentColor;transition:background .2s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:18px;height:1.5px;background:currentColor;transition:transform .35s var(--ease)}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+.menu-open .burger span{background:transparent}.menu-open .burger span::before{transform:translateY(6px) rotate(45deg)}.menu-open .burger span::after{transform:translateY(-6px) rotate(-45deg)}
+.sheet{position:fixed;inset:0;z-index:59;background:var(--paper);padding:96px 16px 32px;display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(-12px);transition:opacity .3s var(--ease),transform .4s var(--ease),visibility 0s .4s;overflow-y:auto}
+.menu-open .sheet{opacity:1;visibility:visible;transform:none;transition:opacity .3s var(--ease),transform .4s var(--ease)}
+.menu-open .nav{background:var(--paper);box-shadow:0 1px 0 var(--line)}
+.sheet a{display:flex;justify-content:space-between;align-items:center;padding:18px 4px;border-bottom:1px solid var(--line);text-decoration:none;font:500 30px/1.1 var(--serif);color:var(--ink)}
+.sheet a::after{content:"\2192";font:400 20px/1 var(--sans);color:var(--teal2)}
+.sheet a[aria-current]{color:var(--teal)}.sheet a[aria-current]::after{content:"\2022"}
+.sheet small{margin-top:auto;padding-top:28px;color:var(--ink2);font-size:14px}.sheet small a{display:inline;padding:0;border:0;font:600 14px/1.4 var(--sans);color:var(--teal)}.sheet small a::after{content:none}
+@media(min-width:960px){.burger,.sheet{display:none}}
+.logo span,.nav__cta{white-space:nowrap}
+@media(max-width:480px){.logo{gap:8px}.logo svg{width:34px;height:26px}.logo b{font-size:19px;letter-spacing:.12em}.logo small{font-size:7.5px;letter-spacing:.26em}.nav__cta{padding:11px 15px;font-size:14px}.burger{width:44px;height:44px}.nav .shell{gap:10px}}
+@media(max-width:359px){.nav__cta{display:none}}
 @media(min-width:1000px){
  .story__beats{gap:clamp(110px,12vw,170px);padding-bottom:140px}
  .beat{grid-template-columns:1fr 1.05fr;align-items:center;gap:clamp(48px,6vw,96px)}
@@ -345,7 +363,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 </style></head><body><div class="grain" aria-hidden="true"></div><nav class="nav" id="nav"><div class="shell"><a class="logo" href="index.html" aria-label="Elevate Managed Services"><svg viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mn" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mn)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><div class="nav__links"><a href="services.html" aria-current="page">Services</a><a href="education.html">Education</a><a href="dashboard.html">BI Dashboard</a><a href="portal.html">Client Portal</a><a class="btn btn--teal" href="contact.html">Book a call</a></div><a class="btn btn--teal nav__cta" href="contact.html">Book a call</a></div></nav><header class="hero hero--page"><div class="hero__wash"></div><div class="shell hero__top"><div><span class="eyebrow rv-in">Business services</span><h1 class="display rv-in" style="margin-top:22px">The whole back office, <em>or the part that is breaking.</em></h1></div><div class="side"><p class="lede rv-in">Every service runs on the same team and the same calendar, from the monthly close to a live dashboard.</p><div class="btns rv-in"><a class="btn btn--teal" href="contact.html">Book a discovery call</a><a class="btn btn--ghost" href="#six">See the six services</a></div></div></div><div class="hero__frame"><div class="hero__img" style="background-image:url(/img/team-whiteboard.jpg);background-position:center 35%"></div><div class="chip chip--a"><i>&#10003;</i><span>Six services<small>One team accountable</small></span></div></div></header>
+<path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg><span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a><div class="nav__links"><a href="services.html" aria-current="page">Services</a><a href="education.html">Education</a><a href="dashboard.html">BI Dashboard</a><a href="portal.html">Client Portal</a><a class="btn btn--teal" href="contact.html">Book a call</a></div><div class="nav__end"><a class="btn btn--teal nav__cta" href="contact.html">Book a call</a><button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="sheet"><span></span></button></div></div></nav><div class="sheet" id="sheet" aria-label="Site pages"><a href="index.html">Home</a><a href="services.html" aria-current="page">Services</a><a href="education.html">Education</a><a href="dashboard.html">BI Dashboard</a><a href="about.html">About</a><a href="portal.html">Client Portal</a><a href="contact.html">Contact</a><small>Questions? <a href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a></small></div><header class="hero hero--page"><div class="hero__wash"></div><div class="shell hero__top"><div><span class="eyebrow rv-in">Business services</span><h1 class="display rv-in" style="margin-top:22px">The whole back office, <em>or the part that is breaking.</em></h1></div><div class="side"><p class="lede rv-in">Every service runs on the same team and the same calendar, from the monthly close to a live dashboard.</p><div class="btns rv-in"><a class="btn btn--teal" href="contact.html">Book a discovery call</a><a class="btn btn--ghost" href="#six">See the six services</a></div></div></div><div class="hero__frame"><div class="hero__img" style="background-image:url(/img/team-whiteboard.jpg);background-position:center 35%"></div><div class="chip chip--a"><i>&#10003;</i><span>Six services<small>One team accountable</small></span></div></div></header>
 <section class="story" id="six"><div class="shell"><div class="story__intro"><span class="eyebrow rv">What we run</span>
 <h2 class="h2 rv">Six services, <em>one team accountable.</em></h2>
 <p class="lede rv">Most growing companies do not need another software subscription. They need someone to run the work: close the books, pay the people, file on time and say what the numbers mean.</p></div>
@@ -374,6 +392,14 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var nav=document.getElementById('nav');
 function solid(){nav.classList.toggle('solid',scrollY>30)}addEventListener('scroll',solid,{passive:true});solid();
+/* the phone menu */
+var burger=document.getElementById('burger'),root=document.documentElement;
+function menu(open){root.classList.toggle('menu-open',open);burger.setAttribute('aria-expanded',open);burger.setAttribute('aria-label',open?'Close menu':'Open menu');
+ document.getElementById('sheet').inert=!open;if(window.__lenis){open?window.__lenis.stop():window.__lenis.start()}document.body.style.overflow=open?'hidden':''}
+if(burger){burger.addEventListener('click',function(){menu(!root.classList.contains('menu-open'))});
+ document.querySelectorAll('#sheet a').forEach(function(a){a.addEventListener('click',function(){menu(false)})});
+ addEventListener('keydown',function(e){if(e.key==='Escape')menu(false)});
+ addEventListener('resize',function(){if(innerWidth>=960)menu(false)});document.getElementById('sheet').inert=true;}
 /* looping phones: travel = image height less screen height */
 function travel(){document.querySelectorAll('.phone--loop').forEach(function(p){var s=p.querySelector('.phone__screen'),i=s.querySelector('img');
  if(i.complete&&i.naturalWidth){p.style.setProperty('--travel',Math.max(0,i.clientHeight-s.clientHeight)+'px')}else i.addEventListener('load',travel,{once:true})})}
