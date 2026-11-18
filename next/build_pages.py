@@ -206,11 +206,11 @@ def services():
 # ------------------------------------------------------------------ education
 EDU_PH = [("team-vicki-screen.jpg", "Board reports, every month"), ("team-monitor.jpg", "Every paycheck, on time"),
           ("team-amanda.jpg", "Every certification on file"), ("team-papers.jpg", "Audit-ready all year"),
-          ("libertas-flag.jpg", "Every grant dollar tracked"), ("site-block.jpg", "Charter to opening day")]
+          ("hub-edu-budget.jpg", "Every grant dollar tracked"), ("site-block.jpg", "Charter to opening day")]
 
 
 def education():
-    rows = [(t.replace("&", "&amp;"), d, "", bl, "photo", EDU_PH[i][0], EDU_PH[i][1]) for i, (_, t, d, bl) in enumerate(B.EDU)]
+    rows = [(t.replace("&", "&amp;"), d, "", bl, "laptop" if EDU_PH[i][0].startswith("hub-") else "photo", EDU_PH[i][0], EDU_PH[i][1]) for i, (_, t, d, bl) in enumerate(B.EDU)]
     grants = [("Title programs", "Title I, II and IV funds from application through expenditure tracking, monitoring and reporting."),
               ("IDEA", "Special education funding tracked and documented to the same calendar as the rest of the books."),
               ("Federal and state compliance", "Charter, state and federal deadlines on one calendar, with documentation ready for monitoring visits."),
@@ -328,8 +328,17 @@ def dashboard():
     return page("dashboard", "BI Dashboard", body, R.DESC.get("dashboard", ""), extra_css=tour_css)
 
 
+# Photos Matt has ruled off the site. The Libertas Academy flag is never used (Matt, 2026-11-18:
+# "it was a specific rule to not use this flag"), and its file is deleted from img/.
+BANNED = {"libertas-flag.jpg"}
+
+
 def check_images():
-    """No photo twice across the /next/ site (logos and headshots aside)."""
+    """No photo twice across the /next/ site (logos and headshots aside), and no banned photo."""
+    for f in ["index", "services", "education", "about", "contact", "portal", "dashboard"]:
+        hit = [b for b in BANNED if b in (HERE / f"{f}.html").read_text()]
+        if hit:
+            raise SystemExit(f"{f}.html uses a banned photo: {hit}")
     team = {k for k, *_ in B.TEAM}
     seen = {}
     for f in ["index", "services", "education", "about", "contact", "portal", "dashboard"]:

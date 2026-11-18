@@ -30,3 +30,8 @@ Not yet pointed. To go live on elevatemanagedservices.com:
 3. Remove the records currently pointing the domain at Websites + Marketing.
 
 GitHub provisions HTTPS automatically once DNS resolves.
+
+## Photo rules (Matt's rulings)
+
+- No photo appears twice across the site (2026-11-10: "dont reuse images ... it feels cheap"). Logos and team headshots aside.
+- The Libertas Academy flag photo is never used (2026-11-18: "it was a specific rule to not use this flag"). Its file is deleted, and `redesign.py` and `next/build_pages.py` both fail the build if `libertas-flag.jpg` appears in a page.
