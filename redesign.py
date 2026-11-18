@@ -364,14 +364,14 @@ def home():
 <section class="sec"><div class="shell two"><div class="copy"><h2 class="h2">We Help Schools <span class="hl">Run Smoothly</span></h2>
 <p>From the first planning year to every audit after, Elevate runs the money side of charter and private schools: accounting, payroll, grants and board reporting, so school leaders can stay in classrooms.</p>
 <div><a class="btn btn--teal" href="{R}/education">See our education services</a></div></div>
-<div class="tiles">{tile("q3-002.jpg", "Schools we serve", "Belton Preparatory Academy · client since 2026", R + "/education#serve")}{tile("site-dusk.jpg", "Schools opening next", "Upstate Prep and AIA Woodruff · Fall 2028", R + "/education#serve")}</div></div></section>
+<div class="tiles">{tile("school-hephzibah.jpg", "Schools we serve", "Belton Preparatory Academy · client since 2026", R + "/education#serve")}{tile("hub-edu-marketing.jpg", "Schools opening next", "Upstate Prep and AIA Woodruff · Fall 2028", R + "/education#serve")}</div></div></section>
 {QUOTE}'''
     return page("index", "Home", "home", body, home=True)
 
 def about():
     vals = [("Relationships before reports", "team-plan.jpg", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", None),
             ("The same people, every month", "team-desk-vicki.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
-            ("Give leaders their time back", "libertas-campus.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
+            ("Give leaders their time back", "tnc-gt.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
     PHOTO = {}
     TEAMFIX = {"tucker": "background-size:122%;background-position:50% 43%", "fawole": "background-size:cover;background-position:50% 0%", "mcdonald": "background-size:cover;background-position:50% 0%", "knowles": "background-size:cover;background-position:50% 0%", "davis": "background-size:cover;background-position:50% 0%", "ltucker": "background-size:cover;background-position:50% 0%"}
     team = "".join(f'<article><div class="ph" role="img" aria-label="{n}" style="background-image:url({IMG}/team-{PHOTO.get(k, k)}.jpg);{TEAMFIX.get(k) or c or "background-size:cover;background-position:center"}"></div><h3>{n}</h3><p>{t}</p></article>' for k, n, t, c in B.TEAM)
@@ -411,8 +411,10 @@ def services():
     return page("services", "Business Services", "services", body)
 
 # The Libertas Academy flag is never used (Matt, 2026-11-18: "it was a specific rule to not use this flag").
-BANNED = {"libertas-flag.jpg"}
-EDU_IMG = ["team-vicki-screen.jpg", "team-monitor.jpg", "team-amanda.jpg", "team-papers.jpg", "hub-edu-budget.jpg", "site-block.jpg"]
+BANNED = {"libertas-flag.jpg", "libertas-campus.jpg", "school-front.jpg", "q3-002.jpg", "q3-010.jpg", "q3-020.jpg",
+          "site-block.jpg", "site-dusk.jpg", "site-trailer.jpg", "tnc-truck.jpg", "school-chalk.jpg"}
+# Libertas Academy is never shown (Matt, 2026-11-18: "try not to use Libertas", twice), nor construction sites.
+EDU_IMG = ["team-vicki-screen.jpg", "team-monitor.jpg", "team-amanda.jpg", "team-papers.jpg", "hub-edu-budget.jpg", "hub-edu-docs.jpg"]
 
 def education():
     rows = [(t, EDU_IMG[i % len(EDU_IMG)], d, bl) for i, (_, t, d, bl) in enumerate(B.EDU)]
@@ -422,20 +424,19 @@ def education():
               ("Federal and State Compliance", "Charter, state and federal deadlines on one calendar, with documentation ready for monitoring visits."),
               ("Board-Ready Reporting", "Grant spending shown in the monthly board package, so nothing surprises the board at audit time.")]
     g = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in grants)
-    launch = [("Planning year: set up the books", "q3-016.jpg", "Chart of accounts, banking, payroll and policies in place before the first hire.", None),
+    launch = [("Planning year: set up the books", "hub-edu-close.jpg", "Chart of accounts, banking, payroll and policies in place before the first hire.", None),
               ("Six months out: staff and systems", "team-joseph-hall.jpg", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
-              ("Ninety days out: facility ready", "site-trailer.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
-              ("Opening day: doors open", "school-chalk.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
-    builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS)
+              ("Ninety days out: facility ready", "hub-edu-directory.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
+              ("Opening day: doors open", "hub-edu-payroll.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
+    builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS if "Libertas" not in t)
     body = f'''{phero("Education Services", "The Complete Back Office for Charter and Private Schools", "Built around each school's stage, priorities and staff, from the first planning year to every audit after.")}
-{bleed("school-front.jpg", "center 45%")}
 <section class="sec grey" id="schools"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2">The Money, Handled. <span class="hl">Every Review, Ready.</span></h2><p style="color:var(--ink2)">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec" id="serve"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Schools we serve</span><h2 class="h2">Open Today. <span class="hl">Opening Next.</span></h2></div>
 <style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{schools}</div></div></section>
 <section class="sec grey" id="grants"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Every Grant Dollar, <span class="hl">Accounted For</span></h2><p style="color:var(--ink2)">From application to expenditure tracking to the final report, documented and audit-ready all year.</p></div><div class="why">{g.replace("<div>", '<div style="background:#fff">')}</div></div></section>
 <section class="sec" id="launch"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><span class="eyebrow">Starting a new school?</span><h2 class="h2">From Charter to <span class="hl">Opening Day</span></h2></div><div class="tabs" data-tabs>{tabs(launch)}</div>
 <div style="margin-top:36px"><a class="btn btn--teal" href="{R}/contact">Plan your launch with us</a></div></div></section>
-<section class="sec grey"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Proof from our family of companies</span><h2 class="h2">Three Schools. <span class="hl">Opened on Time.</span></h2><p style="color:var(--ink2)">Our partner companies build schools across South Carolina and open them on time. Elevate runs the finance and operations behind the teams that built them.</p></div><div class="tiles t3">{builds}</div></div></section>'''
+<section class="sec grey"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Proof from our family of companies</span><h2 class="h2">Schools Built. <span class="hl">Opened on Time.</span></h2><p style="color:var(--ink2)">Our partner companies build schools across South Carolina and open them on time. Elevate runs the finance and operations behind the teams that built them.</p></div><div class="tiles t3">{builds}</div></div></section>'''
     return page("education", "Education Services", "education", body)
 
 FAQ = [("What is the first step to working with Elevate?", "Book a discovery call. In 45 to 60 minutes we learn your entities or campuses, what is not closing today and what you want off your plate, then send a scoped proposal within a week."),
@@ -659,6 +660,8 @@ function sync(){var n=picked('software').length;cnt.textContent=n?n+' selected':
  cats.forEach(function(c){var k=c.querySelectorAll('input:checked').length,b=c.querySelector('.qcat__on');b.hidden=!k;b.textContent=k+' ticked';});
  tray.innerHTML='';[].forEach.call(f.querySelectorAll('input[name="software"]:checked'),function(i){var x=document.createElement('button');x.type='button';x.textContent=i.value;x.setAttribute('aria-label','Remove '+i.value);x.onclick=function(){i.checked=false;sync();};tray.appendChild(x);});}
 f.addEventListener('change',sync);
+/* one category open at a time (Matt: "a section should auto-collapse when another section is opened"); a search may open several */
+cats.forEach(function(c){c.addEventListener('toggle',function(){if(c.open&&!(find&&find.value.trim()))cats.forEach(function(o){if(o!==c)o.open=false;});});});
 if(find){var opened=null;find.addEventListener('input',function(){var q=find.value.trim().toLowerCase(),any=false;
  if(q&&!opened)opened=cats.map(function(c){return c.open;});
  cats.forEach(function(c,k){var hit=0;[].forEach.call(c.querySelectorAll('.qrow'),function(r){var on=!q||r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!on;if(on)hit++;});
