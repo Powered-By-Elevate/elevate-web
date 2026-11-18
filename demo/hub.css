@@ -2578,3 +2578,9 @@ body.presenting #page > .cm { display: contents !important; }
 body.presenting #page > .cm > *:not([data-slide]):not(.cm-ops-grid) { display: none !important; }
 body.presenting #page > .cm > .cm-ops-grid { display: contents !important; }
 body.presenting #page > .cm > .cm-ops-grid > *:not([data-slide]) { display: none !important; }
+
+/* Framed inside the Elevate website's dashboard tour (site.js EMBED): the
+   page alone, no menus, no scope bar and no front door. */
+body.embedded #rail, body.embedded #tabs, body.embedded #bar,
+body.embedded #chooser, body.embedded #demo-note, body.embedded #present-bar { display: none !important; }
+body.embedded #main { margin-left: 0; width: 100%; }

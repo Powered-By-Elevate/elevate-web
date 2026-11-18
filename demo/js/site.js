@@ -18,5 +18,9 @@
 
 export const PUBLIC = /\/demo(\/|$)/.test(location.pathname) || /[?&]public\b/.test(location.search);
 
+/* A page framed inside another page (the Elevate website's dashboard tour):
+   no menus, no front door, one page at a time, chosen by the frame's owner. */
+export const EMBED = /[?&]embed\b/.test(location.search);
+
 /* Only the public copy on the Elevate website is locked. */
 export function locked(s) { return PUBLIC && !s.tenant; }

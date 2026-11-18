@@ -262,6 +262,52 @@ export class Q {
         return K('Cost at completion', round2(variance), 'usd',
           { invert: true, note: 'Projected final cost against the estimate. Positive is an overrun.' });
       }
+      /* Economic development. Investment and jobs are the portfolio's, read
+         from the announcements and the state wage filing; room nights and
+         occupancy from the tourism systems. */
+      case 'capex': {
+        const live = this.units.filter(u => u.status !== 'Prospect');
+        let t = 0;
+        for (const u of live) t += this.fact(u.id, 'capex', month) || 0;
+        return K('Capital investment', round2(t), 'usd', { note: `${live.length} announced or active ${this.ind.unit.many}` });
+      }
+      case 'jobs': {
+        const live = this.units.filter(u => u.status !== 'Prospect');
+        let j = 0, h = 0;
+        for (const u of live) { j += this.fact(u.id, 'jobs', month) || 0; h += this.fact(u.id, 'hired', month) || 0; }
+        return K('Jobs committed', j, 'num', { note: `${fmtInt(h)} filled so far` });
+      }
+      case 'activeProjects': {
+        const open = this.units.filter(u => u.status === 'Prospect' || u.status === 'Active');
+        return K('Projects in play', open.length, 'num', { note: `${this.units.filter(u => u.status === 'Prospect').length} still confidential` });
+      }
+      case 'roomNights': {
+        const t = this.data.tourism;
+        if (!t) return K('Room nights booked', NaN, 'num');
+        const ms = new Set(w);
+        const rows = t.monthly.filter(r => ms.has(r.m));
+        const pm = new Set(p);
+        const prev = t.monthly.filter(r => pm.has(r.m));
+        const v = rows.reduce((a, r) => a + r.groupNights + r.corpNights, 0);
+        const pv = prev.reduce((a, r) => a + r.groupNights + r.corpNights, 0);
+        return K('Room nights booked', v, 'num', { delta: pct(v, pv) });
+      }
+      case 'impressions': {
+        const t = this.data.tourism;
+        if (!t) return K('Ad impressions', NaN, 'num');
+        const ms = new Set(w), pm = new Set(p);
+        const v = t.monthly.filter(r => ms.has(r.m)).reduce((a, r) => a + r.impressions, 0);
+        const pv = t.monthly.filter(r => pm.has(r.m)).reduce((a, r) => a + r.impressions, 0);
+        return K('Ad impressions', v, 'num', { delta: pct(v, pv) });
+      }
+      case 'hotelOcc': {
+        const t = this.data.tourism;
+        if (!t) return K('Hotel occupancy', NaN, 'pct');
+        const ms = new Set(w);
+        const rows = t.monthly.filter(r => ms.has(r.m));
+        return K('Hotel occupancy', rows.length ? rows.reduce((a, r) => a + r.occupancy, 0) / rows.length : 0, 'pct',
+          { note: `${fmtInt(t.anchor.rooms)} rooms in ${fmtInt(t.anchor.hotels)} hotels` });
+      }
       case 'enrolled':
         return K('Students enrolled', this.factAt('enrolled', month), 'num');
       case 'fillRate': {

@@ -2,12 +2,12 @@
    and the unit detail all come from the industry profile, which is what makes
    the same build read as a construction dashboard and a fleet dashboard. */
 
-import * as F from '../fmt.js?v=a2aa80d688';
-import * as C from '../chart.js?v=a2aa80d688';
-import * as U from '../ui.js?v=a2aa80d688';
-import { esc, icon } from '../icons.js?v=a2aa80d688';
-import { motif } from '../scenes.js?v=a2aa80d688';
-import * as M from '../calm.js?v=a2aa80d688';
+import * as F from '../fmt.js?v=4f9513663c';
+import * as C from '../chart.js?v=4f9513663c';
+import * as U from '../ui.js?v=4f9513663c';
+import { esc, icon } from '../icons.js?v=4f9513663c';
+import { motif } from '../scenes.js?v=4f9513663c';
+import * as M from '../calm.js?v=4f9513663c';
 
 /* ⚖️ The calm pass (Matt, 2026-11-16: *"i would never use the current financial
    dashboard we have because it is so overwhelming that it doesnt feel useful"*,
@@ -23,6 +23,7 @@ import * as M from '../calm.js?v=a2aa80d688';
 const unesc = t => String(t || '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
   .replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 let STAMP = '', SRC = '';
+const srcNames = (cfg, ids) => ids.map(id => ((cfg.connectors.connectors || []).find(c => c.id === id) || { name: id }).name).join(' · ');
 function panel({ title, note = '', right = '', body = '', foot = '', col = 12, aside = '', fold = '', foldLabel, src }) {
   return M.section({ title: unesc(title), note, right, src: src === undefined ? SRC : src, aside, fold, foldLabel,
     body: body + (foot ? `<p class="cm-ops-foot">${foot}</p>` : '') })
@@ -35,7 +36,10 @@ function fresh() { return ''; }
 function calm(fn) {
   return ctx => {
     STAMP = `As of ${esc(F.monthName(ctx.q.view.month, true))}`;
-    SRC = (ctx.s.connectedIn('systems')[0] || {}).name || '';
+    /* where the units are read from: a profile may name it (an economic
+       developer's projects live in its CRM, not in the tourism systems) */
+    const us = ctx.s.industry.unitSource && ctx.s.connector(ctx.s.industry.unitSource);
+    SRC = (us && ctx.s.isOn(us.id) ? us : ctx.s.connectedIn('systems')[0] || {}).name || '';
     return M.page(fn(ctx));
   };
 }
@@ -69,8 +73,17 @@ const COLUMNS = {
     { name: 'Seats', n: true, get: r => F.num(r.f.capacity) },
     { name: 'Filled', n: true, get: r => bar(r.f.enrolled, r.f.capacity, F.pct(r.f.capacity ? r.f.enrolled / r.f.capacity * 100 : 0, 0)) },
     { name: 'Staff', n: true, get: r => F.num(r.f.staff, 1) },
-    { name: 'Per student', n: true, get: r => F.exact(r.f.funding) },
+    { name: 'Funding per student', n: true, get: r => F.exact(r.f.funding) },
     { name: 'Cost per student', n: true, get: r => F.exact(r.f.costPer) },
+  ],
+  econdev: [
+    { name: 'Type', get: r => esc(r.type || '') },
+    { name: 'Stage', get: r => esc(r.status || '') },
+    { name: 'Investment', n: true, get: r => F.money(r.f.capex) },
+    { name: 'Jobs', n: true, get: r => F.num(r.f.jobs) },
+    { name: 'Filled', n: true, get: r => r.f.hired ? bar(r.f.hired, r.f.jobs, F.pct(r.f.jobs ? r.f.hired / r.f.jobs * 100 : 0, 0)) : '<span class="muted">not yet</span>' },
+    { name: 'Sq ft', n: true, get: r => F.num(r.f.sqft) },
+    { name: 'Average wage', n: true, get: r => F.exact(r.f.wage) },
   ],
   healthcare: [
     { name: 'Specialty', get: r => esc(r.specialty || '') },
@@ -152,6 +165,8 @@ function bar(v, max, label) {
 export function home(ctx) {
   const { q, s } = ctx;
   const ind = s.industry;
+  if (ind.id === 'econdev' && ind.focus === 'bizdev' && q.data.programs) return bizOverview(ctx);
+  if (ind.id === 'econdev' && q.data.tourism) return edOverview(ctx);
   const rows = q.unitRows();
   const w = q.window();
   const port = ind.portfolio || {};
@@ -187,7 +202,7 @@ export function home(ctx) {
 
   const total = book.reduce((a, x) => a + x.size, 0);
   const done = book.reduce((a, x) => a + x.size * (x.bar || 0), 0);
-  const money = port.size && /contract|arr|sales|linehaul|funding/.test(port.size);
+  const money = port.size && /contract|arr|sales|linehaul|funding|capex/.test(port.size);
   const fmtSize = v => money ? F.money(v) : F.num(v);
 
   /* The finished and in-band units wait in a fold, so the face of the page is
@@ -199,7 +214,7 @@ export function home(ctx) {
           <span class="pf-n">${n + 1}</span>
           <span class="pf-name">
             <b>${esc(x.r.short || x.r.name)}</b>
-            <span>${esc([x.r.id, x.r.status, x.r.owner].filter(Boolean).join(' \u00b7 '))}</span>
+            <span>${esc((ind.unitList ? [x.r.owner] : [x.r.id, x.r.status, x.r.owner]).filter(Boolean).join(' \u00b7 '))}</span>
           </span>
           <span class="pf-bar" title="${esc(port.barLabel || '')}: ${pct}%">
             <i style="width:${fill}%" class="${x.flag ? 'bad' : ''}"></i>
@@ -208,7 +223,7 @@ export function home(ctx) {
             <b>${pct}%</b>
           </span>
           ${(port.chips || []).map(([k, label]) => `<span class="pf-chip">
-            <b>${Number.isFinite(x.r.f[k]) ? (/cost|earned|cpu|arr|margin/i.test(k)
+            <b>${Number.isFinite(x.r.f[k]) ? (/cost|earned|cpu|arr|margin|funding|capex|wage/i.test(k)
               ? F.money(x.r.f[k]) : F.num(x.r.f[k])) : '—'}</b><span>${esc(label)}</span></span>`).join('')}
           <span class="pf-size">${fmtSize(x.size)}<span>${esc(port.sizeLabel || '')}</span></span>
           <span class="pf-flag">${x.flag
@@ -240,7 +255,7 @@ export function home(ctx) {
         { k: (port.barLabel || 'Progress'), v: `${pctDone}%`, sub: 'weighted by size' },
         { k: 'Flagged', v: String(flagged.length), sub: flagged.length ? 'outside their band' : 'everything in band' },
       ]),
-      body: `<div class="book-top">
+      body: s.data.brand.look === 'bright' ? bookTiles(book, ind, port, fmtSize, q) : `<div class="book-top">
           <div class="book-bar" role="img" aria-label="${Math.round(done / (total || 1) * 100)}% of the book">
             ${book.map(x => `<span style="flex:${Math.max(x.size, total * 0.004)} 0 0"
               class="${x.flag ? 'bad' : ''}" title="${esc(x.r.short || x.r.name)}: ${fmtSize(x.size)}">
@@ -310,15 +325,37 @@ function headlineOf(q, r, ind, w) {
   return Math.round(t * 100) / 100;
 }
 
+/* The bright look draws the book as labelled tiles, one per unit, so nothing is
+   a nameless segment and the panel has no empty floor under a thin bar (Matt,
+   on Belton's: "this chart is laid out bad"). A school's grades keep their own
+   order, K5 to 8th; anything else stays largest first. */
+function bookTiles(book, ind, port, fmtSize, q) {
+  const order = ind.unitList ? q.units.map(u => u.id) : null;
+  const list = order ? book.slice().sort((a, b) => order.indexOf(a.r.id) - order.indexOf(b.r.id)) : book;
+  return `<div class="book-tiles">${list.map(x => {
+    const pct = Math.round((x.bar || 0) * 100), fill = Math.round((x.fill || 0) * 100);
+    return `<div class="bt${x.flag ? ` ${x.flag.kind}` : ''}" data-click="unit:${esc(x.r.id)}" tabindex="0">
+      <span class="bt-n">${esc(x.r.short || x.r.name)}</span>
+      <b class="bt-v">${pct}%</b>
+      <span class="bt-bar"><i style="width:${fill}%"></i></span>
+      <span class="bt-s">${fmtSize(x.size)} <em>${esc((port.sizeLabel || '').toLowerCase())}</em></span>
+    </div>`; }).join('')}</div>`;
+}
+
+function unitWords(ind) {
+  const u = ind.unit || {};
+  return { one: u.one || 'campus', many: u.many || 'campuses' };
+}
+
 function headlineName(ind) {
   return { construction: 'Earned revenue', education: 'Students enrolled', retail: 'Net sales',
     restaurants: 'Net sales', industrial: 'Units produced', logistics: 'Miles', tech: 'ARR',
-    healthcare: 'Patient visits' }[ind.id];
+    healthcare: 'Patient visits', econdev: 'Capital investment' }[ind.id];
 }
 
 function headlineTotal(q, ind, m) {
   const key = { construction: 'rev', education: 'enrolled', retail: 'sales', restaurants: 'sales',
-    industrial: 'produced', logistics: 'miles', tech: 'arr', healthcare: 'visits' }[ind.id];
+    industrial: 'produced', logistics: 'miles', tech: 'arr', healthcare: 'visits', econdev: 'capex' }[ind.id];
   return q.factSum(key, [m]);
 }
 
@@ -356,6 +393,17 @@ export function flags(q, rows, ind) {
            <b>${F.pct(fill * 100, 0)}</b> full, worth
            <b>${F.money((f.capacity - f.enrolled) * (f.funding || 0))}</b> of funding`,
           (f.capacity - f.enrolled) * (f.funding || 0));
+      }
+    } else if (ind.id === 'econdev') {
+      /* An announced project hiring behind its performance agreement, and a
+         prospect that has gone quiet. Jobs filled come from the state's wage
+         filing, so the gap is measured, not reported by the company. */
+      const behind = (f.jobs || 0) - (f.hired || 0);
+      if ((r.status === 'Announced' || r.status === 'Complete') && (f.pct || 0) >= 95 && f.jobs && f.hired / f.jobs < 0.7) {
+        add('Behind on jobs', 'bad', `<b>${F.num(f.hired)}</b> of <b>${F.num(f.jobs)}</b> committed jobs filled,
+          <b>${F.num(behind)}</b> short of the performance agreement`, behind * (f.wage || 0));
+      } else if (r.status === 'Prospect' && (f.touches || 0) <= 1) {
+        add('Gone quiet', 'warn', `one touch in the last month on a <b>${F.money(f.capex)}</b> prospect`, (f.capex || 0) * 0.01);
       }
     } else if (ind.id === 'healthcare') {
       /* money left on the table: what was allowed and not collected */
@@ -505,12 +553,17 @@ export function units(ctx) {
       col: 12,
       right: U.btn('Download', { act: 'export-units', ico: 'download', sm: true }),
       title: hasWip ? 'The schedule' : `${rows.length} ${esc(ind.unit.many)}`,
-      note: `Owner is the ${esc((ind.unit.owner || 'manager').toLowerCase())} responsible. Open any row for its arithmetic.`,
+      /* A school read by grade has no owner, no status worth a column and no
+         grade column to repeat the row's own name (Matt: "im confused by the
+         named under grades? what does that even mean"). */
+      note: ind.unitList ? 'Open any row for its arithmetic.'
+        : `Owner is the ${esc((ind.unit.owner || 'manager').toLowerCase())} responsible. Open any row for its arithmetic.`,
       body: U.table({
-        cols: [{ name: ind.unit.key, w: '22%' }, { name: 'Status' }, ...cols],
+        cols: ind.unitList ? [{ name: ind.unit.key, w: '22%' }, ...cols.filter(c => c.name !== 'Grades')]
+          : [{ name: ind.unit.key, w: '22%' }, { name: 'Status' }, ...cols],
         rows: rows.map(r => ({
           click: `unit:${r.id}`,
-          cells: [
+          cells: ind.unitList ? [`<b>${esc(r.name)}</b>`, ...cols.filter(c => c.name !== 'Grades').map(c => c.get(r, ctx))] : [
             `<b>${esc(r.name)}</b><div class="sub">${esc(r.owner)}</div>`,
             U.statusTag(r.status, statusKind(r.status)),
             ...cols.map(c => c.get(r, ctx)),
@@ -539,6 +592,7 @@ export function second(ctx) {
   const fn = {
     construction: backlog, education: enrolment, retail: category, restaurants: primeCost,
     industrial: throughput, logistics: lanes, tech: retention, healthcare: revenueCycle,
+    econdev: tourismSales,
   }[ind.id] || backlog;
   return pageHead({ eyebrow: 'Operations', title: name, answer: fn.answer(ctx),
     motif: motif(ind.id, s.data.brand.palette) })
@@ -679,10 +733,11 @@ backlog.answer = ctx => {
 /* --- education: enrolment */
 function enrolment(ctx) {
   const { q } = ctx;
+  const W = unitWords(ctx.s.industry);
   const rows = q.unitRows();
   const months = q.months.slice(-24);
   return panel({
-    col: 7, title: 'Enrolment by campus',
+    col: 7, title: `Enrollment by ${W.one}`,
     note: 'Enrolled against seats. The gap is funding not collected.',
     body: C.hbars({
       rows: rows.map(r => ({
@@ -692,17 +747,30 @@ function enrolment(ctx) {
       })),
       fmt: v => F.num(v), max: Math.max(...rows.map(r => r.f.capacity || 0)),
     }),
-    foot: 'The tick on each bar is that campus’s capacity.',
+    foot: `The tick on each bar is that ${W.one}’s capacity.`,
   }) + panel({
     col: 5, title: 'Cost against funding, per student',
-    note: 'A campus below the line costs more to run than it is funded for.',
-    body: C.scatter({
+    note: ctx.s.industry.unitList
+      ? `Cost per student in each ${W.one}. The tick is what each student is funded, so a red bar costs more than it brings in.`
+      : `A ${W.one} below the line costs more to run than it is funded for.`,
+    /* One school's grades share one funding rate, so a scatter stacks every
+       grade in one column (Matt: "you literally cannot even read it"). Bars
+       against the rate say the same thing and can be read. */
+    body: ctx.s.industry.unitList ? C.hbars({
+      rows: ctx.s.industry.unitList.map(u => rows.find(r => r.id === u.id)).filter(Boolean).map(r => {
+        const gap = (r.f.costPer || 0) - (r.f.funding || 0);
+        return { name: r.short, value: r.f.costPer || 0, mark: r.f.funding || 0,
+          note: `${gap >= 0 ? '+' : '−'}${F.exact(Math.abs(gap))}`,
+          color: gap > 0 ? 'var(--bad)' : 'var(--accent)' };
+      }),
+      fmt: v => F.exact(v), max: Math.max(...rows.map(r => Math.max(r.f.costPer || 0, r.f.funding || 0))) * 1.08,
+    }) : C.scatter({
       points: rows.map(r => ({ name: r.name, x: r.f.funding || 0, y: r.f.costPer || 0 })),
       xFmt: v => F.exact(v), yFmt: v => F.exact(v),
       xLabel: 'Funding per student', yLabel: 'Cost per student', height: 300,
     }),
   }) + panel({
-    col: 12, title: 'Enrolment over two years',
+    col: 12, title: 'Enrollment over two years',
     body: C.line({
       series: [
         { name: 'Enrolled', values: months.map(m => q.factSum('enrolled', [m])) },
@@ -714,12 +782,71 @@ function enrolment(ctx) {
 }
 enrolment.answer = ctx => {
   const { q } = ctx;
+  const W = unitWords(ctx.s.industry);
   const e = q.factAt('enrolled'), c = q.factAt('capacity');
   const low = q.unitRows().filter(r => r.f.capacity && r.f.enrolled / r.f.capacity < 0.85);
   return `<b>${F.num(e)}</b> of <b>${F.num(c)}</b> seats are filled.
-    ${low.length ? `<b>${low.length}</b> ${low.length === 1 ? 'campus is' : 'campuses are'} under 85%, worth
+    ${low.length ? `<b>${low.length}</b> ${low.length === 1 ? W.one + ' is' : W.many + ' are'} under 85%, worth
       <b>${F.money(low.reduce((a, r) => a + (r.f.capacity - r.f.enrolled) * (r.f.funding || 0), 0))}</b>
-      of funding.` : 'Every campus is above 85% full.'}`;
+      of funding.` : `Every ${W.one} is above 85% full.`}`;
+};
+
+/* --- economic development: tourism and visitors
+
+   A destination's year is read from four systems: the sales CRM (contracts and
+   the room nights on them), STR (hotel occupancy and rate), AirDNA (short-term
+   rentals) and the ad platforms and web analytics (reach). None of it is typed. */
+function tourism(ctx) {
+  const { q, cfg } = ctx;
+  const t = q.data.tourism;
+  if (!t) return panel({ col: 12, title: 'Tourism', body: '<div class="empty">No tourism systems connected.</div>' });
+  const rows = t.monthly.slice(-12);
+  const sum = k => rows.reduce((a, r) => a + (r[k] || 0), 0);
+  const labels = rows.map(r => mN(r.m));
+  const nights = sum('groupNights') + sum('corpNights');
+  const src = ids => srcNames(cfg, ids);
+  return panel({
+    col: 7, title: 'Room nights booked, month by month', src: src(t.sources.sales),
+    note: 'Group and corporate contracts the sales team closed, by the month they were signed.',
+    body: C.stack({
+      rows: rows.map(r => ({ group: r.groupNights, corp: r.corpNights })), keys: ['group', 'corp'],
+      names: { group: 'Group', corp: 'Corporate' }, labels, fmt: v => F.num(v), height: 240,
+    }),
+    foot: `<b>${F.num(sum('groupContracts') + sum('corpContracts'))}</b> contracts and <b>${F.num(nights)}</b> room nights in twelve months, worth <b>${F.money(sum('groupRevenue') + sum('corpRevenue'))}</b> in rooms revenue.`,
+  }) + panel({
+    col: 5, title: 'Hotel occupancy', src: src(t.sources.hotels),
+    note: `${F.num(t.anchor.hotels)} hotels and ${F.num(t.anchor.rooms)} rooms. The line is short-term rentals.`,
+    body: C.line({
+      series: [{ name: 'Hotels', values: rows.map(r => r.occupancy) },
+        { name: 'Short-term rentals', values: rows.map(r => r.strOccupancy) }],
+      labels, fmt: v => F.pct(v, 0), height: 240,
+    }),
+  }) + panel({
+    col: 12, title: 'What the marketing reached', src: src(t.sources.reach),
+    note: 'Paid display, search, social and video, and what it brought to the website.',
+    aside: M.facts([
+      { k: 'Ad impressions', v: F.num(sum('impressions')), hl: true, sub: 'last twelve months' },
+      { k: 'Page views', v: F.num(sum('pageViews')), sub: 'on the visitor site' },
+      { k: 'New users', v: F.num(sum('newUsers')), sub: 'first visit to the site' },
+      { k: 'Video views', v: F.num(sum('videoViews')), sub: 'YouTube' },
+    ]),
+    body: C.bars({ values: rows.map(r => r.pageViews), labels, fmt: v => F.num(v), height: 220 }),
+  }) + (t.origins && t.origins.length ? panel({
+    col: 12, title: 'Where visitors come from', src: 'Placer.ai',
+    note: 'Share of visitors from beyond 50 miles, by origin market.',
+    body: C.hbars({ rows: t.origins.map(o => ({ name: o.name, value: o.share })), fmt: v => F.pct(v, 0) }),
+  }) : '');
+}
+tourism.answer = ctx => {
+  const { q } = ctx;
+  const t = q.data.tourism;
+  if (!t) return 'No tourism systems are connected.';
+  const rows = t.monthly.slice(-12);
+  const sum = k => rows.reduce((a, r) => a + (r[k] || 0), 0);
+  const occ = rows.reduce((a, r) => a + r.occupancy, 0) / Math.max(1, rows.length);
+  return `<b>${F.num(sum('groupContracts') + sum('corpContracts'))}</b> contracts booked
+    <b>${F.num(sum('groupNights') + sum('corpNights'))}</b> room nights in twelve months, and hotels ran
+    <b>${F.pct(occ, 1)}</b> full.`;
 };
 
 /* --- healthcare: visits and the revenue cycle
@@ -1052,7 +1179,7 @@ export function detail(ctx) {
       <button class="cm-ops-backbtn" data-act="go" data-arg="${esc(backTo)}">
         ${icon('arrow', 14)}Back to ${esc(backName)}</button>
     </nav>` + M.head({ eyebrow: `${ind.unit.one} · ${entity}`, title: u.name,
-      line: verdictText.title, stamp: `${esc(u.status)} · ${esc(u.owner)}<br>${STAMP}` }) +
+      line: verdictText.title, stamp: `${esc((ind.unitList ? [u.owner] : [u.status, u.owner]).filter(Boolean).join(' · '))}${ind.unitList && !u.owner ? '' : '<br>'}${STAMP}` }) +
     M.figures(measures.slice(0, 4).map(m => ({ label: m.name, value: fmtOf(m)(f[m.id]) }))) +
     `<div class="cm-ops-grid">` +
 
@@ -1125,6 +1252,15 @@ function chain(u, f, ind) {
         { name: 'Left over', value: rev - cost, total: true },
       ];
     }
+    case 'econdev': {
+      const total = f.capex || 0;
+      const done = total * Math.min(1, (f.pct || 0) / 100);
+      return [
+        { name: 'Committed investment', value: total, total: true },
+        { name: 'Still to be spent', value: -(total - done) },
+        { name: 'Invested to date', value: done, total: true },
+      ];
+    }
     case 'healthcare': {
       const rev = f.rev || 0;
       const allowed = (f.collect || 0) ? rev / (f.collect / 100) : rev;
@@ -1193,6 +1329,9 @@ function chainNote(u, f, ind) {
     case 'education':
       return `An empty seat costs the same to keep as a full one, which is why the gap is
         drawn as money rather than as a count.`;
+    case 'econdev':
+      return `The company's money, not ours: investment to date follows the project's progress against its announced
+        total, and jobs filled come from the state's quarterly wage filing.`;
     case 'healthcare':
       return `Clinical cost is providers, staff and supplies at the group’s rate. Rent and
         the billing office sit in overhead, above this line.`;
@@ -1233,6 +1372,14 @@ function unitVerdict(q, u, f, ind) {
           <b>${F.exact(f.costPer)}</b> of cost, with
           <b>${F.num(f.staff, 1)}</b> staff, or one for every
           <b>${F.num(f.staff ? f.enrolled / f.staff : 0, 1)}</b> students.`,
+      };
+    case 'econdev':
+      return {
+        title: `${name} is a <b>${F.money(f.capex)}</b> ${esc((u.kind || u.type || '').toLowerCase())} project with
+          <b>${F.num(f.jobs)}</b> jobs committed.`,
+        body: `<b>${esc(u.status || '')}</b>, <b>${F.num(f.sqft)}</b> square feet at an average wage of
+          <b>${F.exact(f.wage)}</b>${f.retained ? `, keeping <b>${F.num(f.retained)}</b> jobs already here` : ''}.
+          ${f.hired ? `<b>${F.num(f.hired)}</b> of the new jobs are filled.` : 'Hiring has not started.'}${u.note ? ` ${esc(u.note)}` : ''}`,
       };
     case 'healthcare':
       return {
@@ -1308,12 +1455,15 @@ const GRID = {
     says: 'how each product has grown' },
   healthcare: { key: 'visits', name: 'Patient visits', fmt: v => F.num(v), good: 'high',
     says: 'how busy each clinic has been' },
+  econdev: { key: 'hired', name: 'Jobs filled', fmt: v => F.num(v), good: 'high',
+    says: 'how each project has hired' },
 };
 
 export function grid(ctx) {
   const { q, s } = ctx;
   const ind = s.industry;
-  const g = GRID[ind.id] || GRID.construction;
+  const g0 = GRID[ind.id] || GRID.construction;
+  const g = { ...g0, says: g0.says.replace('campus', unitWords(ind).one) };
   const months = q.months.slice(-12);
   const units = q.units;
   const name = (ind.pages && ind.pages['ops-grid'] && ind.pages['ops-grid'].name) || 'Performance grid';
@@ -1441,6 +1591,8 @@ const RULES = {
   ],
   tech: ['Monthly churn over 1.4% of the product’s ARR'],
   healthcare: ['Days in A/R over 50, or under 92% collected', 'No-shows over 9% of bookings'],
+  econdev: ['A project at or past its hiring date with under 70% of its committed jobs filled',
+    'A prospect with one touch or fewer in the month'],
 };
 
 /* What needs you.
@@ -1537,7 +1689,7 @@ export function watch(ctx) {
       col: 12, title: 'The rules',
       note: `What each ${esc(ind.unit.one)} is tested against. These are the build\u2019s thresholds, and a company sets its own at deployment.`,
       body: '',
-      fold: `<ol class="steps">${(RULES[ind.id] || []).map(r => `<li>${esc(r)}</li>`).join('')}</ol>`,
+      fold: `<ol class="steps">${(RULES[ind.id] || []).map(r => `<li>${esc(r.replace('A campus', 'A ' + unitWords(ind).one))}</li>`).join('')}</ol>`,
       foldLabel: 'Show the rules',
     }) + `</div>`;
 }
@@ -1684,10 +1836,10 @@ export function season(ctx) {
   const ind = s.industry;
   const months = q.months;
   const key = { construction: 'rev', education: 'enrolled', retail: 'sales', restaurants: 'covers',
-    industrial: 'produced', logistics: 'miles', tech: 'arr', healthcare: 'visits' }[ind.id] || 'rev';
+    industrial: 'produced', logistics: 'miles', tech: 'arr', healthcare: 'visits', econdev: 'hired' }[ind.id] || 'rev';
   const label = { construction: 'Earned revenue', education: 'Students enrolled',
     retail: 'Net sales', restaurants: 'Covers', industrial: 'Units produced', logistics: 'Miles',
-    tech: 'ARR', healthcare: 'Patient visits' }[ind.id] || 'Revenue';
+    tech: 'ARR', healthcare: 'Patient visits', econdev: 'Jobs filled' }[ind.id] || 'Revenue';
   const money = ['rev', 'sales', 'arr'].includes(key);
   const fmt = v => money ? F.money(v) : F.num(v, 0);
 
@@ -1772,7 +1924,230 @@ export function season(ctx) {
     }) + `</div>`;
 }
 
+/* --- economic development & tourism: the operations section
+
+   Matt, on Roswell: *"they are mostly interested in tourism and marketing"* and
+   *"i dont want overwhelming information on a page. i want high level analytics
+   and the ability to click in to view the details"*. So Operations opens on an
+   overview: four figures, then one card per area with one picture and a way in.
+   Each area's detail is its own page. */
+function tz(q) {
+  const t = q.data.tourism;
+  return { t, last: t.monthly.slice(-12), prev: t.monthly.slice(-24, -12) };
+}
+const tsum = (rows, k) => rows.reduce((a, r) => a + (r[k] || 0), 0);
+const tavg = (rows, k) => rows.length ? tsum(rows, k) / rows.length : 0;
+function chip(now, was, unit = '%') {
+  if (!was) return '';
+  const d = unit === 'pp' ? now - was : (now - was) / Math.abs(was) * 100;
+  return `<span class="ed-d ${d >= 0 ? 'up' : 'down'}">${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(1)}${unit === 'pp' ? ' pts' : '%'} on the year before</span>`;
+}
+function edFig(value, label, delta = '') {
+  return `<div class="ed-fig"><b>${value}</b><span>${esc(label)}</span>${delta}</div>`;
+}
+
+function edOverview(ctx) {
+  const { q, s } = ctx;
+  const { t, last, prev } = tz(q);
+  const labels = last.map(r => mN(r.m));
+  const nights = tsum(last, 'groupNights') + tsum(last, 'corpNights');
+  const nightsWas = tsum(prev, 'groupNights') + tsum(prev, 'corpNights');
+  const occ = tavg(last, 'occupancy'), occWas = tavg(prev, 'occupancy');
+  const imp = tsum(last, 'impressions'), impWas = tsum(prev, 'impressions');
+  const live = q.unitRows().filter(r => r.status !== 'Prospect');
+  const capex = live.reduce((a, r) => a + (r.f.capex || 0), 0);
+  const jobs = live.reduce((a, r) => a + (r.f.jobs || 0), 0);
+  const go = (arg) => U.btn('View details', { act: 'go', arg, sm: true, ico: 'arrow' });
+  const top = live.slice().sort((a, b) => (b.f.capex || 0) - (a.f.capex || 0)).slice(0, 4);
+  return pageHead({ eyebrow: 'Operations', title: pageName(s.industry, 'ops-home', 'Overview'),
+    answer: `<b>${F.num(nights)}</b> room nights booked in twelve months, ${nights >= nightsWas ? 'up' : 'down'}
+      <b>${F.pct(Math.abs((nights - nightsWas) / (nightsWas || 1) * 100), 0)}</b> on the year before, with hotels
+      <b>${F.pct(occ, 1)}</b> full.` }) + `<div class="cm-ops-grid">` +
+    panel({ col: 6, title: 'Tourism sales', src: srcNames(ctx.cfg, t.sources.sales), right: go('ops-second'),
+      body: edFig(F.num(nights), 'room nights booked', chip(nights, nightsWas))
+        + C.bars({ values: last.map(r => r.groupNights + r.corpNights), labels, fmt: v => F.num(v), height: 150 }) }) +
+    panel({ col: 6, title: 'Hotels & stays', src: srcNames(ctx.cfg, t.sources.hotels), right: go('ops-hotels'),
+      body: edFig(F.pct(occ, 1), 'average hotel occupancy', chip(occ, occWas, 'pp'))
+        + C.line({ series: [{ name: 'Hotels', values: last.map(r => r.occupancy) }], labels, fmt: v => F.pct(v, 0), height: 150, legend: false }) }) +
+    panel({ col: 6, title: 'Marketing', src: srcNames(ctx.cfg, t.sources.reach), right: go('ops-marketing'),
+      body: edFig(F.num(imp), 'ad impressions', chip(imp, impWas))
+        + C.bars({ values: last.map(r => r.pageViews), labels, fmt: v => F.num(v), height: 150 }) }) +
+    (s.industry.focus === 'tourism' ? salesPipeCard(ctx, go) : panel({ col: 6, title: 'Development projects', src: SRC, right: go('ops-units'),
+      body: edFig(F.money(capex), `invested across ${live.length} announced and active projects, ${F.num(jobs)} jobs`)
+        + `<div class="ed-list">${top.map(r => `<div class="ed-row" data-click="unit:${esc(r.id)}" tabindex="0">
+            <span><b>${esc(r.name)}</b><em>${esc(r.status)}</em></span><span>${F.money(r.f.capex)}</span></div>`).join('')}</div>` })) +
+    `</div>`;
+}
+
+/* a tourism office's pipeline is group business: weddings, tournaments, retreats */
+function salesPipeCard(ctx, go) {
+  const p = ctx.q.data.pipeline;
+  const open = p.rows.reduce((a, r) => a + r.value, 0), wt = p.rows.reduce((a, r) => a + r.weighted, 0);
+  const top = p.rows.slice().sort((a, b) => b.weighted - a.weighted).slice(0, 4);
+  return panel({ col: 6, title: pageName(ctx.s.industry, 'pipeline-home', 'Pipeline'),
+    src: (ctx.s.connector(ctx.s.industry.pipelineSource || '') || ctx.s.connectedIn('crm')[0] || {}).name || '', right: go('pipeline-home'),
+    body: edFig(F.money(open), `in open group business, ${F.money(wt)} weighted`)
+      + `<div class="ed-list">${top.map(r => `<div class="ed-row" data-act="go" data-arg="pipeline-home" tabindex="0">
+          <span><b>${esc(r.name)}</b><em>${esc(r.stage)}</em></span><span>${F.money(r.value)}</span></div>`).join('')}</div>` });
+}
+
+/* --- economic development as business development (Roswell Inc, where the
+   tourism office is a separate client): projects, recruitment, retention and
+   the events that bring the business community together. */
+function bizOverview(ctx) {
+  const { q, s } = ctx;
+  const pr = q.data.programs, a = pr.anchor;
+  const last = pr.monthly.slice(-12), prev = pr.monthly.slice(-24, -12);
+  const labels = last.map(r => mN(r.m));
+  const rows = q.unitRows();
+  const live = rows.filter(r => r.status !== 'Prospect');
+  const capex = live.reduce((x, r) => x + (r.f.capex || 0), 0), jobs = live.reduce((x, r) => x + (r.f.jobs || 0), 0);
+  const top = live.slice().sort((x, y) => (y.f.capex || 0) - (x.f.capex || 0)).slice(0, 4);
+  const att = tsum(last, 'attraction'), ret = tsum(last, 'retention');
+  const evs = tsum(last, 'events'), ppl = tsum(last, 'attendees');
+  const retained = rows.reduce((x, r) => x + (r.f.retained || 0), 0);
+  const go = (arg) => U.btn('View details', { act: 'go', arg, sm: true, ico: 'arrow' });
+  return pageHead({ eyebrow: 'Operations', title: pageName(s.industry, 'ops-home', 'Overview'),
+    answer: `<b>${F.money(capex)}</b> of capital investment and <b>${F.num(jobs)}</b> committed jobs across
+      <b>${live.length}</b> announced and active projects, with <b>${F.num(att + ret)}</b> projects opened in twelve months.` }) +
+    `<div class="cm-ops-grid">` +
+    panel({ col: 6, title: 'Development projects', src: SRC, right: go('ops-units'),
+      body: edFig(F.money(capex), `invested, ${F.num(jobs)} jobs committed`)
+        + `<div class="ed-list">${top.map(r => `<div class="ed-row" data-click="unit:${esc(r.id)}" tabindex="0">
+            <span><b>${esc(r.name)}</b><em>${esc(r.status)}</em></span><span>${F.money(r.f.capex)}</span></div>`).join('')}</div>` }) +
+    panel({ col: 6, title: 'Attraction & recruitment', src: SRC, right: go('ops-units'),
+      body: edFig(F.num(att), 'new companies worked in twelve months', chip(att, tsum(prev, 'attraction')))
+        + C.bars({ values: last.map(r => r.attraction), labels, fmt: v => F.num(v), height: 150 }) }) +
+    panel({ col: 6, title: 'Retention & expansion', src: SRC, right: go('ops-units'),
+      body: edFig(F.num(ret), `existing businesses worked, ${F.num(retained)} jobs kept here`, chip(ret, tsum(prev, 'retention')))
+        + C.bars({ values: last.map(r => r.retention), labels, fmt: v => F.num(v), height: 150 }) }) +
+    panel({ col: 6, title: 'Events & programs', src: srcNames(ctx.cfg, pr.sources.events), right: go('ops-events'),
+      body: edFig(F.num(ppl), `people at ${F.num(evs)} events`, chip(ppl, tsum(prev, 'attendees')))
+        + C.bars({ values: last.map(r => r.attendees), labels, fmt: v => F.num(v), height: 150 }) }) +
+    `</div>`;
+}
+
+export function eventsPage(ctx) {
+  const { q, s, cfg } = ctx;
+  const pr = q.data.programs, a = pr.anchor;
+  const last = pr.monthly.slice(-12);
+  const ms = new Set(last.map(r => r.m));
+  const evs = pr.events.filter(e => ms.has(e.m)).sort((x, y) => (y.m + String(y.day).padStart(2, '0')).localeCompare(x.m + String(x.day).padStart(2, '0')));
+  const by = {};
+  for (const e of evs) { const o = (by[e.name] ||= { n: e.name, count: 0, ppl: 0, biz: 0 }); o.count++; o.ppl += e.attendees; o.biz += e.businesses; }
+  const kinds = Object.values(by).sort((x, y) => y.ppl - x.ppl);
+  return pageHead({ eyebrow: 'Operations', title: pageName(s.industry, 'ops-events', 'Events & programs'),
+    answer: `<b>${F.num(evs.length)}</b> events brought <b>${F.num(tsum(last, 'attendees'))}</b> people together in twelve months.
+      In ${esc(a.year)} the office supported <b>${F.num(a.businesses)}+</b> businesses.` }) +
+    `<div class="cm-ops-grid">` + panel({
+      col: 12, title: 'Attendance, month by month', src: srcNames(cfg, pr.sources.events),
+      note: 'Everyone who checked in, across every event the office ran.',
+      aside: M.facts([
+        { k: `Events in ${esc(a.year)}`, v: F.num(a.events), hl: true, sub: `${F.num(a.attendees)}+ attendees` },
+        { k: 'Businesses supported', v: `${F.num(a.businesses)}+`, sub: esc(a.year) },
+        { k: 'Projects completed', v: F.num(a.attractionDone + a.retentionDone), sub: `${F.num(a.attractionDone)} attraction, ${F.num(a.retentionDone)} retention` },
+      ]),
+      body: C.bars({ values: last.map(r => r.attendees), labels: last.map(r => mN(r.m)), fmt: v => F.num(v), height: 240 }),
+    }) + panel({
+      col: 12, title: 'By program', src: srcNames(cfg, pr.sources.events), note: 'Twelve months. Open the fold for every event.',
+      body: U.table({ cols: [{ name: 'Program', w: '40%' }, { name: 'Events', n: true }, { name: 'Attendees', n: true }, { name: 'Businesses', n: true }],
+        rows: kinds.map(k => ({ cells: [`<b>${esc(k.n)}</b>`, F.num(k.count), F.num(k.ppl), F.num(k.biz)] })) }),
+      fold: U.table({ cols: [{ name: 'Date' }, { name: 'Event', w: '46%' }, { name: 'Attendees', n: true }, { name: 'Businesses', n: true }],
+        rows: evs.map(e => ({ cells: [esc(`${F.monthName(e.m)} ${e.day}`), esc(e.name), F.num(e.attendees), F.num(e.businesses)] })) }),
+      foldLabel: `All ${evs.length} events`,
+    }) + `</div>`;
+}
+
+function tourismSales(ctx) {
+  const { q, cfg } = ctx;
+  if (!q.data.tourism) return tourism(ctx);
+  const { t, last } = tz(q);
+  const labels = last.map(r => mN(r.m));
+  const gc = tsum(last, 'groupContracts'), cc = tsum(last, 'corpContracts');
+  const gn = tsum(last, 'groupNights'), cn = tsum(last, 'corpNights');
+  const gr = tsum(last, 'groupRevenue'), cr = tsum(last, 'corpRevenue');
+  return panel({
+    col: 12, title: 'Room nights booked, month by month', src: srcNames(cfg, t.sources.sales),
+    note: 'Group and corporate contracts the sales team closed, by the month they were signed.',
+    aside: M.facts([
+      { k: 'Contracts booked', v: F.num(gc + cc), hl: true, sub: `${F.num(gc)} group, ${F.num(cc)} corporate` },
+      { k: 'Room nights', v: F.num(gn + cn), sub: `${F.num((gn + cn) / Math.max(1, gc + cc), 0)} a contract` },
+      { k: 'Rooms revenue', v: F.money(gr + cr), sub: `${F.exact((gr + cr) / Math.max(1, gn + cn), 2)} a night` },
+    ]),
+    body: C.stack({ rows: last.map(r => ({ group: r.groupNights, corp: r.corpNights })), keys: ['group', 'corp'],
+      names: { group: 'Group', corp: 'Corporate' }, labels, fmt: v => F.num(v), height: 260 }),
+  }) + panel({
+    col: 12, title: 'Rooms revenue booked', src: srcNames(cfg, t.sources.sales),
+    note: 'What the contracts are worth to the hotels, by the month they were signed.',
+    body: C.bars({ values: last.map(r => r.groupRevenue + r.corpRevenue), labels, fmt: v => F.money(v), height: 220 }),
+  });
+}
+tourismSales.answer = ctx => tourism.answer(ctx);
+
+export function hotels(ctx) {
+  const { q, s, cfg } = ctx;
+  const { t, last } = tz(q);
+  const labels = last.map(r => mN(r.m));
+  const a = t.anchor;
+  return pageHead({ eyebrow: 'Operations', title: pageName(s.industry, 'ops-hotels', 'Hotels & stays'),
+    answer: `Hotels ran <b>${F.pct(tavg(last, 'occupancy'), 1)}</b> full over twelve months at about
+      <b>${F.exact(tavg(last, 'adr'), 0)}</b> a night, and short-term rentals <b>${F.pct(tavg(last, 'strOccupancy'), 0)}</b>.` }) +
+    `<div class="cm-ops-grid">` + panel({
+      col: 12, title: 'Occupancy, month by month', src: srcNames(cfg, [...t.sources.hotels, ...t.sources.rentals]),
+      note: 'Hotels from STR, short-term rentals from AirDNA.',
+      aside: M.facts([
+        { k: 'Hotels', v: F.num(a.hotels), hl: true, sub: `${F.num(a.rooms)} rooms` },
+        { k: 'Hotel room revenue', v: F.money(a.hotelRevenue), sub: `${esc(a.year)}, STR` },
+        { k: 'Short-term rentals', v: F.num(a.strListings), sub: `active listings at ${F.exact(a.strAdr, 2)} a night` },
+      ]),
+      body: C.line({ series: [{ name: 'Hotels', values: last.map(r => r.occupancy) },
+        { name: 'Short-term rentals', values: last.map(r => r.strOccupancy) }], labels, fmt: v => F.pct(v, 0), height: 260 }),
+    }) + panel({
+      col: 12, title: 'Average daily rate', src: srcNames(cfg, t.sources.hotels), note: 'What a hotel room sold for, on average.',
+      body: C.line({ series: [{ name: 'Average daily rate', values: last.map(r => r.adr) }], labels, fmt: v => F.exact(v, 0), height: 200, legend: false }),
+    }) + `</div>`;
+}
+
+export function marketingPage(ctx) {
+  const { q, s, cfg } = ctx;
+  const { t, last } = tz(q);
+  const labels = last.map(r => mN(r.m));
+  const ms = new Set(last.map(r => r.m));
+  const rows = (t.channels || []).filter(c => ms.has(c.m));
+  const names = [...new Set(rows.map(c => c.channel))];
+  const by = names.map(n => {
+    const r = rows.filter(c => c.channel === n);
+    const imp = tsum(r, 'impressions'), clk = tsum(r, 'clicks'), sp = tsum(r, 'spend');
+    return { n, imp, clk, sp, ctr: imp && clk ? clk / imp * 100 : null, cpm: imp ? sp / imp * 1000 : null };
+  });
+  const v = t.visitors || {};
+  const vis = Object.keys(v).length ? panel({
+    col: 12, title: 'Who visits', src: v.source || 'Placer.ai',
+    note: 'The visitor profile from location data, which is what the creative and the targeting are aimed at.',
+    body: `<div class="ed-facts">${(v.facts || []).map(f => `<div><b>${esc(f.v)}</b><span>${esc(f.k)}</span></div>`).join('')}</div>`,
+  }) : '';
+  return pageHead({ eyebrow: 'Operations', title: pageName(s.industry, 'ops-marketing', 'Marketing'),
+    answer: `<b>${F.num(tsum(last, 'impressions'))}</b> ad impressions in twelve months brought
+      <b>${F.num(tsum(last, 'pageViews'))}</b> page views and <b>${F.num(tsum(last, 'newUsers'))}</b> new visitors to the site.` }) +
+    `<div class="cm-ops-grid">` + panel({
+      col: 12, title: 'What each channel delivered', src: srcNames(cfg, t.sources.reach),
+      note: 'Last twelve months. Print counts circulation, not clicks.',
+      body: U.table({ cols: [{ name: 'Channel', w: '26%' }, { name: 'Impressions', n: true }, { name: 'Clicks', n: true },
+        { name: 'Click rate', n: true }, { name: 'Spend', n: true }, { name: 'Per thousand', n: true }],
+        rows: by.map(x => ({ cells: [`<b>${esc(x.n)}</b>`, F.num(x.imp), x.clk ? F.num(x.clk) : '<span class="muted">n/a</span>',
+          x.ctr ? F.pct(x.ctr, 2) : (x.n === 'YouTube' && t.videoCompletion ? `${F.pct(t.videoCompletion, 1)} watched` : '<span class="muted">n/a</span>'),
+          F.money(x.sp), x.cpm ? F.exact(x.cpm, 2) : '<span class="muted">n/a</span>'] })) }),
+    }) + panel({
+      col: 7, title: 'Visits to the site', src: srcNames(cfg, ['google-analytics']), note: 'Page views, month by month.',
+      body: C.bars({ values: last.map(r => r.pageViews), labels, fmt: v => F.num(v), height: 220 }),
+    }) + panel({
+      col: 5, title: 'What visitors read', src: srcNames(cfg, ['google-analytics']), note: 'Share of page views by section.',
+      body: C.hbars({ rows: (t.topPages || []).map(p => ({ name: p.name, value: p.share * 100 })), fmt: v => F.pct(v, 0), max: 40 }),
+    }) + vis + `</div>`;
+}
+
 export const opsPages = {
+  'ops-hotels': calm(hotels), 'ops-marketing': calm(marketingPage), 'ops-events': calm(eventsPage),
   'ops-home': calm(home), 'ops-watch': calm(watch), 'ops-units': calm(units), 'ops-grid': calm(grid),
   'ops-season': calm(season), 'ops-people': calm(people), 'ops-second': calm(second), 'ops-detail': calm(detail),
 };

@@ -12,11 +12,11 @@
    HR system sends. Where no HR system is connected the pages say so and name the one to connect,
    and draw no figure at all. Hiring draws numbers only where the system holds hiring (`ats` in
    config/connectors.json). */
-import * as F from '../fmt.js?v=a2aa80d688';
-import * as C from '../chart.js?v=a2aa80d688';
-import * as U from '../ui.js?v=a2aa80d688';
-import * as M from '../calm.js?v=a2aa80d688';
-import { esc, icon } from '../icons.js?v=a2aa80d688';
+import * as F from '../fmt.js?v=4f9513663c';
+import * as C from '../chart.js?v=4f9513663c';
+import * as U from '../ui.js?v=4f9513663c';
+import * as M from '../calm.js?v=4f9513663c';
+import { esc, icon } from '../icons.js?v=4f9513663c';
 
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const day = iso => { const [, m, d] = iso.split('-').map(Number); return `${MON[m - 1]} ${d}`; };
