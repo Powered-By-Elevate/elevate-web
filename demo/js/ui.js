@@ -2,9 +2,9 @@
    tables. Pages compose these rather than writing markup, so every page in
    every industry carries the same material. */
 
-import { esc, icon } from './icons.js?v=a2aa80d688';
-import { spark } from './chart.js?v=a2aa80d688';
-import * as F from './fmt.js?v=a2aa80d688';
+import { esc, icon } from './icons.js?v=831769d7d1';
+import { spark } from './chart.js?v=831769d7d1';
+import * as F from './fmt.js?v=831769d7d1';
 
 export function verdict({ title, body, figs = [] }) {
   return `<section class="verdict">
@@ -43,6 +43,7 @@ export function strip(items, opts = {}) {
   return `<div class="strip${opts.pairs ? ' pairs' : ''}">${items.map(i => {
     const pick = Number.isInteger(i.slot) && i.options && i.options.length > 1;
     return `<div class="strip-item${pick ? ' pickable' : ''}" ${pick ? `data-slot="${i.slot}"` : ''}>
+      ${i.ico ? `<span class="strip-ico">${icon(i.ico, 18)}</span>` : ''}
       <div class="strip-label">${pick
       ? `<button class="fig-open" aria-haspopup="listbox" aria-expanded="false">
            <span>${esc(i.label)}</span>${icon('caret', 11)}</button>`

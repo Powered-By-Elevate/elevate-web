@@ -255,7 +255,7 @@ def logo():
     return f'<a class="logo" href="{R}/" aria-label="Elevate Managed Services, home">{B.MARK.format(i="r" + str(id(object())))}<span><b>ELEVATE</b><small>MANAGED SERVICES</small></span></a>'
 
 MENU = [("About", "about", [("Our story", "about#story"), ("Our values", "about#values"), ("Who we serve", "about#clients"), ("Our team", "about#team")]),
-        ("Services", "services", [("Financial management", "services#services"), ("BI Dashboard", "services#bi"), ("HR, payroll and people", "services#services"), ("Marketing", "services#services"), ("Systems we work with", "services#systems")]),
+        ("Services", "services", [("Financial management", "services#services"), ("BI Dashboard", "dashboard"), ("HR, payroll and people", "services#services"), ("Marketing", "services#services"), ("Systems we work with", "services#systems")]),
         ("Education", "education", [("Back office for schools", "education#schools"), ("Schools we serve", "education#serve"), ("Grant support", "education#grants"), ("New school launch", "education#launch")])]
 
 def header(cur):
@@ -263,6 +263,7 @@ def header(cur):
     for label, page, subs in MENU:
         sub = "".join(f'<a href="{R}/{h}">{t}</a>' for t, h in subs)
         items += f'<div class="dd{" cur" if cur == page else ""}"><button type="button" aria-expanded="false">{label} {CHEV}</button><div class="dd__panel"><a href="{R}/{page}">{label} overview</a>{sub}</div></div>'
+    items += f'<a href="{R}/dashboard"{" aria-current=page" if cur == "dashboard" else ""}>BI Dashboard</a>'
     items += f'<a href="{R}/portal"{" aria-current=page" if cur == "portal" else ""}>Client Portal</a><a class="btn btn--white" href="{R}/contact">Contact Us</a>'
     burger = '<button class="burger" type="button" aria-label="Menu" aria-expanded="false" id="burger"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2"/></svg></button>'
     return f'<header class="hdr" id="hdr"><div class="shell hdr__row">{logo()}{burger}<nav class="nav" id="nav" aria-label="Main">{items}</nav></div></header>'
@@ -271,7 +272,7 @@ def footer():
     return f'''<section class="cta"><div class="shell"><h2>Ready to give your leaders their time back?</h2><a class="btn btn--white" href="{R}/contact">Let's Connect</a></div></section>
 <footer class="foot"><div class="shell"><div>{logo()}<p style="margin-top:18px;max-width:340px">Back-office, education and business intelligence services for growing companies and schools across the Southeast.</p></div>
 <div><h4>Contact</h4><a href="mailto:{EMAIL}">{EMAIL}</a><a href="{R}/contact">Book a discovery call</a><a href="{R}/portal">Client Portal</a></div>
-<div><h4>Explore</h4><a href="{R}/about">About</a><a href="{R}/services">Business services</a><a href="{R}/education">Education services</a><a target="_blank" rel="noopener" href="/demo/#/choose">View our dashboard demo</a>
+<div><h4>Explore</h4><a href="{R}/about">About</a><a href="{R}/services">Business services</a><a href="{R}/education">Education services</a><a href="{R}/dashboard">See the BI dashboard</a>
 <small>&copy; 2026 Elevate Managed Services</small></div></div></footer>'''
 
 JS = """<script>
@@ -291,11 +292,13 @@ DESC = {"index": "Elevate Managed Services runs finance, HR, marketing and live 
         "services": "Accounting and fractional CFO, HR, marketing and a live BI dashboard for growing companies.",
         "education": "Back office for charter schools: accounting, payroll, state compliance, enrollment marketing and opening readiness.",
         "contact": "Book a discovery call with Elevate Managed Services.",
-        "portal": "Client sign in for the Elevate BI dashboard, and a live demo for every industry."}
+        "portal": "Client sign in for the Elevate BI dashboard, and a live demo for every industry.",
+        "dashboard": "The Elevate BI dashboard, highlight by highlight, on a sample company for every industry."}
 
 def page(name, title, cur, body, home=False):
+    css = CSS + (TOUR_CSS if name == "dashboard" else "")
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-            f'<title>{"Elevate Managed Services" if home else title + " · Elevate Managed Services"}</title><meta name="description" content="{DESC.get(name, DESC["index"])}"><link rel="icon" href="/favicon.svg" type="image/svg+xml">{FONTS}<style>{CSS}</style></head>'
+            f'<title>{"Elevate Managed Services" if home else title + " · Elevate Managed Services"}</title><meta name="description" content="{DESC.get(name, DESC["index"])}"><link rel="icon" href="/favicon.svg" type="image/svg+xml">{FONTS}<style>{css}</style></head>'
             f'<body class="{"home" if home else ""}">{header(cur)}<main>{body}</main>{footer()}{JS}</body></html>')
 
 def phero(eyebrow, h1, p=""):
@@ -340,7 +343,7 @@ def home():
     body = f'''<section class="hero"><div class="hero__slides">{slides}</div><div class="hero__in">
 <h1 class="h1">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p>Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
-<div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" target="_blank" rel="noopener" href="/demo/#/choose"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
+<div class="btns"><a class="btn btn--teal" href="{R}/contact">Book a discovery call</a><a class="play" href="{R}/dashboard"><span><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></section>
 {marquee()}
 <section class="sec grey"><div class="shell two"><div class="pair"><div style="background-image:url({IMG}/team-whiteboard.jpg)"></div><div style="background-image:url({IMG}/team-hands.jpg)"></div></div>
 <div class="copy"><h2 class="h2">Your Partner in Running an Organization That <span class="hl">Thrives</span></h2>
@@ -399,7 +402,7 @@ def services():
 <section class="sec grey" id="services" style="padding-top:0"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2"><span class="hl">Six Services,</span> One Team Accountable</h2><p style="color:var(--ink2)">Pick a service to see what it covers.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Why This Approach <span class="hl">Works</span></h2><p style="color:var(--ink2)">Success is not more tools. It is the right work done on time by people who know your business.</p></div><div class="why">{w}</div></div></section>
 <section class="split" id="bi"><div class="split__img" style="background-image:url({IMG}/dashboard-retail.png);background-size:contain;background-repeat:no-repeat;background-color:#e9f1f3"></div>
-<div class="split__copy on-teal" style="background:var(--teal);color:#fff"><span class="eyebrow">Business Intelligence</span><h2 class="h2">Every Number, <span class="hl">Live</span></h2><p style="color:#d8ebee">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click.</p><div style="display:flex;gap:14px;flex-wrap:wrap"><a class="btn btn--white" target="_blank" rel="noopener" href="/demo/#/choose">View our dashboard demo</a><a class="btn btn--white" href="{R}/portal">Client sign in</a></div></div></section>
+<div class="split__copy on-teal" style="background:var(--teal);color:#fff"><span class="eyebrow">Business Intelligence</span><h2 class="h2">Every Number, <span class="hl">Live</span></h2><p style="color:#d8ebee">One financial dashboard for every entity, read straight from the accounting system and cut to each person's role. Leaders see the answer, finance sees the detail, lenders get their package in one click.</p><div style="display:flex;gap:14px;flex-wrap:wrap"><a class="btn btn--white" href="{R}/dashboard">See the dashboard</a><a class="btn btn--white" href="{R}/portal">Client sign in</a></div></div></section>
 <section class="sec" id="systems"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Works With <span class="hl">Your Systems</span></h2><p style="color:var(--ink2)">We work in the software you already use, so nothing has to be rebuilt.</p></div><div class="why">{sysb}</div></div></section>
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
@@ -484,10 +487,153 @@ def portal():
 <section class="sec"><div class="shell"><div class="why">{w}</div></div></section>{js}"""
     return page("portal", "Client Portal", "portal", body)
 
+# ------------------------------------------------------------------ BI dashboard tour
+# Matt, 2026-11-18: a page for the dashboard, like the tour on arcadvisoryco.com,
+# with education first, every industry in a picker above, and each highlight
+# viewable on its own. The screen is the real BI demo (/demo/?embed), framed,
+# switched by message so it never reloads.
+TOUR_ORDER = ["education", "construction", "retail", "restaurants", "industrial", "logistics", "tech", "healthcare"]
+TOUR_SHORT = {"education": "Schools", "construction": "Construction", "retail": "Retail", "restaurants": "Food &amp; beverage",
+              "industrial": "Manufacturing", "logistics": "Freight", "tech": "Software", "healthcare": "Healthcare"}
+
+def tour_steps(ind):
+    pg = ind.get("pages", {})
+    units = pg.get("ops-units", {}).get("name", "Units")
+    second = pg.get("ops-second", {}).get("name", "Performance")
+    if ind["id"] == "education":
+        return [
+            ("home", "Start here", "The answer comes first.", "One sentence says how the network is doing, with the figures that prove it."),
+            ("ops-second", second, "Enrollment and attendance, every school.", "Seats filled against capacity and attendance by week, read from the student information system."),
+            ("pipeline-home", pg.get("pipeline-home", {}).get("name", "Pipeline"), "From inquiry to enrolled student.", "Every inquiry, tour and application, read from the enrollment and marketing systems."),
+            ("ops-units", units, "Every campus side by side.", "Enrollment, cost per student and funding for each school, ranked so the outliers stand out."),
+            ("fin-dash", "Financial dashboard", "How the network is doing financially.", "Revenue, surplus and cash, each against the budget and last year."),
+            ("fin-budget", "Budget vs actual", "Every month against the budget the board approved.", "Where the gap is, line by line, before the month closes."),
+            ("ops-watch", "What needs you", "What needs attention, flagged for you.", "Anything behind plan or gone quiet shows up with the owner named."),
+            ("fin-statements", "Statements &amp; packs", "Board packs in one click.", "Board, authorizer and lender packs built from the same numbers, so nothing is retyped."),
+        ]
+    return [
+        ("home", "Start here", "The answer comes first.", "One sentence says how the company is doing, with the figures that prove it."),
+        ("fin-dash", "Financial dashboard", "How the business is doing, on one screen.", "Revenue, margin, net income and cash, each against the plan and last year."),
+        ("ops-units", units, f"Every one of your {units.lower()}, side by side.", "Each one ranked, so the strongest and the ones slipping stand out."),
+        ("ops-second", second, "The numbers that run the operation.", f"{second} read straight from the systems your team already uses."),
+        ("fin-budget", "Budget vs actual", "Every month, actual results against the plan.", "Where the gap is, line by line, before the month closes."),
+        ("ops-watch", "What needs you", "What needs attention, flagged for you.", "Anything behind plan or gone quiet shows up with the owner named."),
+        ("fin-cash", "Cash &amp; working capital", "Cash you can see coming.", "Days of running cost, who owes you and what you owe."),
+        ("fin-statements", "Statements &amp; packs", "Board and lender packs in one click.", "Statements and printed packs built from the same numbers, so nothing is retyped."),
+    ]
+
+TOUR_CSS = """
+.tour{position:relative;background:linear-gradient(180deg,var(--tint) 0%,#fff 78%);padding-block:clamp(56px,7vw,96px);overflow:hidden}
+.tour::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(12,105,128,.13) 1px,transparent 1.2px);background-size:22px 22px;mask-image:linear-gradient(180deg,#000,transparent 70%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 70%);pointer-events:none}
+.tour .shell{position:relative}
+.tour__head{display:grid;gap:14px;max-width:820px;margin-bottom:28px}
+.tour__head p{color:var(--ink2)}
+.tour__inds{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin-bottom:20px;scrollbar-width:thin}
+.tour__inds button{flex:none;border:1px solid var(--line);background:#fff;color:var(--ink);padding:10px 18px;border-radius:99px;font:500 15px/1 var(--sans);cursor:pointer;box-shadow:0 1px 2px rgba(5,42,51,.05);transition:background .2s,color .2s,border-color .2s,box-shadow .2s}
+.tour__inds button:hover{border-color:var(--teal2);color:var(--teal)}
+.tour__inds button[aria-selected=true]{background:var(--teal);border-color:var(--teal);color:#fff;box-shadow:0 8px 18px -10px rgba(12,105,128,.7)}
+.tour__grid{display:grid;gap:22px}
+@media(min-width:1000px){.tour__grid{grid-template-columns:290px 1fr;align-items:start}}
+.tour__steps{display:flex;gap:8px;overflow-x:auto;padding:2px;scrollbar-width:thin}
+@media(min-width:1000px){.tour__steps{flex-direction:column;overflow:visible}}
+.tour__steps button{position:relative;flex:none;display:grid;grid-template-columns:34px 1fr;align-items:center;gap:4px;text-align:left;background:#fff;border:1px solid var(--line);color:var(--ink2);padding:13px 14px;border-radius:12px;font:500 15px/1.3 var(--sans);cursor:pointer;overflow:hidden;transition:background .2s,color .2s,border-color .2s,box-shadow .2s,transform .2s}
+.tour__steps button span{font:600 12px/1 var(--sans);letter-spacing:.08em;color:var(--teal2)}
+.tour__steps button:hover{color:var(--ink);border-color:var(--teal2);transform:translateX(2px)}
+.tour__steps button[aria-selected=true]{color:var(--ink);border-color:var(--teal);box-shadow:0 14px 28px -18px rgba(12,105,128,.55);background:linear-gradient(90deg,var(--tint),#fff 70%)}
+.tour__steps button[aria-selected=true] span{color:var(--teal)}
+.tour__steps button[aria-selected=true]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--teal)}
+.tour__steps button i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--gold)}
+.tour.auto .tour__steps button[aria-selected=true] i{animation:tourbar var(--dur,9s) linear forwards}
+@keyframes tourbar{to{width:100%}}
+.win{border-radius:16px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 40px 70px -40px rgba(5,42,51,.35),0 2px 6px rgba(5,42,51,.05)}
+.win__top{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fbfcfc;border-bottom:1px solid var(--line);font:500 13px/1 var(--sans);color:var(--ink2)}
+.win__dots{display:flex;gap:6px}.win__dots i{width:10px;height:10px;border-radius:50%;background:#d9e1e3}
+.win__dots i:first-child{background:#f1a99b}.win__dots i:nth-child(2){background:#f1d38b}.win__dots i:last-child{background:#9fd8b5}
+.win__brand{color:var(--teal);font-weight:600;letter-spacing:.12em}.win__brand em{font-style:normal;color:var(--gold2)}
+.win__crumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.win__live{display:flex;align-items:center;gap:6px;color:#1f8a57;font-weight:600;letter-spacing:.06em}
+.win__live i{width:8px;height:8px;border-radius:50%;background:#2fb36f;box-shadow:0 0 0 0 rgba(47,179,111,.5);animation:livepulse 2s ease-in-out infinite}
+@keyframes livepulse{50%{box-shadow:0 0 0 6px rgba(47,179,111,0)}}
+.win__cap{padding:20px 24px 16px;display:grid;gap:6px;border-bottom:1px solid var(--line)}
+.win__cap small{font:600 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--teal2)}
+.win__cap h3{font:600 clamp(21px,2.2vw,30px)/1.2 var(--sans);color:var(--ink)}
+.win__cap p{color:var(--ink2);font-size:15.5px}
+.win__cap>*{transition:opacity .35s ease,transform .35s ease}
+.win__cap.swap>*{opacity:0;transform:translateY(6px)}
+.win__view{position:relative;height:clamp(380px,min(52vw,calc(100vh - 360px)),620px);background:#f4f7f8;overflow:hidden}
+.win__view iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#f4f7f8}
+.win__foot{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 16px;font-size:13px;color:var(--ink2);border-top:1px solid var(--line);background:#fbfcfc}
+.win__foot a{color:var(--teal);font-weight:600;text-decoration:none}.win__foot a:hover{color:var(--teal2)}
+.how{display:grid;gap:18px}
+@media(min-width:800px){.how{grid-template-columns:repeat(4,1fr)}}
+.how div{border-top:3px solid var(--teal);padding-top:16px;display:grid;gap:8px;align-content:start}
+.how b{font:600 19px/1.3 var(--sans)}.how p{color:var(--ink2);font-size:16px}
+@media(prefers-reduced-motion:reduce){.tour.auto .tour__steps button[aria-selected=true] i{animation:none}.win__live i{animation:none}}
+"""
+
+TOUR_JS = r"""<script>
+(function(){
+var D=%s, root=document.getElementById('tour'), fr=document.getElementById('tourFrame'), view=fr.parentNode;
+var inds=root.querySelector('.tour__inds'), steps=root.querySelector('.tour__steps'), cap=root.querySelector('.win__cap');
+var crumb=root.querySelector('.win__crumb'), full=document.getElementById('tourFull');
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, DUR=9000;
+var ind=D.order[0], at=0, auto=false, timer=0, ready=false, pending=null;
+function fit(){var w=view.clientWidth, base=w<760?w:1120, s=w/base;fr.style.width=base+'px';fr.style.height=(view.clientHeight/s)+'px';fr.style.transform='scale('+s+')';}
+addEventListener('resize',fit,{passive:true});fit();
+function send(){var st=D.inds[ind].steps[at];var m={type:'bi-show',industry:ind,page:st[0]};if(ready)fr.contentWindow.postMessage(m,location.origin);else pending=m;}
+fr.addEventListener('load',function(){ready=true;if(pending){fr.contentWindow.postMessage(pending,location.origin);pending=null;}});
+function paintInds(){inds.innerHTML=D.order.map(function(k){return '<button type="button" role="tab" aria-selected="'+(k===ind)+'" data-ind="'+k+'">'+D.inds[k].short+'</button>';}).join('');}
+function paintSteps(){steps.innerHTML=D.inds[ind].steps.map(function(s,i){return '<button type="button" role="tab" aria-selected="'+(i===at)+'" data-i="'+i+'"><span>'+String(i+1).padStart(2,'0')+'</span>'+s[1]+'<i></i></button>';}).join('');}
+function paintCap(){var s=D.inds[ind].steps[at];cap.classList.add('swap');setTimeout(function(){cap.innerHTML='<small>'+s[1]+'</small><h3>'+s[2]+'</h3><p>'+s[3]+'</p>';cap.classList.remove('swap');},reduce?0:180);
+crumb.textContent=D.inds[ind].company+' · '+D.inds[ind].name;full.href='/demo/#/demo/'+ind+'/'+s[0];}
+function show(i){at=i;clearTimeout(timer);steps.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-selected',j===at);});
+var cb=steps.children[at];if(cb&&steps.scrollWidth>steps.clientWidth)steps.scrollTo({left:cb.offsetLeft-steps.offsetLeft-8,behavior:reduce?'auto':'smooth'});
+root.classList.remove('auto');void root.offsetWidth;if(auto)root.classList.add('auto');paintCap();send();
+if(auto)timer=setTimeout(function(){show((at+1)%%D.inds[ind].steps.length);},DUR);}
+function stop(){auto=false;clearTimeout(timer);root.classList.remove('auto');}
+inds.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;ind=b.dataset.ind;at=0;paintInds();paintSteps();auto=!reduce;show(0);});
+steps.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;stop();show(+b.dataset.i);});
+root.style.setProperty('--dur',DUR+'ms');paintInds();paintSteps();paintCap();
+fr.src='/demo/?embed#/demo/'+ind+'/'+D.inds[ind].steps[0][0];
+if('IntersectionObserver' in window){new IntersectionObserver(function(es,o){if(es.some(function(x){return x.isIntersecting;})){o.disconnect();auto=!reduce;show(at);}},{threshold:.35}).observe(root);}
+})();
+</script>"""
+
+def dashboard():
+    import json
+    demo = HERE / "demo"
+    cfg = json.loads((demo / "config" / "industries.json").read_text())["industries"]
+    by = {i["id"]: i for i in cfg}
+    data = {"order": [k for k in TOUR_ORDER if k in by], "inds": {}}
+    for k in data["order"]:
+        d = json.loads((demo / "data" / f"{k}.json").read_text())
+        company = (d.get("meta") or {}).get("company") or by[k]["name"]
+        data["inds"][k] = {"short": TOUR_SHORT[k], "name": by[k]["name"], "company": company, "steps": tour_steps(by[k])}
+    how = [("Connect your systems", "We connect it to your accounting software and the systems your team already uses, read only. Nothing is typed in."),
+           ("Set up every entity", "Each company, campus or location gets its own view, rolled up into one."),
+           ("Cut to each role", "Leaders see the answer, finance sees the detail, and each person sees only what they should."),
+           ("Packs on demand", "Board, lender and owner packs print from the same numbers, any month, in one click.")]
+    hw = "".join(f"<div><b>{a}</b><p>{b}</p></div>" for a, b in how)
+    body = f"""{phero("BI Dashboard", 'Every Number, <span class="hl">Live</span>', "One dashboard for every entity, read straight from your accounting and operating systems and cut to each person's role. Pick your industry and walk through it below.")}
+<section class="tour" id="tour"><div class="shell">
+<div class="tour__head"><span class="eyebrow">See it in action</span><h2 class="h2">The Dashboard, <span class="hl">Highlight by Highlight</span></h2>
+<p>This is the real dashboard running on a sample company. It plays through each highlight on its own. Pick one to stop and look closer, or switch industries above it.</p></div>
+<div class="tour__inds" role="tablist" aria-label="Industry"></div>
+<div class="tour__grid"><div class="tour__steps" role="tablist" aria-label="Highlights"></div>
+<div class="win"><div class="win__top"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__brand">ELEVATE <em>BI</em></span><span class="win__crumb"></span><span class="win__live"><i></i>LIVE</span></div>
+<div class="win__cap" aria-live="polite"></div>
+<div class="win__view"><iframe id="tourFrame" title="Elevate BI dashboard, sample company" loading="lazy"></iframe></div>
+<div class="win__foot"><span>Sample company and figures. Every number in a client's dashboard is read from their own systems.</span><a id="tourFull" target="_blank" rel="noopener" href="/demo/#/choose">Open the full demo &rarr;</a></div></div></div>
+</div></section>
+<section class="sec"><div class="shell"><span class="eyebrow">How it works</span><h2 class="h2" style="margin-bottom:28px">Set Up Once, <span class="hl">Live Every Day</span></h2><div class="how">{hw}</div></div></section>
+{TOUR_JS % json.dumps(data)}"""
+    return page("dashboard", "BI Dashboard", "dashboard", body)
+
 def build():
     OUT.mkdir(exist_ok=True)
     for fn, html in [("index.html", home()), ("about.html", about()), ("services.html", services()),
-                     ("education.html", education()), ("contact.html", contact()), ("portal.html", portal())]:
+                     ("education.html", education()), ("contact.html", contact()), ("portal.html", portal()),
+                     ("dashboard.html", dashboard())]:
         (OUT / fn).write_text(html)
         print("wrote", OUT / fn, len(html))
     # Matt, 2026-11-10: "dont reuse images ... it feels cheap". Every photo and

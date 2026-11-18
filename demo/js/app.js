@@ -7,22 +7,22 @@
    a single figure on the page is shown disabled with its reason, rather than
    offered and then doing nothing. */
 
-import { Settings, paletteFrom } from './settings.js?v=a2aa80d688';
-import { Q, loadData } from './query.js?v=a2aa80d688';
-import * as F from './fmt.js?v=a2aa80d688';
-import * as C from './chart.js?v=a2aa80d688';
-import * as U from './ui.js?v=a2aa80d688';
-import { esc, icon, brandMark } from './icons.js?v=a2aa80d688';
-import { financePages } from './pages/finance.js?v=a2aa80d688';
-import { opsPages } from './pages/ops.js?v=a2aa80d688';
-import { miscPages } from './pages/misc.js?v=a2aa80d688';
-import { hrPages, HR_PAGES } from './pages/hr.js?v=a2aa80d688';
-import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=a2aa80d688';
-import * as Chooser from './chooser.js?v=a2aa80d688';
-import * as Present from './present.js?v=a2aa80d688';
-import * as World from './world.js?v=a2aa80d688';
-import * as Gate from './gate.js?v=a2aa80d688';
-import * as Site from './site.js?v=a2aa80d688';
+import { Settings, paletteFrom } from './settings.js?v=831769d7d1';
+import { Q, loadData } from './query.js?v=831769d7d1';
+import * as F from './fmt.js?v=831769d7d1';
+import * as C from './chart.js?v=831769d7d1';
+import * as U from './ui.js?v=831769d7d1';
+import { esc, icon, brandMark } from './icons.js?v=831769d7d1';
+import { financePages } from './pages/finance.js?v=831769d7d1';
+import { opsPages } from './pages/ops.js?v=831769d7d1';
+import { miscPages } from './pages/misc.js?v=831769d7d1';
+import { hrPages, HR_PAGES } from './pages/hr.js?v=831769d7d1';
+import { settings as settingsPage, connectSheet, FONT_PAIRS } from './cms.js?v=831769d7d1';
+import * as Chooser from './chooser.js?v=831769d7d1';
+import * as Present from './present.js?v=831769d7d1';
+import * as World from './world.js?v=831769d7d1';
+import * as Gate from './gate.js?v=831769d7d1';
+import * as Site from './site.js?v=831769d7d1';
 
 const BASIS = [
   { id: 'month', name: 'Month' }, { id: 'ytd', name: 'YTD' },
@@ -60,7 +60,15 @@ async function boot() {
      a website can link straight to one company (elevatemanagedservices.com's
      industry chips do). It counts as a choice, so the front door stays shut. */
   const demo = demoHash();
-  if (demo) { app.s.useIndustry(demo); app.s.save(); firstVisit = false; history.replaceState(null, '', '#/home'); }
+  if (demo) { app.s.useIndustry(demo); app.s.save(); firstVisit = false; history.replaceState(null, '', '#/' + demoPage()); }
+  if (Site.EMBED) {
+    firstVisit = false;
+    document.body.classList.add('embedded');
+    addEventListener('message', ev => {
+      const m = ev.data;
+      if (m && m.type === 'bi-show') showFramed(m.industry, m.page);
+    });
+  }
   await useIndustry(app.s.data.industry, true);
 
   World.start();
@@ -77,7 +85,7 @@ async function boot() {
     const demo = demoHash();
     if (demo) {
       if (demo !== app.s.data.industry) { app.s.useIndustry(demo); await useIndustry(demo); } else app.s.save();
-      go('home'); return;
+      go(demoPage()); return;
     }
     const gate = readHash();
     if (gate) { openGate(gate.kind, gate.arg); return; }
@@ -126,6 +134,21 @@ function demoHash() {
   const m = location.hash.match(/^#\/?demo\/([a-z-]+)/);
   if (!m || (app.cfg.product && app.cfg.product.tenant)) return null;
   return app.cfg.industries.industries.some(i => i.id === m[1]) ? m[1] : null;
+}
+
+/* `#/demo/<industry>/<page>` lands on that page rather than Start here. */
+function demoPage() {
+  const m = location.hash.match(/^#\/?demo\/[a-z-]+\/([a-z-]+)/);
+  return m && PAGES[m[1]] ? m[1] : 'home';
+}
+
+/* Framed (site.js EMBED): the owner of the frame picks the industry and the
+   page with a message, so switching never reloads the frame. */
+async function showFramed(industry, page) {
+  if (industry && industry !== app.s.data.industry) { app.s.useIndustry(industry); await useIndustry(industry); }
+  const ids = app.s.pages().map(p => p.id);
+  go(ids.includes(page) ? page : 'home');
+  scrollTo(0, 0);
 }
 
 /* A page route sets the page. `#/signin`, `#/signin/<industry>` and
@@ -302,7 +325,8 @@ function render() {
      wildly mismatched at 900 once the columns reflow. */
   balanceRows();
   if (Present.isOn()) Present.collect();
-  host.scrollIntoView({ block: 'start' });
+  /* framed, scrollIntoView would scroll the page around the frame as well */
+  if (!Site.EMBED) host.scrollIntoView({ block: 'start' });
   window.scrollTo({ top: 0 });
 }
 
@@ -335,7 +359,7 @@ function sourceLine(page) {
     return on.length ? `From ${esc(on.join(' · '))}, read only.` : '';
   }
   if (mod === 'docs') {
-    return `Hosted in the ${esc(app.s.data.productName)}: documents are stored and filed here.`;
+    return `Hosted in ${esc(app.s.data.productName)}: documents are stored and filed here.`;
   }
   const cats = SOURCE_CATS[mod];
   if (!cats) return '';
@@ -391,12 +415,14 @@ function rail(pages) {
   const open = (PAGES[app.page] && app.cfg.product.pages[app.page])
     ? app.cfg.product.pages[app.page].module
     : (app.page === 'ops-detail' ? 'ops' : app.page === 'hr-person' ? 'people' : 'start');
-  return `<div class="rail-head">
+  const wide = s.data.brand.look === 'bright' && s.data.brand.logoWide;
+  return `${wide ? `<div class="rail-head is-wide"><img class="rail-logo" src="${esc(s.data.brand.logoWide)}"
+      alt="${esc(s.data.company)}"><div class="rail-sub">${esc(s.data.productName)}</div></div>` : `<div class="rail-head">
       <span class="rail-mark">${s.data.brand.logo
       ? `<img src="${esc(s.data.brand.logo)}" alt="">` : brandMark(s.data.brand, 34)}</span>
       <div><div class="rail-name">${esc(s.data.company)}</div>
         <div class="rail-sub">${esc(s.data.productName)}</div></div>
-    </div>
+    </div>`}
     <div class="rail-places">
       ${mods.map(m => `<button class="place" data-act="go" data-arg="${esc(m.pages[0].id)}"
         aria-current="${m.id === open}" aria-expanded="${m.id === open && m.pages.length > 1}">
@@ -1199,6 +1225,7 @@ function printPack(id) {
   const titles = {
     monthly: 'Monthly reporting pack', owner: 'Owner report',
     lender: 'Lender package', board: 'Board summary',
+    ...Object.fromEntries((s.industry.packs || []).map(p => [p.id, p.name])),
   };
   const money = v => F.money(v);
   const plRows = cfg.product.statement.pl.map(l => {
@@ -1354,7 +1381,7 @@ function ties() {
 
 boot().catch(err => {
   document.getElementById('page').innerHTML =
-    `<section class="panel"><div class="empty"><b>The Hub could not start.</b><br>
+    `<section class="panel"><div class="empty"><b>BI could not start.</b><br>
      ${esc(err.message)}<br><br><span class="muted">Serve this folder over http rather than
      opening the file directly: the configuration and the data are fetched.</span></div></section>`;
   console.error(err);

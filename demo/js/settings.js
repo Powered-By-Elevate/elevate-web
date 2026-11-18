@@ -6,7 +6,7 @@
    persists to this browser and exports as a JSON file, which is the file a
    real deployment is built from. That is the CMS: one object, one apply(). */
 
-import { brandVars } from './color.js?v=a2aa80d688';
+import { brandVars } from './color.js?v=831769d7d1';
 
 const KEY = 'hub.settings.v2';
 
@@ -45,8 +45,15 @@ export class Settings {
         shape: brand.shape,
         palette: { ...brand.palette },
         type: { ...brand.type },
-        logo: null,            /* a data URL once a client uploads one */
+        logo: brand.logo || null,   /* a build may ship one; a client upload replaces it */
         logoDark: null,
+        /* the bright look (white rail, photo hero, no dot grid or trail), a full
+           wordmark for the rail, the hero photo, and the brand's own chart colours */
+        look: brand.look || '',
+        logoWide: brand.logoWide || null,
+        hero: brand.hero || null,
+        series: brand.series || null,
+        watermark: brand.watermark || null,   /* a one-colour silhouette of the mark, for the brand band */
       },
       theme: 'light',
       role: 'exec',
@@ -57,7 +64,7 @@ export class Settings {
         .filter(m => !m.startsWith('$')).map(m => [m, true])),
       connectors: on,
       roles: JSON.parse(JSON.stringify(this.cfg.roles.roles)),
-      showDemoNote: !this.tenant,
+      showDemoNote: !this.tenant || !!this.tenant.sample,   /* a prospect's mock build keeps the sample note */
       /* Which figures the strip carries, and in what order. A client swaps any
          slot for any metric their industry resolves, and the choice exports
          with the rest of the configuration. Defaulted from the industry, and
@@ -125,6 +132,7 @@ export class Settings {
     const root = document.documentElement;
     const p = brand.palette;
     root.dataset.theme = d.theme;
+    root.dataset.look = brand.look || '';
     root.style.setProperty('--accent', p.accent);
     root.style.setProperty('--accent-deep', p.accentDeep);
     root.style.setProperty('--accent-lift', p.accentLift);
@@ -158,7 +166,8 @@ export class Settings {
     root.style.setProperty('--font-display', brand.type.display);
     root.style.setProperty('--font-body', brand.type.body);
 
-    const series = (this.cfg.brands.series || SERIES_FALLBACK)[d.theme] || SERIES_FALLBACK.light;
+    const series = (brand.series && brand.series[d.theme])
+      || (this.cfg.brands.series || SERIES_FALLBACK)[d.theme] || SERIES_FALLBACK.light;
     series.forEach((c, i) => root.style.setProperty(`--s${i}`, c));
 
     document.title = `${d.company} · ${d.productName}`;
@@ -220,11 +229,20 @@ export class Settings {
       if (id.startsWith('$') || base.hidden) continue;
       if (!this.data.modules[base.module]) continue;
       if (indPages[id] === false) continue;
+      if (base.only && !base.only.includes(this.industry.id)) continue;   /* a page only some industries carry */
       const over = indPages[id] || {};
       if (role.deny && role.deny.includes(id) && !(role.allow || []).includes(id)) continue;
       const allowed = (role.allow || []).includes(id) || base.rank <= role.rank;
       if (!allowed) continue;
       out.push({ id, ...base, ...over, module: base.module });
+    }
+    /* an industry may order its pages (an economic developer's operations
+       open on the overview, then tourism, hotels, marketing, projects) */
+    const order = this.industry.pageOrder;
+    if (order) {
+      const mods = Object.keys(this.cfg.product.modules), ids = Object.keys(cat);
+      const at = p => [mods.indexOf(p.module), order.includes(p.id) ? order.indexOf(p.id) : 999, ids.indexOf(p.id)];
+      out.sort((a, b) => { const x = at(a), y = at(b); return x[0] - y[0] || x[1] - y[1] || x[2] - y[2]; });
     }
     return out;
   }
@@ -259,7 +277,7 @@ export class Settings {
   exportJSON() {
     const d = this.data;
     return JSON.stringify({
-      $comment: 'A Hub client configuration. Hand this to the build and the dashboard comes out branded, connected and role-scoped.',
+      $comment: 'A BI client configuration. Hand this to the build and the dashboard comes out branded, connected and role-scoped.',
       product: d.productName,
       client: { name: d.company, industry: d.industry },
       brand: d.brand,

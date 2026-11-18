@@ -18,12 +18,12 @@
    where it always was: pages in settings.js, scope in query.js, money in
    fmt.js. A sample person is a level with a name on it, nothing more. */
 
-import * as F from './fmt.js?v=a2aa80d688';
-import { Q } from './query.js?v=a2aa80d688';
-import { esc, icon, brandMark, INDUSTRY_ICON } from './icons.js?v=a2aa80d688';
-import { scene } from './scenes.js?v=a2aa80d688';
-import { spark } from './chart.js?v=a2aa80d688';
-import { PUBLIC } from './site.js?v=a2aa80d688';
+import * as F from './fmt.js?v=831769d7d1';
+import { Q } from './query.js?v=831769d7d1';
+import { esc, icon, brandMark, INDUSTRY_ICON } from './icons.js?v=831769d7d1';
+import { scene } from './scenes.js?v=831769d7d1';
+import { spark } from './chart.js?v=831769d7d1';
+import { PUBLIC } from './site.js?v=831769d7d1';
 
 export function scopeWord(role) {
   return { all: 'every company', company: 'one company', units: 'assigned units only',
@@ -148,7 +148,7 @@ export function signin({ cfg, s, q, ind, tenant, note }) {
         <div class="sg-or"><span>Demo sign-in</span></div>
         ${who.length ? `<div class="sg-people">
           ${who.map((p, i) => person(cfg, ind, p, i)).join('')}
-        </div>` : `<p class="sg-small">No sample people are set up for this Hub.</p>`}
+        </div>` : `<p class="sg-small">No sample people are set up for this BI.</p>`}
         <p class="sg-foot">This is a demo sign-in. Every name here is invented, and picking one sets the view level and nothing more.</p>
         ${tenant ? '' : `<button class="sg-back" data-act="chooser">${icon('back', 16)}Back to industry picker</button>`}
       </section>

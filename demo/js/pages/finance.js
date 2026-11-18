@@ -2,11 +2,11 @@
    page opens on a sentence that answers the page's own question, and every
    figure beside it is the figure that sentence used. */
 
-import * as F from '../fmt.js?v=a2aa80d688';
-import * as C from '../chart.js?v=a2aa80d688';
-import * as U from '../ui.js?v=a2aa80d688';
-import { esc, icon } from '../icons.js?v=a2aa80d688';
-import * as M from '../calm.js?v=a2aa80d688';
+import * as F from '../fmt.js?v=831769d7d1';
+import * as C from '../chart.js?v=831769d7d1';
+import * as U from '../ui.js?v=831769d7d1';
+import { esc, icon } from '../icons.js?v=831769d7d1';
+import * as M from '../calm.js?v=831769d7d1';
 
 const PL_NAMES = {};
 
@@ -148,6 +148,11 @@ function verdictLine(ctx, m) {
       const e = q.kpi('enrolled'), fr = q.kpi('fillRate'), ps = q.kpi('perStudent');
       return `<b>${F.num(e.value)}</b> students fill <b>${F.pct(fr.value, 0)}</b> of the seats,
         at <b>${F.exact(ps.value)}</b> of revenue each.`;
+    },
+    econdev: () => {
+      const c = q.kpi('capex'), j = q.kpi('jobs'), r = q.kpi('roomNights');
+      return `The portfolio carries <b>${F.money(c.value)}</b> of capital investment and <b>${F.num(j.value)}</b>
+        committed jobs, and tourism sales booked <b>${F.num(r.value)}</b> room nights.`;
     },
     healthcare: () => {
       const v = q.kpi('visits'), pv = q.kpi('perVisit'), cr = q.kpi('collectRate');
@@ -517,7 +522,9 @@ export function statements(ctx) {
   /* The calm pass: what can go out, and what it covers. */
   const { q, s } = ctx;
   const closed = q.closed, months = q.months;
-  const packs = [
+  /* An industry may name its own packs (a school reports to its board, its
+     authorizer and its auditors, not to a bank and an owner). */
+  const packs = (s.industry.packs || [
     { id: 'monthly', name: 'Monthly reporting pack', icon: 'doc', what: 'What the finance team issues after a close.',
       holds: ['Profit & loss, by company and consolidated', 'Balance sheet with the prior year beside it', 'Cash and working capital', 'A one-page summary'] },
     { id: 'owner', name: 'Owner report', icon: 'people', what: 'The quarterly pack an owner reads end to end.',
@@ -526,7 +533,7 @@ export function statements(ctx) {
       holds: ['Statements for the covered period', 'Covenant deliveries and their dates', 'A certificate page', 'Nothing tentative'] },
     { id: 'board', name: 'Board summary', icon: 'bars', what: 'Eight quarters and the bridge, on as few pages as it takes.',
       holds: ['Eight quarters of revenue, margin and net income', 'The bridge from revenue to net income', 'Cash and the ratios'] },
-  ];
+  ]).map(p => ({ ...p, holds: p.holds.map(h => h.replace('{units}', s.industry.unit.many)) }));
   const signed = months.filter(m => m <= closed).length;
   const tentative = months.length - signed;
   const cover = M.section({
