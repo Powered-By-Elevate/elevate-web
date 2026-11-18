@@ -18,12 +18,12 @@
    where it always was: pages in settings.js, scope in query.js, money in
    fmt.js. A sample person is a level with a name on it, nothing more. */
 
-import * as F from './fmt.js?v=831769d7d1';
-import { Q } from './query.js?v=831769d7d1';
-import { esc, icon, brandMark, INDUSTRY_ICON } from './icons.js?v=831769d7d1';
-import { scene } from './scenes.js?v=831769d7d1';
-import { spark } from './chart.js?v=831769d7d1';
-import { PUBLIC } from './site.js?v=831769d7d1';
+import * as F from './fmt.js?v=c00326536b';
+import { Q } from './query.js?v=c00326536b';
+import { esc, icon, brandMark, INDUSTRY_ICON } from './icons.js?v=c00326536b';
+import { scene } from './scenes.js?v=c00326536b';
+import { spark } from './chart.js?v=c00326536b';
+import { PUBLIC } from './site.js?v=c00326536b';
 
 export function scopeWord(role) {
   return { all: 'every company', company: 'one company', units: 'assigned units only',

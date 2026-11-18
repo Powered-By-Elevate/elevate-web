@@ -2,13 +2,13 @@
    lands on, so it carries the industry switch, the figures that matter today,
    and a door to each place. */
 
-import * as F from '../fmt.js?v=831769d7d1';
-import * as C from '../chart.js?v=831769d7d1';
-import * as U from '../ui.js?v=831769d7d1';
-import * as M from '../calm.js?v=831769d7d1';
-import { flags } from './ops.js?v=831769d7d1';
-import { esc, icon, brandMark, connTile, INDUSTRY_ICON } from '../icons.js?v=831769d7d1';
-import { scene, motif } from '../scenes.js?v=831769d7d1';
+import * as F from '../fmt.js?v=c00326536b';
+import * as C from '../chart.js?v=c00326536b';
+import * as U from '../ui.js?v=c00326536b';
+import * as M from '../calm.js?v=c00326536b';
+import { flags } from './ops.js?v=c00326536b';
+import { esc, icon, brandMark, connTile, INDUSTRY_ICON } from '../icons.js?v=c00326536b';
+import { scene, motif } from '../scenes.js?v=c00326536b';
 
 /* ⛔ TRUNCATE WHERE THE INFORMATION IS NOT.
 
