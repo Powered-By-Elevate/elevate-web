@@ -30,3 +30,13 @@ Not yet pointed. To go live on elevatemanagedservices.com:
 3. Remove the records currently pointing the domain at Websites + Marketing.
 
 GitHub provisions HTTPS automatically once DNS resolves.
+
+## Photo rules (Matt's rulings)
+
+- No photo appears twice across the site (2026-11-10: "dont reuse images ... it feels cheap"). Logos and team headshots aside.
+- The Libertas Academy flag photo is never used (2026-11-18: "it was a specific rule to not use this flag"). Its file is deleted, and `redesign.py` and `next/build_pages.py` both fail the build if `libertas-flag.jpg` appears in a page.
+
+## Scroll rule (Matt's ruling)
+
+- Every page and tab opens at the top, also when you come back to it with Back or Forward (2026-11-18). `toTop()` in `next/build_next.py` and the site script in `redesign.py` do it: manual scroll restoration, ScrollTrigger's scroll memory cleared, Lenis reset, and the body scrolled into view for previews framed by another app.
+- No headshot is used as a photo outside a team grid (2026-11-18: "do not use a fucking headshot as one of our photos"). `next/build_pages.py` fails the build if one is.

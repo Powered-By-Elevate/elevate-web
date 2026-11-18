@@ -276,7 +276,10 @@ def footer():
 <small>&copy; 2026 Elevate Managed Services</small></div></div></footer>'''
 
 JS = """<script>
-(function(){var h=document.getElementById('hdr');if(document.body.classList.contains('home')){var f=function(){h.classList.toggle('solid',scrollY>40)};addEventListener('scroll',f,{passive:true});f();}
+(function(){/* every page and tab opens at the top, also when you come back to it (Matt's standing rule, 2026-11-18) */
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+function toTop(){if(location.hash)return;scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;if(window.__lenis)window.__lenis.scrollTo(0,{immediate:true});try{document.body.scrollIntoView({block:'start'})}catch(e){}}toTop();addEventListener('DOMContentLoaded',toTop);addEventListener('load',toTop);addEventListener('pageshow',toTop);
+var h=document.getElementById('hdr');if(document.body.classList.contains('home')){var f=function(){h.classList.toggle('solid',scrollY>40)};addEventListener('scroll',f,{passive:true});f();}
 var b=document.getElementById('burger'),n=document.getElementById('nav');b.addEventListener('click',function(){var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o)});
 document.querySelectorAll('.dd>button').forEach(function(x){x.addEventListener('click',function(){if(innerWidth<1120){var o=x.parentNode.classList.toggle('open');x.setAttribute('aria-expanded',o)}else{location.href=x.parentNode.querySelector('.dd__panel a').href}})});
 document.querySelectorAll('[data-tabs]').forEach(function(t){var bs=t.querySelectorAll('[role=tab]'),ps=t.querySelectorAll('[role=tabpanel]');
@@ -292,7 +295,7 @@ DESC = {"index": "Elevate Managed Services runs finance, HR, marketing and live 
         "services": "Accounting and fractional CFO, HR, marketing and a live BI dashboard for growing companies.",
         "education": "Back office for charter schools: accounting, payroll, state compliance, enrollment marketing and opening readiness.",
         "contact": "Book a discovery call with Elevate Managed Services.",
-        "portal": "Client sign in for the Elevate BI dashboard, and a live demo for every industry.",
+        "portal": "Client sign in for the Elevate BI dashboard.",
         "dashboard": "The Elevate BI dashboard, highlight by highlight, on a sample company for every industry."}
 
 def page(name, title, cur, body, home=False):
@@ -361,14 +364,14 @@ def home():
 <section class="sec"><div class="shell two"><div class="copy"><h2 class="h2">We Help Schools <span class="hl">Run Smoothly</span></h2>
 <p>From the first planning year to every audit after, Elevate runs the money side of charter and private schools: accounting, payroll, grants and board reporting, so school leaders can stay in classrooms.</p>
 <div><a class="btn btn--teal" href="{R}/education">See our education services</a></div></div>
-<div class="tiles">{tile("q3-002.jpg", "Schools we serve", "Belton Preparatory Academy · client since 2026", R + "/education#serve")}{tile("site-dusk.jpg", "Schools opening next", "Upstate Prep and AIA Woodruff · Fall 2028", R + "/education#serve")}</div></div></section>
+<div class="tiles">{tile("school-hephzibah.jpg", "Schools we serve", "Belton Preparatory Academy · client since 2026", R + "/education#serve")}{tile("hub-edu-marketing.jpg", "Schools opening next", "Upstate Prep and AIA Woodruff · Fall 2028", R + "/education#serve")}</div></div></section>
 {QUOTE}'''
     return page("index", "Home", "home", body, home=True)
 
 def about():
     vals = [("Relationships before reports", "team-plan.jpg", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", None),
             ("The same people, every month", "team-desk-vicki.jpg", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", None),
-            ("Give leaders their time back", "libertas-campus.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
+            ("Give leaders their time back", "tnc-gt.jpg", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", None)]
     PHOTO = {}
     TEAMFIX = {"tucker": "background-size:122%;background-position:50% 43%", "fawole": "background-size:cover;background-position:50% 0%", "mcdonald": "background-size:cover;background-position:50% 0%", "knowles": "background-size:cover;background-position:50% 0%", "davis": "background-size:cover;background-position:50% 0%", "ltucker": "background-size:cover;background-position:50% 0%"}
     team = "".join(f'<article><div class="ph" role="img" aria-label="{n}" style="background-image:url({IMG}/team-{PHOTO.get(k, k)}.jpg);{TEAMFIX.get(k) or c or "background-size:cover;background-position:center"}"></div><h3>{n}</h3><p>{t}</p></article>' for k, n, t, c in B.TEAM)
@@ -407,7 +410,11 @@ def services():
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
 
-EDU_IMG = ["team-vicki-screen.jpg", "team-monitor.jpg", "team-amanda.jpg", "team-papers.jpg", "libertas-flag.jpg", "site-block.jpg"]
+# The Libertas Academy flag is never used (Matt, 2026-11-18: "it was a specific rule to not use this flag").
+BANNED = {"libertas-flag.jpg", "libertas-campus.jpg", "school-front.jpg", "q3-002.jpg", "q3-010.jpg", "q3-020.jpg",
+          "site-block.jpg", "site-dusk.jpg", "site-trailer.jpg", "tnc-truck.jpg", "school-chalk.jpg"}
+# Libertas Academy is never shown (Matt, 2026-11-18: "try not to use Libertas", twice), nor construction sites.
+EDU_IMG = ["team-vicki-screen.jpg", "team-monitor.jpg", "team-amanda.jpg", "team-papers.jpg", "hub-edu-budget.jpg", "hub-edu-docs.jpg"]
 
 def education():
     rows = [(t, EDU_IMG[i % len(EDU_IMG)], d, bl) for i, (_, t, d, bl) in enumerate(B.EDU)]
@@ -417,20 +424,19 @@ def education():
               ("Federal and State Compliance", "Charter, state and federal deadlines on one calendar, with documentation ready for monitoring visits."),
               ("Board-Ready Reporting", "Grant spending shown in the monthly board package, so nothing surprises the board at audit time.")]
     g = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in grants)
-    launch = [("Planning year: set up the books", "q3-016.jpg", "Chart of accounts, banking, payroll and policies in place before the first hire.", None),
+    launch = [("Planning year: set up the books", "hub-edu-close.jpg", "Chart of accounts, banking, payroll and policies in place before the first hire.", None),
               ("Six months out: staff and systems", "team-joseph-hall.jpg", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", None),
-              ("Ninety days out: facility ready", "site-trailer.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
-              ("Opening day: doors open", "school-chalk.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
-    builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS)
+              ("Ninety days out: facility ready", "hub-edu-directory.jpg", "Facility readiness, insurance, procurement and the opening budget locked.", None),
+              ("Opening day: doors open", "hub-edu-payroll.jpg", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", None)]
+    builds = "".join(tile(i, t, a) for i, t, a, _ in B.SCHOOLS if "Libertas" not in t)
     body = f'''{phero("Education Services", "The Complete Back Office for Charter and Private Schools", "Built around each school's stage, priorities and staff, from the first planning year to every audit after.")}
-{bleed("school-front.jpg", "center 45%")}
 <section class="sec grey" id="schools"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><h2 class="h2">The Money, Handled. <span class="hl">Every Review, Ready.</span></h2><p style="color:var(--ink2)">School leaders should spend their time teaching, leading and growing their schools. We run the back office so they can.</p></div><div class="tabs" data-tabs>{tabs(rows)}</div></div></section>
 <section class="sec" id="serve"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Schools we serve</span><h2 class="h2">Open Today. <span class="hl">Opening Next.</span></h2></div>
 <style>{B.CSS[B.CSS.index("/* client cards */"):B.CSS.index(".stat em")]}</style><div class="tiles t3" style="gap:24px">{schools}</div></div></section>
 <section class="sec grey" id="grants"><div class="shell"><div style="text-align:center;max-width:760px;margin:0 auto 40px;display:grid;gap:14px"><h2 class="h2">Every Grant Dollar, <span class="hl">Accounted For</span></h2><p style="color:var(--ink2)">From application to expenditure tracking to the final report, documented and audit-ready all year.</p></div><div class="why">{g.replace("<div>", '<div style="background:#fff">')}</div></div></section>
 <section class="sec" id="launch"><div class="shell"><div style="max-width:760px;margin-bottom:36px;display:grid;gap:14px"><span class="eyebrow">Starting a new school?</span><h2 class="h2">From Charter to <span class="hl">Opening Day</span></h2></div><div class="tabs" data-tabs>{tabs(launch)}</div>
 <div style="margin-top:36px"><a class="btn btn--teal" href="{R}/contact">Plan your launch with us</a></div></div></section>
-<section class="sec grey"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Proof from our family of companies</span><h2 class="h2">Three Schools. <span class="hl">Opened on Time.</span></h2><p style="color:var(--ink2)">Our partner companies build schools across South Carolina and open them on time. Elevate runs the finance and operations behind the teams that built them.</p></div><div class="tiles t3">{builds}</div></div></section>'''
+<section class="sec grey"><div class="shell"><div style="max-width:760px;margin-bottom:40px;display:grid;gap:14px"><span class="eyebrow">Proof from our family of companies</span><h2 class="h2">Schools Built. <span class="hl">Opened on Time.</span></h2><p style="color:var(--ink2)">Our partner companies build schools across South Carolina and open them on time. Elevate runs the finance and operations behind the teams that built them.</p></div><div class="tiles t3">{builds}</div></div></section>'''
     return page("education", "Education Services", "education", body)
 
 FAQ = [("What is the first step to working with Elevate?", "Book a discovery call. In 45 to 60 minutes we learn your entities or campuses, what is not closing today and what you want off your plate, then send a scoped proposal within a week."),
@@ -465,26 +471,17 @@ def portal():
     src = B.portal()
     i = src.find("getElementById('signinForm')")
     js = src[src.rfind("<script", 0, i):src.find("</script>", i) + 9] if i > 0 else ""
-    chips = "".join(f'<a class="chip" target="_blank" rel="noopener" href="/demo/#/demo/{i}">{n}</a>' for n, i in B.INDUSTRY_DEMOS)
-    sees = [("Your Numbers, Live", "Read straight from your accounting system, so the dashboard always matches the books."),
-            ("Cut to Each Role", "Leaders see the answer, finance sees the detail, and each person sees only what their role allows."),
-            ("Every Entity in One Place", "Switch between companies or campuses, or see them all together."),
-            ("Lender and Board Ready", "Statements, packs and quarterly reports in one click.")]
-    w = "".join(f"<div><h3>{a}</h3><p>{b}</p></div>" for a, b in sees)
-    body = f"""{phero("Client Portal", "Sign In to Your <span class='hl'>Dashboard</span>", "Enter your work email and we will take you to your company's BI Dashboard. Not a client yet? Explore a sample company.")}
+    # Matt, 2026-11-18: the BI Dashboard page now does the showing, so the portal is the sign-in.
+    body = f"""{phero("Client Portal", "Sign In to Your <span class='hl'>Dashboard</span>", "Enter your work email and we will take you to your company's dashboard.")}
 <section class="sec"><div class="shell two" style="align-items:stretch">
 <div class="signin-box"><span class="eyebrow">Client sign-in</span><h2 class="h2">Welcome <span class="hl">Back</span></h2>
 <form id="signinForm" class="form" novalidate><label for="email">Work email<input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label>
 <div><button class="btn btn--teal" type="submit">Continue &rarr;</button></div></form>
 <p id="msg" class="msg" role="status" aria-live="polite"></p>
 <p class="small-note">Trouble signing in? Email <a href="mailto:{EMAIL}">{EMAIL}</a>.</p></div>
-<div class="demo-box on-teal"><span class="eyebrow">Not a client yet?</span><h2 class="h2">See It With a <span class="hl">Sample Company</span></h2>
-<p>Pick an industry and explore a live dashboard built the way that business is measured. Anything you change stays in your own browser.</p>
-<div class="chips">{chips}</div><div><a class="btn btn--white" target="_blank" rel="noopener" href="/demo/#/choose">View our dashboard demo &rarr;</a></div></div></div></section>
-<section class="split"><div class="split__img" style="background-image:url({IMG}/hub-hc-signin.jpg);background-size:cover;background-position:left top"></div>
-<div class="split__copy grey"><span class="eyebrow">What you will see</span><h2 class="h2">One Dashboard for <span class="hl">Every Entity</span></h2>
-<p style="color:var(--ink2)">Every client gets a dashboard set up for their companies or campuses, their roles and the way their business is measured.</p></div></section>
-<section class="sec"><div class="shell"><div class="why">{w}</div></div></section>{js}"""
+<div class="demo-box on-teal"><span class="eyebrow">Not a client yet?</span><h2 class="h2">See the <span class="hl">Dashboard</span></h2>
+<p>A tour of the real dashboard on a sample company, for every industry we serve.</p>
+<div><a class="btn btn--white" href="{R}/dashboard">See the BI Dashboard &rarr;</a></div></div></div></section>{js}"""
     return page("portal", "Client Portal", "portal", body)
 
 # ------------------------------------------------------------------ BI dashboard tour
@@ -569,6 +566,57 @@ TOUR_CSS = """
 .how div{border-top:3px solid var(--teal);padding-top:16px;display:grid;gap:8px;align-content:start}
 .how b{font:600 19px/1.3 var(--sans)}.how p{color:var(--ink2);font-size:16px}
 @media(prefers-reduced-motion:reduce){.tour.auto .tour__steps button[aria-selected=true] i{animation:none}.win__live i{animation:none}}
+
+.quote{background:var(--grey);padding-block:clamp(64px,8vw,104px)}
+.quote__head{display:grid;gap:14px;max-width:780px;margin-bottom:32px}
+.quote__head p{color:var(--ink2)}
+.qform{display:grid;gap:26px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,44px)}
+.qform h3{font:600 19px/1.3 var(--sans);margin-bottom:4px}
+.qform .hint{color:var(--ink2);font-size:15px;margin-bottom:12px}
+.qform .row{display:grid;gap:16px}@media(min-width:760px){.qform .row{grid-template-columns:1fr 1fr}}
+.qform label.f{display:grid;gap:6px;font:600 14px/1.2 var(--sans)}
+.qform input[type=text],.qform input[type=email],.qform select,.qform textarea{font:400 16px/1.4 var(--sans);padding:13px 14px;border:1px solid #cfd8da;border-radius:10px;background:#fff;width:100%}
+.qform input:focus,.qform select:focus,.qform textarea:focus{outline:2px solid var(--teal2);outline-offset:1px;border-color:var(--teal2)}
+.qgroup{border-top:1px solid var(--line);padding-top:18px}
+.qgroup>b{display:block;font:600 14px/1.3 var(--sans);margin-bottom:10px}
+.qgroup>b small{font-weight:400;color:var(--ink2)}
+.qchips{display:flex;flex-wrap:wrap;gap:8px}
+.qchips label{position:relative;cursor:pointer}
+.qchips input{position:absolute;opacity:0;pointer-events:none}
+.qchips span{display:inline-flex;align-items:center;gap:7px;border:1px solid #cfd8da;border-radius:99px;padding:9px 14px;font:500 14.5px/1 var(--sans);color:var(--ink);background:#fff;transition:background .2s,border-color .2s,color .2s}
+.qchips span::before{content:"";width:14px;height:14px;border-radius:4px;border:1.5px solid #b5c2c5;flex:none;transition:all .2s}
+.qchips label:hover span{border-color:var(--teal2)}
+.qchips input:checked+span{background:var(--tint);border-color:var(--teal);color:var(--teal)}
+.qchips input:checked+span::before{background:var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/100%;border-color:var(--teal)}
+.qchips input:focus-visible+span{outline:2px solid var(--teal2);outline-offset:2px}
+.qcount{font:600 14px/1 var(--sans);color:var(--teal)}
+.qfind input{width:100%;font:400 16px/1.4 var(--sans);padding:14px 16px 14px 44px;border:1px solid #cfd8da;border-radius:12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235c6668' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E") 15px center/18px no-repeat}
+.qtray{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}.qtray:empty{display:none}
+.qtray button{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:99px;background:var(--teal);color:#fff;padding:8px 10px 8px 14px;font:500 14px/1 var(--sans);cursor:pointer}
+.qtray button::after{content:"\\00d7";font-size:17px;line-height:1;opacity:.75}
+.qcat{border-top:1px solid var(--line)}.qcat:last-of-type{border-bottom:1px solid var(--line)}
+.qcat summary{list-style:none;display:flex;align-items:center;gap:10px;padding:16px 2px;cursor:pointer;min-height:56px}
+.qcat summary::-webkit-details-marker{display:none}
+.qcat summary b{font:600 16.5px/1.3 var(--sans);color:var(--ink);flex:1}
+.qcat__n{font:500 13px/1 var(--sans);color:var(--ink2)}
+.qcat__on{font:600 12px/1 var(--sans);color:#fff;background:var(--teal);border-radius:99px;padding:5px 9px}
+.qcat summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);margin:0 6px 4px 6px;transition:transform .25s}
+.qcat[open] summary::after{transform:rotate(-135deg);margin-bottom:-4px}
+.qlist{display:grid;grid-template-columns:1fr;gap:0 18px;padding:0 0 14px}
+@media(min-width:560px){.qlist{grid-template-columns:1fr 1fr}}@media(min-width:900px){.qlist{grid-template-columns:repeat(3,1fr)}}
+.qrow{position:relative;display:flex;align-items:center;min-height:48px;border-bottom:1px solid #eef1f2;cursor:pointer}
+.qrow input{position:absolute;opacity:0;pointer-events:none}
+.qrow span{display:flex;align-items:center;gap:12px;width:100%;padding:10px 4px;font:500 15.5px/1.3 var(--sans);color:var(--ink)}
+.qrow span::before{content:"";width:20px;height:20px;border-radius:6px;border:1.5px solid #b5c2c5;flex:none;background:#fff;transition:all .2s}
+.qrow:hover span{color:var(--teal)}
+.qrow input:checked+span{color:var(--teal);font-weight:600}
+.qrow input:checked+span::before{background:var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/100%;border-color:var(--teal)}
+.qrow input:focus-visible+span{outline:2px solid var(--teal2);outline-offset:2px;border-radius:8px}
+.qrow[hidden]{display:none}.qnone{color:var(--ink2);font-size:15px;padding:12px 2px}
+.qother{margin-top:18px}
+.qsubmit{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:22px}
+.qdone{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(28px,5vw,56px);display:grid;gap:12px}
+.qform .msg{font-size:15px}.qform .msg.bad{color:#b4412f}
 """
 
 TOUR_JS = r"""<script>
@@ -599,6 +647,76 @@ if('IntersectionObserver' in window){new IntersectionObserver(function(es,o){if(
 })();
 </script>"""
 
+# Matt, 2026-11-18: a form for the software they use and what they want connected, so we can quote.
+# It sends through FormSubmit exactly as the contact form does (build.py FORM_URL).
+QUOTE_SHOWS = ["Financial dashboard", "Budget vs actual", "Cash &amp; working capital", "Statements &amp; board packs",
+               "Operations by location, job or campus", "Enrollment &amp; attendance", "Sales pipeline &amp; CRM",
+               "Marketing results", "HR &amp; payroll", "Documents"]
+QUOTE_JS = r"""<script>
+(function(){var URL=%s,CC=%s,f=document.getElementById('quoteForm');if(!f)return;var st=document.getElementById('quoteStatus'),cnt=document.getElementById('quoteCount');
+function picked(n){return [].map.call(f.querySelectorAll('input[name="'+n+'"]:checked'),function(i){return i.value;});}
+var find=document.getElementById('quoteFind'),tray=document.getElementById('quoteTray'),none=document.getElementById('quoteNone'),cats=[].slice.call(f.querySelectorAll('.qcat'));
+function sync(){var n=picked('software').length;cnt.textContent=n?n+' selected':'';
+ cats.forEach(function(c){var k=c.querySelectorAll('input:checked').length,b=c.querySelector('.qcat__on');b.hidden=!k;b.textContent=k+' ticked';});
+ tray.innerHTML='';[].forEach.call(f.querySelectorAll('input[name="software"]:checked'),function(i){var x=document.createElement('button');x.type='button';x.textContent=i.value;x.setAttribute('aria-label','Remove '+i.value);x.onclick=function(){i.checked=false;sync();};tray.appendChild(x);});}
+f.addEventListener('change',sync);
+/* one category open at a time (Matt: "a section should auto-collapse when another section is opened"); a search may open several */
+cats.forEach(function(c){c.addEventListener('toggle',function(){if(c.open&&!(find&&find.value.trim()))cats.forEach(function(o){if(o!==c)o.open=false;});});});
+if(find){var opened=null;find.addEventListener('input',function(){var q=find.value.trim().toLowerCase(),any=false;
+ if(q&&!opened)opened=cats.map(function(c){return c.open;});
+ cats.forEach(function(c,k){var hit=0;[].forEach.call(c.querySelectorAll('.qrow'),function(r){var on=!q||r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!on;if(on)hit++;});
+  c.hidden=q&&!hit;if(q)c.open=hit>0;else if(opened)c.open=opened[k];if(hit)any=true;});
+ if(!q)opened=null;none.hidden=!q||any;});
+ find.addEventListener('keydown',function(e){if(e.key==='Enter')e.preventDefault();});}
+f.addEventListener('submit',function(ev){ev.preventDefault();var d={};new FormData(f).forEach(function(v,k){if(k!=='software'&&k!=='shows')d[k]=String(v).trim();});
+if(d.botcheck)return;var sw=picked('software'),sh=picked('shows'),miss=[];
+if(!d.name)miss.push('your name');if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email||''))miss.push('a valid work email');if(!d.company)miss.push('your company');
+if(!sw.length&&!d.other)miss.push('the software you use');
+if(miss.length){st.className='msg bad';st.textContent='Please add '+miss.join(', ')+'.';return;}
+var btn=f.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Sending…';
+fetch(URL,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+body:JSON.stringify({_cc:CC,_subject:'Dashboard quote request: '+d.company,_template:'table',_captcha:'false',_replyto:d.email,
+name:d.name,email:d.email,company:d.company,industry:d.industry,entities:d.entities,software:sw.join(', ')||'(none ticked)',other_software:d.other||'',dashboard_should_show:sh.join(', ')||'(not specified)',notes:d.notes||''})})
+.then(function(r){return r.json();}).then(function(j){if(!(j.success===true||j.success==='true'))throw 0;f.hidden=true;document.getElementById('quoteDone').hidden=false;})
+.catch(function(){st.className='msg bad';st.textContent='Something went wrong sending the form. Please try again in a moment.';btn.disabled=false;btn.textContent='Request a quote';});});})();
+</script>"""
+
+def quote_section():
+    import json
+    cfg = json.loads((HERE / "demo" / "config" / "connectors.json").read_text())
+    # Matt, 2026-11-18, on the wall of pills: "this structure looks like shit". Each category is a
+    # section that opens, its software an even list of rows, with a search and a tray of what is ticked.
+    groups = ""
+    for i, c in enumerate(cfg["categories"]):
+        names = sorted({x["name"] for x in cfg["connectors"] if x["cat"] == c["id"]}, key=str.lower)
+        rows = "".join(f'<label class="qrow"><input type="checkbox" name="software" value="{n}"><span>{n}</span></label>' for n in names)
+        groups += (f'<details class="qcat"{" open" if i == 0 else ""}><summary><b>{c["name"]}</b><span class="qcat__n">{len(names)}</span>'
+                   f'<span class="qcat__on" hidden></span></summary><div class="qlist">{rows}</div></details>')
+    groups = ('<div class="qfind"><input type="search" id="quoteFind" placeholder="Search software, like QuickBooks or ADP" autocomplete="off" aria-label="Search software"></div>'
+              '<div class="qtray" id="quoteTray" aria-live="polite"></div>' + groups +
+              '<p class="qnone" id="quoteNone" hidden>Not listed? Add it in the box below.</p>')
+    shows = "".join(f'<label class="qrow"><input type="checkbox" name="shows" value="{s}"><span>{s}</span></label>' for s in QUOTE_SHOWS)
+    inds = "".join(f"<option>{n}</option>" for n in ["Schools &amp; education", "Construction &amp; development", "Retail &amp; multi-site",
+                   "Food &amp; beverage", "Manufacturing &amp; industrial", "Freight &amp; logistics", "Software &amp; technology",
+                   "Healthcare &amp; clinics", "Something else"])
+    ents = "".join(f"<option>{n}</option>" for n in ["1", "2 to 5", "6 to 10", "More than 10"])
+    return f"""<section class="quote"><div class="shell"><div class="quote__head"><span class="eyebrow">Get a quote</span>
+<h2 class="h2">Tell Us What You <span class="hl">Run On</span></h2>
+<p>Tick the software you use and what you want to see. We will come back with a quote for connecting it.</p></div>
+<form id="quoteForm" class="qform" novalidate>
+<div class="row"><label class="f">Name<input type="text" name="name" autocomplete="name"></label><label class="f">Work email<input type="email" name="email" autocomplete="email" placeholder="name@company.com"></label></div>
+<div class="row"><label class="f">Company<input type="text" name="company" autocomplete="organization"></label><label class="f">Industry<select name="industry">{inds}</select></label></div>
+<div class="row"><label class="f">Companies, campuses or locations<select name="entities">{ents}</select></label><span></span></div>
+<div><h3>The software you use <span class="qcount" id="quoteCount"></span></h3><p class="hint">Tick everything that holds numbers you would want on the dashboard.</p>{groups}
+<div class="qother"><label class="f">Anything else you use<input type="text" name="other" placeholder="Software not listed above"></label></div></div>
+<div><h3>What the dashboard should show</h3><div class="qlist qlist--open">{shows}</div></div>
+<label class="f">Anything else we should know<textarea name="notes" rows="4"></textarea></label>
+<input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+<div class="qsubmit"><button class="btn btn--teal" type="submit">Request a quote</button><p id="quoteStatus" class="msg" role="status" aria-live="polite"></p></div>
+</form>
+<div id="quoteDone" class="qdone" hidden><span class="eyebrow">Thank you</span><h2 class="h2">We Have Your <span class="hl">List</span></h2><p style="color:var(--ink2)">We will review what you use and come back with a quote. Questions in the meantime: <a href="mailto:{EMAIL}">{EMAIL}</a>.</p></div>
+</div></section>{QUOTE_JS % (json.dumps(B.FORM_URL), json.dumps(B.FORM_CC))}"""
+
 def dashboard():
     import json
     demo = HERE / "demo"
@@ -625,11 +743,13 @@ def dashboard():
 <div class="win__view"><iframe id="tourFrame" title="Elevate BI dashboard, sample company" loading="lazy"></iframe></div>
 <div class="win__foot"><span>Sample company and figures. Every number in a client's dashboard is read from their own systems.</span><a id="tourFull" target="_blank" rel="noopener" href="/demo/#/choose">Open the full demo &rarr;</a></div></div></div>
 </div></section>
+{quote_section()}
 <section class="sec"><div class="shell"><span class="eyebrow">How it works</span><h2 class="h2" style="margin-bottom:28px">Set Up Once, <span class="hl">Live Every Day</span></h2><div class="how">{hw}</div></div></section>
 {TOUR_JS % json.dumps(data)}"""
     return page("dashboard", "BI Dashboard", "dashboard", body)
 
 def build():
+    raise SystemExit("retired 2026-11-18: the live pages come from next/ (python3 next/promote.py). build_pages.py still imports this file for its copy and forms.")
     OUT.mkdir(exist_ok=True)
     for fn, html in [("index.html", home()), ("about.html", about()), ("services.html", services()),
                      ("education.html", education()), ("contact.html", contact()), ("portal.html", portal()),
@@ -651,6 +771,9 @@ def build():
             n = html.count("/img/" + img)
             if n > 1 or len(seen[img]) > 1:
                 dup.append((img, fn, n))
+    for fn in ("index.html", "about.html", "services.html", "education.html", "contact.html", "portal.html", "dashboard.html"):
+        if any(b in (OUT / fn).read_text() for b in BANNED):
+            raise SystemExit(fn + " uses a banned photo")
     if dup:
         raise SystemExit("an image is used more than once: " + ", ".join(sorted({d[0] for d in dup})))
     # the preview lived at /redesign/; keep those links working
