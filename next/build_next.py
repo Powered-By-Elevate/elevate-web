@@ -168,9 +168,9 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
    the team photos crossfade under a deep teal wash, the headline centered over them */
 .hero--old{position:relative;min-height:min(92vh,760px);display:grid;place-items:center;text-align:center;color:#fff;overflow:hidden;background:var(--deep);padding:0}
 .hero--old .hero__slides{position:absolute;inset:0}
-.hero--old .hero__slides div{position:absolute;inset:0;background:center/cover;opacity:0;animation:herofade 14s infinite;transform:scale(1.04)}
-.hero--old .hero__slides div:nth-child(2){animation-delay:7s}
-@keyframes herofade{0%{opacity:0;transform:scale(1.04)}8%{opacity:1}50%{opacity:1}58%{opacity:0;transform:scale(1.12)}100%{opacity:0;transform:scale(1.12)}}
+.hero--old .hero__slides div{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;animation:herofade 28s infinite;transform:scale(1.04)}
+.hero--old .hero__slides div:nth-child(2){animation-delay:7s}.hero--old .hero__slides div:nth-child(3){animation-delay:14s}.hero--old .hero__slides div:nth-child(4){animation-delay:21s}
+@keyframes herofade{0%{opacity:0;transform:scale(1.04)}4%{opacity:1}25%{opacity:1}29%{opacity:0;transform:scale(1.12)}100%{opacity:0;transform:scale(1.12)}}
 .hero--old::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,42,51,.72),rgba(5,42,51,.55) 45%,rgba(5,42,51,.8))}
 .hero--old .hero__in{position:relative;z-index:2;max-width:920px;padding:150px 16px 96px;display:grid;gap:24px;justify-items:center}
 .hero__h{font:600 clamp(36px,4.6vw,60px)/1.12 var(--sans);letter-spacing:-.01em;color:#fff;margin:0}
@@ -525,7 +525,7 @@ def build():
     body = f'''<div class="grain" aria-hidden="true"></div>
 {nav()}
 
-<header class="hero hero--old"><div class="hero__slides"><div style="background-image:url(/img/team-meeting.jpg)"></div><div style="background-image:url(/img/tnc-lobby.jpg)"></div></div><div class="hero__in">
+<header class="hero hero--old"><div class="hero__slides"><div style="background-image:url(/img/team-meeting.jpg)"></div><div style="background-image:url(/img/team-laptop.jpg);background-position:60% center"></div><div style="background-image:url(/img/team-table.jpg)"></div><div style="background-image:url(/img/tnc-lobby.jpg)"></div></div><div class="hero__in">
 <h1 class="hero__h rv-in">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
 <p class="rv-in">Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
 <div class="hero__btns rv-in"><a class="btn btn--teal" href="contact.html">Book a discovery call</a><a class="play" href="dashboard.html"><span><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></header>
