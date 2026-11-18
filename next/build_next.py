@@ -89,11 +89,11 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .hero__copy{display:grid;gap:26px;align-content:center}
 .hero__copy .btns{display:flex;gap:12px;flex-wrap:wrap}
 .hero__art{position:relative;height:clamp(560px,64vw,720px)}
-@media(max-width:999px){.hero{padding-bottom:40px}.hero .phone{left:4%}}
+@media(max-width:999px){.hero{padding-bottom:40px}.hero .tilt{left:4%}}
 .hero__photo{position:absolute;inset:6% 0 10% 12%;border-radius:28px;overflow:hidden;box-shadow:0 50px 90px -50px rgba(6,58,71,.45)}
 .hero__photo div{position:absolute;inset:-12% 0;background:url(/img/team-table.jpg) center/cover}
 .hero__photo::after{content:"";position:absolute;inset:0;background:linear-gradient(200deg,rgba(255,255,255,0) 40%,rgba(6,58,71,.35))}
-.hero .phone{position:absolute;left:0;bottom:0;width:clamp(220px,22vw,290px)}
+.hero .tilt{position:absolute;left:0;bottom:0;width:clamp(220px,22vw,290px)}
 .chip{position:absolute;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:0 18px 40px -22px rgba(6,58,71,.4);font:500 14px/1.25 var(--sans);white-space:nowrap}
 .chip i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--tint);color:var(--teal);font-style:normal;font-weight:700}
 .chip small{display:block;color:var(--ink2);font-size:12px}
@@ -107,6 +107,15 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .phone__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
 .phone__bar{position:absolute;z-index:3;right:3px;top:8%;width:3px;height:16%;border-radius:3px;background:rgba(0,0,0,.28)}
 .phone--loop img{animation:scrollshot var(--loop,22s) ease-in-out infinite alternate}
+/* the pivoted phone: turned a little for depth, with an edge, a sheen and a long soft shadow */
+.tilt{--ry:-20deg;--rx:9deg;--rz:3deg;perspective:1500px}
+.tilt--r{--ry:16deg;--rx:7deg;--rz:-2deg}
+.tilt .phone{transform:rotateY(var(--ry)) rotateX(var(--rx)) rotateZ(var(--rz));transform-style:preserve-3d;
+ box-shadow:-9px 6px 0 -2px #2a2e32,-10px 7px 0 -2px #4a4f54,0 70px 90px -45px rgba(6,58,71,.6),inset 0 0 0 1.5px #3a3d40}
+.tilt--r .phone{box-shadow:9px 6px 0 -2px #2a2e32,10px 7px 0 -2px #4a4f54,0 70px 90px -45px rgba(6,58,71,.6),inset 0 0 0 1.5px #3a3d40}
+.tilt .phone::after{content:"";position:absolute;inset:0;border-radius:44px;pointer-events:none;z-index:4;
+ background:linear-gradient(118deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 22%,transparent 40%)}
+.tilt .phone{position:relative}
 @keyframes scrollshot{0%,8%{transform:translateY(0)}92%,100%{transform:translateY(calc(-1 * var(--travel,0px)))}}
 
 /* marquee */
@@ -155,7 +164,8 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .vis--photo>div{position:absolute;inset:-8%;background-size:cover;background-position:center;will-change:transform}
 .vis--phone{display:grid;place-items:center}
 .vis--phone::before{content:"";position:absolute;inset:4% 8%;border-radius:28px;background:radial-gradient(70% 60% at 50% 45%,rgba(47,157,168,.22),transparent 70%),linear-gradient(160deg,var(--tint),#fff)}
-.vis--phone .phone{position:absolute;left:50%;top:2%;translate:-50% 0;height:86%;width:auto}
+.vis--phone .tilt{position:absolute;left:50%;top:2%;translate:-50% 0;height:86%;aspect-ratio:9/19.3}
+.vis--phone .tilt .phone{height:100%}
 .vis--phone .pill{left:50%;translate:-50% 0;bottom:1%;white-space:nowrap}
 
 /* rhythm */
@@ -218,7 +228,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 
 /* reveal */
 .rv{opacity:0;transform:translateY(26px)}
-@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}.marq__track,.phone--loop img{animation:none}}
+@media(prefers-reduced-motion:reduce){.tilt{--ry:-10deg;--rx:4deg;--rz:1deg}.rv{opacity:1;transform:none}.marq__track,.phone--loop img{animation:none}}
 """
 
 JS = r"""<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -241,10 +251,16 @@ document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener
 var EASE='power3.out';
 /* hero: lines rise in, the photo drifts slower than the page, the phone lifts */
 gsap.from('.hero .rv-in',{y:40,opacity:0,duration:1.1,ease:EASE,stagger:.09,delay:.1});
-gsap.from('.hero .phone',{y:80,opacity:0,duration:1.3,ease:EASE,delay:.35});
+gsap.from('.hero .tilt',{y:80,opacity:0,duration:1.3,ease:EASE,delay:.35});
 gsap.from('.hero .chip',{y:24,opacity:0,duration:1,ease:EASE,stagger:.15,delay:.9});
 gsap.to('.hero__photo div',{yPercent:12,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-gsap.to('.hero .phone',{y:-70,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+gsap.to('.hero .tilt',{y:-70,'--ry':'-6deg','--rx':'3deg','--rz':'1deg',ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:.8}});
+/* the hero screen: a short scroll of its own on arrival, then it follows the page */
+(function(){var s=document.querySelector('.hero .phone__screen'),img=s&&s.querySelector('img');if(!img)return;
+ var tr=function(){return Math.max(0,img.clientHeight-s.clientHeight)};var st={p:0};
+ var set=function(){gsap.set(img,{y:-tr()*st.p})};
+ gsap.to(st,{p:.14,duration:2.4,delay:1.1,ease:'power2.inOut',onUpdate:set});
+ ScrollTrigger.create({trigger:'.hero',start:'top top',end:'bottom top',onUpdate:function(self){st.p=.14+.56*self.progress;set()}});})();
 /* reveals */
 gsap.utils.toArray('.rv').forEach(function(el){gsap.to(el,{opacity:1,y:0,duration:1,ease:EASE,scrollTrigger:{trigger:el,start:'top 86%'}})});
 gsap.to('.schools__band div',{yPercent:14,ease:'none',scrollTrigger:{trigger:'.schools__band',start:'top bottom',end:'bottom top',scrub:true}});
@@ -264,7 +280,8 @@ mm.add('(min-width: 1000px)',function(){
  show(0);
  /* within a beat the scroll drives the visual: a photo drifts and settles, the one phone scrolls its page */
  function scrub(i,local){var v=vis[i];if(v.classList.contains('vis--photo')){gsap.set(v.firstElementChild,{scale:1.1-.1*local,yPercent:3-6*local});}
-  else{var s=v.querySelector('.phone__screen'),img=s.querySelector('img');gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*local});}}
+  else{var s=v.querySelector('.phone__screen'),img=s.querySelector('img');gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*local});
+   gsap.set(v.querySelector('.tilt'),{'--ry':(16-10*local)+'deg','--rx':(7-3*local)+'deg'});}}
  var st=ScrollTrigger.create({trigger:story.querySelector('.story__stage'),start:'top top',end:'+='+(N*90)+'%',pin:true,
   onUpdate:function(self){var p=self.progress*N,i=Math.min(N-1,Math.floor(p)),local=Math.min(1,Math.max(0,(p-i-.08)/.84));show(i);scrub(i,local);}});
  chips.forEach(function(c,j){c.addEventListener('click',function(){lenis.scrollTo(st.start+(st.end-st.start)*(j+.15)/N)})});
@@ -273,6 +290,9 @@ mm.add('(min-width: 1000px)',function(){
 addEventListener('load',function(){travel();ScrollTrigger.refresh()});
 })();
 </script>"""
+
+def tilt(inner, right=False):
+    return f'<div class="tilt{" tilt--r" if right else ""}">{inner}</div>'
 
 def phone(img, loop=False, cls=""):
     return (f'<div class="phone{" phone--loop" if loop else ""} {cls}"><div class="phone__screen">'
@@ -285,8 +305,8 @@ def build():
         li = "".join(f"<li>{b}</li>" for b in bullets)
         pill = f'<span class="pill"><i></i>{label}</span>'
         if kind == "phone":
-            small = f'<div class="beat__vis">{phone(f, loop=True)}</div>'
-            vis += f'<div class="vis vis--phone">{phone(f)}{pill}</div>'
+            small = f'<div class="beat__vis">{tilt(phone(f, loop=True), right=True)}</div>'
+            vis += f'<div class="vis vis--phone">{tilt(phone(f), right=True)}{pill}</div>'
         else:
             small = f'<div class="beat__vis beat__photo"><div style="background-image:url(/img/{f})"></div>{pill}</div>'
             vis += f'<div class="vis vis--photo"><div style="background-image:url(/img/{f})"></div>{pill}</div>'
@@ -311,7 +331,7 @@ def build():
 <h1 class="display rv-in">Capacity for <em>today.</em></h1>
 <p class="lede rv-in">Finance, payroll, HR, marketing and a live dashboard, run by one team so your leaders can lead.</p>
 <div class="btns rv-in"><a class="btn btn--teal" href="/contact">Book a discovery call</a><a class="btn btn--ghost" href="/dashboard">See the dashboard</a></div></div>
-<div class="hero__art"><div class="hero__photo"><div></div></div>{phone("bi-education-home.jpg", loop=True)}
+<div class="hero__art"><div class="hero__photo"><div></div></div>{tilt(phone("bi-education-home.jpg"))}
 <div class="chip chip--a"><i>&#10003;</i><span>Close signed off<small>Every month, on the calendar</small></span></div>
 <div class="chip chip--b"><i>&#8599;</i><span>Board package<small>Ready before the meeting</small></span></div></div>
 </div></header>
