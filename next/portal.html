@@ -143,13 +143,13 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
  .beat .beat__vis.tilt-host{display:grid;place-items:center;min-height:620px;border-radius:28px;background:radial-gradient(70% 60% at 50% 45%,rgba(47,157,168,.2),transparent 70%),linear-gradient(160deg,var(--tint),#fff)}
  .beat .tilt-host .tilt{width:270px}
 }
-}
 
 /* rhythm: four cards, each with its own small live picture */
 .rhythm{position:relative;padding:clamp(90px,10vw,140px) 0;overflow:hidden;background:linear-gradient(180deg,#fff,var(--tint))}
 .rhythm::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(12,105,128,.12) 1px,transparent 1.2px);background-size:24px 24px;-webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);pointer-events:none}
 .rhythm .shell{position:relative}
 .rhythm__head{display:grid;gap:16px;max-width:760px;margin-bottom:56px}
+.rhythm__top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:56px}.rhythm__top .rhythm__head{margin-bottom:0}
 .rhythm__line{position:relative;display:grid;gap:22px}
 @media(min-width:760px){.rhythm__line{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1100px){.rhythm__line{grid-template-columns:repeat(4,1fr)}}
@@ -209,7 +209,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .schools__band h2{z-index:1}
 @media(max-width:760px){.schools__band{aspect-ratio:auto;min-height:0;height:clamp(240px,62vw,320px);margin-bottom:36px}.schools__band div{background-position:30% center}.schools__band h2{font-size:clamp(30px,8.4vw,40px);right:20px}}
 .cards{display:grid;gap:22px}
-@media(min-width:800px){.cards{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:800px){.cards{grid-template-columns:repeat(3,1fr)}.cards--2{grid-template-columns:repeat(2,1fr)}}
 .card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 30px 60px -45px rgba(6,58,71,.5)}
 .card div{aspect-ratio:4/3;background-size:cover;background-position:center}
 .card section{padding:20px 22px 24px;display:grid;gap:4px}
@@ -322,7 +322,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .split2__ph{position:relative;aspect-ratio:4/5;border-radius:28px;overflow:hidden;box-shadow:0 40px 70px -45px rgba(6,58,71,.5)}
 .split2__ph>div{position:absolute;inset:-7%;background-size:cover;background-position:center}
 /* the launch: each step carries its photo */
-.viz-ph{padding:0;background-size:cover;background-position:center}
+.viz-ph{padding:0;background-size:cover;background-position:left top}
 /* forms */
 .form{display:grid;gap:16px}
 .form label{display:grid;gap:7px;font:600 14px/1.2 var(--sans)}
@@ -372,7 +372,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 <p class="small-note">Trouble signing in? Email <a href="mailto:hello@elevatemanagedservices.com">hello@elevatemanagedservices.com</a>.</p></div>
 <div class="portal-demo"><span class="eyebrow" style="color:var(--gold)">Not a client yet?</span><h2 class="h2">See the <em>dashboard.</em></h2>
 <p>A tour of the real dashboard on a sample company, for every industry we serve.</p><div><a class="btn btn--gold" href="dashboard.html">See the BI Dashboard &rarr;</a></div>
-<div class="devwrap devwrap--laptop"><div class="dev dev--laptop" data-w="1005" data-h="1044" data-sw="1280" data-sh="832" data-quad="[[9.8, 191.3], [685.4, 18.2], [767.8, 438.5], [120.0, 631.1]]" style="aspect-ratio:1005/1044"><span class="dev__shadow"></span><div class="dev__stage" style="width:1005px;height:1044px"><div class="dev__clip" style="-webkit-mask-image:url(img/device-laptop-mask.png);mask-image:url(img/device-laptop-mask.png)"><div class="dev__screen" style="width:1280px;height:832px"><img src="/img/hub-con-signin.jpg" class="fill" alt="The Elevate BI sign-in, sample company" loading="lazy"></div></div><img class="dev__frame" src="img/device-laptop.png" alt=""></div></div></div></div></div></section><footer class="end"><div class="shell"><div class="end__card"><svg class="mark" viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mf" x1="0" y1="1" x2="1" y2="0">
+<div class="devwrap devwrap--laptop"><div class="dev dev--laptop" data-w="1005" data-h="1044" data-sw="1280" data-sh="832" data-quad="[[9.8, 191.3], [685.4, 18.2], [767.8, 438.5], [120.0, 631.1]]" style="aspect-ratio:1005/1044"><span class="dev__shadow"></span><div class="dev__stage" style="width:1005px;height:1044px"><div class="dev__clip" style="-webkit-mask-image:url(img/device-laptop-mask.png);mask-image:url(img/device-laptop-mask.png)"><div class="dev__screen" style="width:1280px;height:832px"><img src="img/bi-desk-construction-home.jpg" alt="The Elevate BI sign-in, sample company" decoding="async"></div></div><img class="dev__frame" src="img/device-laptop.png" alt=""></div></div></div></div></div></section><footer class="end"><div class="shell"><div class="end__card"><svg class="mark" viewBox="0 0 70 54" aria-hidden="true"><defs><linearGradient id="mf" x1="0" y1="1" x2="1" y2="0">
 <stop offset="0%" stop-color="#0C6980"/><stop offset="55%" stop-color="#2F9DA8"/><stop offset="100%" stop-color="#E6C068"/></linearGradient></defs>
 <path d="M6 26 L 22 44 L 52 15" fill="none" stroke="url(#mf)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M60 7 L 56.3 20.3 L 46.5 10.3 Z" fill="#E6C068"/></svg>
@@ -444,17 +444,17 @@ gsap.utils.toArray('.step').forEach(function(s,i){gsap.from(s,{y:50,opacity:0,du
 (function(){var days=[].slice.call(document.querySelectorAll('.days i')),lbl=document.querySelector('.viz-days .lbl b');if(!days.length)return;
  ScrollTrigger.create({trigger:'.rhythm',start:'top 60%',end:'bottom 70%',scrub:true,onUpdate:function(self){var n=Math.round(self.progress*30);
   days.forEach(function(d,k){d.classList.toggle('f',k<n);d.classList.toggle('last',k===n-1)});if(lbl)lbl.textContent='Day '+Math.max(1,n)+' of 30';}});})();
+/* the devices hold still (moving a masked, 3D-mapped screen flickered, Matt 2026-11-18) and only their screens scroll */
 /* the services: plain scrolling sections. Each photo drifts a little as it passes; the one
    phone scrolls its screen and straightens while it is on screen. Nothing holds the page. */
 gsap.utils.toArray('.beat__photo > div').forEach(function(d){gsap.fromTo(d,{yPercent:-5,scale:1.06},{yPercent:5,scale:1,ease:'none',scrollTrigger:{trigger:d.parentNode,start:'top bottom',end:'bottom top',scrub:.6}})});
 gsap.utils.toArray('.beat__copy').forEach(function(c){gsap.from(c.children,{y:26,opacity:0,duration:.9,ease:EASE,stagger:.07,scrollTrigger:{trigger:c,start:'top 82%'}})});
 document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelector('.devwrap'),s=h.querySelector('.dev__screen'),img=s.querySelector('img');
  ScrollTrigger.create({trigger:h,start:'top bottom',end:'bottom top',onUpdate:function(self){var k=self.progress;
-  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});if(!touch)gsap.set(tl,{y:30-60*k,rotate:-2+3*k});}});});
+  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});}});});
 /* the dashboard: lid opens, the screen scrolls, the figures float up and count */
 (function(){var lap=document.querySelector('.devwrap--laptop');if(!lap)return;var scr=lap.querySelector('.dev__screen'),img=scr.querySelector('img');
- gsap.fromTo(lap,{y:80,rotate:-3,opacity:0},{y:0,rotate:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.lap',start:'top 95%',end:'top 50%',scrub:.7}});
- gsap.to(lap,{y:-40,ease:'none',scrollTrigger:{trigger:'.lap',start:'top 50%',end:'bottom top',scrub:.8}});
+ gsap.from(lap,{y:40,opacity:0,duration:1,ease:EASE,scrollTrigger:{trigger:'.lap',start:'top 80%'}});
  ScrollTrigger.create({trigger:'.lap',start:'top 70%',end:'bottom top',onUpdate:function(self){gsap.set(img,{y:-Math.max(0,img.clientHeight-scr.clientHeight)*self.progress})}});
  gsap.utils.toArray('.stat').forEach(function(s,i){gsap.fromTo(s,{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:EASE,delay:.15+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'}});
   gsap.to(s,{y:[-36,24,-18][i],ease:'none',scrollTrigger:{trigger:'.lap',start:'top bottom',end:'bottom top',scrub:.8}});

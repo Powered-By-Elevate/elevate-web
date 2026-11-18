@@ -586,6 +586,30 @@ TOUR_CSS = """
 .qchips input:checked+span::before{background:var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/100%;border-color:var(--teal)}
 .qchips input:focus-visible+span{outline:2px solid var(--teal2);outline-offset:2px}
 .qcount{font:600 14px/1 var(--sans);color:var(--teal)}
+.qfind input{width:100%;font:400 16px/1.4 var(--sans);padding:14px 16px 14px 44px;border:1px solid #cfd8da;border-radius:12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235c6668' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E") 15px center/18px no-repeat}
+.qtray{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}.qtray:empty{display:none}
+.qtray button{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:99px;background:var(--teal);color:#fff;padding:8px 10px 8px 14px;font:500 14px/1 var(--sans);cursor:pointer}
+.qtray button::after{content:"\\00d7";font-size:17px;line-height:1;opacity:.75}
+.qcat{border-top:1px solid var(--line)}.qcat:last-of-type{border-bottom:1px solid var(--line)}
+.qcat summary{list-style:none;display:flex;align-items:center;gap:10px;padding:16px 2px;cursor:pointer;min-height:56px}
+.qcat summary::-webkit-details-marker{display:none}
+.qcat summary b{font:600 16.5px/1.3 var(--sans);color:var(--ink);flex:1}
+.qcat__n{font:500 13px/1 var(--sans);color:var(--ink2)}
+.qcat__on{font:600 12px/1 var(--sans);color:#fff;background:var(--teal);border-radius:99px;padding:5px 9px}
+.qcat summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);margin:0 6px 4px 6px;transition:transform .25s}
+.qcat[open] summary::after{transform:rotate(-135deg);margin-bottom:-4px}
+.qlist{display:grid;grid-template-columns:1fr;gap:0 18px;padding:0 0 14px}
+@media(min-width:560px){.qlist{grid-template-columns:1fr 1fr}}@media(min-width:900px){.qlist{grid-template-columns:repeat(3,1fr)}}
+.qrow{position:relative;display:flex;align-items:center;min-height:48px;border-bottom:1px solid #eef1f2;cursor:pointer}
+.qrow input{position:absolute;opacity:0;pointer-events:none}
+.qrow span{display:flex;align-items:center;gap:12px;width:100%;padding:10px 4px;font:500 15.5px/1.3 var(--sans);color:var(--ink)}
+.qrow span::before{content:"";width:20px;height:20px;border-radius:6px;border:1.5px solid #b5c2c5;flex:none;background:#fff;transition:all .2s}
+.qrow:hover span{color:var(--teal)}
+.qrow input:checked+span{color:var(--teal);font-weight:600}
+.qrow input:checked+span::before{background:var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/100%;border-color:var(--teal)}
+.qrow input:focus-visible+span{outline:2px solid var(--teal2);outline-offset:2px;border-radius:8px}
+.qrow[hidden]{display:none}.qnone{color:var(--ink2);font-size:15px;padding:12px 2px}
+.qother{margin-top:18px}
 .qsubmit{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:22px}
 .qdone{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(28px,5vw,56px);display:grid;gap:12px}
 .qform .msg{font-size:15px}.qform .msg.bad{color:#b4412f}
@@ -627,7 +651,17 @@ QUOTE_SHOWS = ["Financial dashboard", "Budget vs actual", "Cash &amp; working ca
 QUOTE_JS = r"""<script>
 (function(){var URL=%s,CC=%s,f=document.getElementById('quoteForm');if(!f)return;var st=document.getElementById('quoteStatus'),cnt=document.getElementById('quoteCount');
 function picked(n){return [].map.call(f.querySelectorAll('input[name="'+n+'"]:checked'),function(i){return i.value;});}
-f.addEventListener('change',function(){var n=picked('software').length;cnt.textContent=n?n+' selected':'';});
+var find=document.getElementById('quoteFind'),tray=document.getElementById('quoteTray'),none=document.getElementById('quoteNone'),cats=[].slice.call(f.querySelectorAll('.qcat'));
+function sync(){var n=picked('software').length;cnt.textContent=n?n+' selected':'';
+ cats.forEach(function(c){var k=c.querySelectorAll('input:checked').length,b=c.querySelector('.qcat__on');b.hidden=!k;b.textContent=k+' ticked';});
+ tray.innerHTML='';[].forEach.call(f.querySelectorAll('input[name="software"]:checked'),function(i){var x=document.createElement('button');x.type='button';x.textContent=i.value;x.setAttribute('aria-label','Remove '+i.value);x.onclick=function(){i.checked=false;sync();};tray.appendChild(x);});}
+f.addEventListener('change',sync);
+if(find){var opened=null;find.addEventListener('input',function(){var q=find.value.trim().toLowerCase(),any=false;
+ if(q&&!opened)opened=cats.map(function(c){return c.open;});
+ cats.forEach(function(c,k){var hit=0;[].forEach.call(c.querySelectorAll('.qrow'),function(r){var on=!q||r.textContent.toLowerCase().indexOf(q)>-1;r.hidden=!on;if(on)hit++;});
+  c.hidden=q&&!hit;if(q)c.open=hit>0;else if(opened)c.open=opened[k];if(hit)any=true;});
+ if(!q)opened=null;none.hidden=!q||any;});
+ find.addEventListener('keydown',function(e){if(e.key==='Enter')e.preventDefault();});}
 f.addEventListener('submit',function(ev){ev.preventDefault();var d={};new FormData(f).forEach(function(v,k){if(k!=='software'&&k!=='shows')d[k]=String(v).trim();});
 if(d.botcheck)return;var sw=picked('software'),sh=picked('shows'),miss=[];
 if(!d.name)miss.push('your name');if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email||''))miss.push('a valid work email');if(!d.company)miss.push('your company');
@@ -644,12 +678,18 @@ name:d.name,email:d.email,company:d.company,industry:d.industry,entities:d.entit
 def quote_section():
     import json
     cfg = json.loads((HERE / "demo" / "config" / "connectors.json").read_text())
+    # Matt, 2026-11-18, on the wall of pills: "this structure looks like shit". Each category is a
+    # section that opens, its software an even list of rows, with a search and a tray of what is ticked.
     groups = ""
-    for c in cfg["categories"]:
+    for i, c in enumerate(cfg["categories"]):
         names = sorted({x["name"] for x in cfg["connectors"] if x["cat"] == c["id"]}, key=str.lower)
-        chips = "".join(f'<label><input type="checkbox" name="software" value="{n}"><span>{n}</span></label>' for n in names)
-        groups += f'<div class="qgroup"><b>{c["name"]}</b><div class="qchips">{chips}</div></div>'
-    shows = "".join(f'<label><input type="checkbox" name="shows" value="{s}"><span>{s}</span></label>' for s in QUOTE_SHOWS)
+        rows = "".join(f'<label class="qrow"><input type="checkbox" name="software" value="{n}"><span>{n}</span></label>' for n in names)
+        groups += (f'<details class="qcat"{" open" if i == 0 else ""}><summary><b>{c["name"]}</b><span class="qcat__n">{len(names)}</span>'
+                   f'<span class="qcat__on" hidden></span></summary><div class="qlist">{rows}</div></details>')
+    groups = ('<div class="qfind"><input type="search" id="quoteFind" placeholder="Search software, like QuickBooks or ADP" autocomplete="off" aria-label="Search software"></div>'
+              '<div class="qtray" id="quoteTray" aria-live="polite"></div>' + groups +
+              '<p class="qnone" id="quoteNone" hidden>Not listed? Add it in the box below.</p>')
+    shows = "".join(f'<label class="qrow"><input type="checkbox" name="shows" value="{s}"><span>{s}</span></label>' for s in QUOTE_SHOWS)
     inds = "".join(f"<option>{n}</option>" for n in ["Schools &amp; education", "Construction &amp; development", "Retail &amp; multi-site",
                    "Food &amp; beverage", "Manufacturing &amp; industrial", "Freight &amp; logistics", "Software &amp; technology",
                    "Healthcare &amp; clinics", "Something else"])
@@ -662,8 +702,8 @@ def quote_section():
 <div class="row"><label class="f">Company<input type="text" name="company" autocomplete="organization"></label><label class="f">Industry<select name="industry">{inds}</select></label></div>
 <div class="row"><label class="f">Companies, campuses or locations<select name="entities">{ents}</select></label><span></span></div>
 <div><h3>The software you use <span class="qcount" id="quoteCount"></span></h3><p class="hint">Tick everything that holds numbers you would want on the dashboard.</p>{groups}
-<div class="qgroup"><label class="f">Anything else you use<input type="text" name="other" placeholder="Software not listed above"></label></div></div>
-<div><h3>What the dashboard should show</h3><div class="qchips">{shows}</div></div>
+<div class="qother"><label class="f">Anything else you use<input type="text" name="other" placeholder="Software not listed above"></label></div></div>
+<div><h3>What the dashboard should show</h3><div class="qlist qlist--open">{shows}</div></div>
 <label class="f">Anything else we should know<textarea name="notes" rows="4"></textarea></label>
 <input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
 <div class="qsubmit"><button class="btn btn--teal" type="submit">Request a quote</button><p id="quoteStatus" class="msg" role="status" aria-live="polite"></p></div>

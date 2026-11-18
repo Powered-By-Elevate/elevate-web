@@ -39,7 +39,7 @@ BEATS = [
     ("schools", "Education", "The complete back office for schools.",
      "Accounting, payroll, compliance and enrollment, from the planning year to every audit after.",
      ["Monthly board financial reports", "Payroll and tax filings", "Grants and compliance", "New school launch"],
-     ("photo", "school-chalk.jpg", "From planning year to every audit"), ""),
+     ("photo", "team-amanda.jpg", "From planning year to every audit"), ""),
 ]
 
 CSS = r"""
@@ -187,13 +187,13 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
  .beat .beat__vis.tilt-host{display:grid;place-items:center;min-height:620px;border-radius:28px;background:radial-gradient(70% 60% at 50% 45%,rgba(47,157,168,.2),transparent 70%),linear-gradient(160deg,var(--tint),#fff)}
  .beat .tilt-host .tilt{width:270px}
 }
-}
 
 /* rhythm: four cards, each with its own small live picture */
 .rhythm{position:relative;padding:clamp(90px,10vw,140px) 0;overflow:hidden;background:linear-gradient(180deg,#fff,var(--tint))}
 .rhythm::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(12,105,128,.12) 1px,transparent 1.2px);background-size:24px 24px;-webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);pointer-events:none}
 .rhythm .shell{position:relative}
 .rhythm__head{display:grid;gap:16px;max-width:760px;margin-bottom:56px}
+.rhythm__top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:56px}.rhythm__top .rhythm__head{margin-bottom:0}
 .rhythm__line{position:relative;display:grid;gap:22px}
 @media(min-width:760px){.rhythm__line{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:1100px){.rhythm__line{grid-template-columns:repeat(4,1fr)}}
@@ -253,7 +253,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .schools__band h2{z-index:1}
 @media(max-width:760px){.schools__band{aspect-ratio:auto;min-height:0;height:clamp(240px,62vw,320px);margin-bottom:36px}.schools__band div{background-position:30% center}.schools__band h2{font-size:clamp(30px,8.4vw,40px);right:20px}}
 .cards{display:grid;gap:22px}
-@media(min-width:800px){.cards{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:800px){.cards{grid-template-columns:repeat(3,1fr)}.cards--2{grid-template-columns:repeat(2,1fr)}}
 .card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 30px 60px -45px rgba(6,58,71,.5)}
 .card div{aspect-ratio:4/3;background-size:cover;background-position:center}
 .card section{padding:20px 22px 24px;display:grid;gap:4px}
@@ -380,17 +380,17 @@ gsap.utils.toArray('.step').forEach(function(s,i){gsap.from(s,{y:50,opacity:0,du
 (function(){var days=[].slice.call(document.querySelectorAll('.days i')),lbl=document.querySelector('.viz-days .lbl b');if(!days.length)return;
  ScrollTrigger.create({trigger:'.rhythm',start:'top 60%',end:'bottom 70%',scrub:true,onUpdate:function(self){var n=Math.round(self.progress*30);
   days.forEach(function(d,k){d.classList.toggle('f',k<n);d.classList.toggle('last',k===n-1)});if(lbl)lbl.textContent='Day '+Math.max(1,n)+' of 30';}});})();
+/* the devices hold still (moving a masked, 3D-mapped screen flickered, Matt 2026-11-18) and only their screens scroll */
 /* the services: plain scrolling sections. Each photo drifts a little as it passes; the one
    phone scrolls its screen and straightens while it is on screen. Nothing holds the page. */
 gsap.utils.toArray('.beat__photo > div').forEach(function(d){gsap.fromTo(d,{yPercent:-5,scale:1.06},{yPercent:5,scale:1,ease:'none',scrollTrigger:{trigger:d.parentNode,start:'top bottom',end:'bottom top',scrub:.6}})});
 gsap.utils.toArray('.beat__copy').forEach(function(c){gsap.from(c.children,{y:26,opacity:0,duration:.9,ease:EASE,stagger:.07,scrollTrigger:{trigger:c,start:'top 82%'}})});
 document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelector('.devwrap'),s=h.querySelector('.dev__screen'),img=s.querySelector('img');
  ScrollTrigger.create({trigger:h,start:'top bottom',end:'bottom top',onUpdate:function(self){var k=self.progress;
-  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});if(!touch)gsap.set(tl,{y:30-60*k,rotate:-2+3*k});}});});
+  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});}});});
 /* the dashboard: lid opens, the screen scrolls, the figures float up and count */
 (function(){var lap=document.querySelector('.devwrap--laptop');if(!lap)return;var scr=lap.querySelector('.dev__screen'),img=scr.querySelector('img');
- gsap.fromTo(lap,{y:80,rotate:-3,opacity:0},{y:0,rotate:0,opacity:1,ease:'none',scrollTrigger:{trigger:'.lap',start:'top 95%',end:'top 50%',scrub:.7}});
- gsap.to(lap,{y:-40,ease:'none',scrollTrigger:{trigger:'.lap',start:'top 50%',end:'bottom top',scrub:.8}});
+ gsap.from(lap,{y:40,opacity:0,duration:1,ease:EASE,scrollTrigger:{trigger:'.lap',start:'top 80%'}});
  ScrollTrigger.create({trigger:'.lap',start:'top 70%',end:'bottom top',onUpdate:function(self){gsap.set(img,{y:-Math.max(0,img.clientHeight-scr.clientHeight)*self.progress})}});
  gsap.utils.toArray('.stat').forEach(function(s,i){gsap.fromTo(s,{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:EASE,delay:.15+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'}});
   gsap.to(s,{y:[-36,24,-18][i],ease:'none',scrollTrigger:{trigger:'.lap',start:'top bottom',end:'bottom top',scrub:.8}});
@@ -422,7 +422,7 @@ def device(kind, shot, screen_w, alt=""):
     return (f'<div class="dev dev--{kind}" data-w="{m["w"]}" data-h="{m["h"]}" data-sw="{sw}" data-sh="{sh}" data-quad="{json.dumps(q)}" style="aspect-ratio:{m["w"]}/{m["h"]}">'
             f'<span class="dev__shadow"></span><div class="dev__stage" style="width:{m["w"]}px;height:{m["h"]}px">'
             f'<div class="dev__clip" style="-webkit-mask-image:url(img/device-{kind}-mask.png);mask-image:url(img/device-{kind}-mask.png)">'
-            f'<div class="dev__screen" style="width:{sw}px;height:{sh}px"><img src="{src}"{fill} alt="{alt}" loading="lazy"></div></div>'
+            f'<div class="dev__screen" style="width:{sw}px;height:{sh}px"><img src="{src}"{fill} alt="{alt}" decoding="async"></div></div>'
             f'<img class="dev__frame" src="img/device-{kind}.png" alt=""></div></div>')
 
 def phone(img, loop=False, cls="", depth=9):
@@ -483,8 +483,9 @@ def build():
     ]
     steps = "".join(f'<div class="step">{v}<span class="step__n">0{n}</span><small>{a}</small><h3>{b}</h3><p>{c}</p></div>'
                     for n, ((a, b, c), v) in enumerate(zip(B.HOW, vizzes), 1))
+    schools_list = [x for x in B.SCHOOLS if "Libertas" not in x[1]]
     schools = "".join(f'<article class="card rv"><div style="background-image:url(/img/{i})"></div><section><h3>{n}</h3><small>{a} &middot; {s}</small></section></article>'
-                      for i, n, a, s in B.SCHOOLS)
+                      for i, n, a, s in schools_list)
     # every frame filled the same way (the old site's per-photo zooms exposed the edge of Vicki's file);
     # her photo is trimmed of the light one-pixel rows its file carries top and bottom
     local = {"provencher": "img/team-provencher.jpg"}
@@ -514,7 +515,7 @@ def build():
 <div class="rhythm__line" style="margin-top:40px"><svg viewBox="0 0 1000 4" preserveAspectRatio="none" aria-hidden="true"><path d="M0 2 H1000"/></svg>{steps}</div></div></section>
 
 <section class="schools" id="schools"><div class="shell"><div class="schools__band rv"><div></div><h2 class="h2">Built for <em>charter schools.</em></h2></div>
-<div class="cards">{schools}</div></div></section>
+<div class="cards cards--{len(schools_list)}">{schools}</div></div></section>
 
 <section class="dash"><div class="shell"><div class="dash__copy"><span class="eyebrow rv">Business intelligence</span><h2 class="h2 rv">Leaders see the answer. <em>Finance sees the detail.</em></h2>
 <p class="lede rv">One dashboard for every entity, cut to each person&rsquo;s role.</p>

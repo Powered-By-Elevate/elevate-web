@@ -68,7 +68,7 @@ PAGE_CSS = r"""
 .split2__ph{position:relative;aspect-ratio:4/5;border-radius:28px;overflow:hidden;box-shadow:0 40px 70px -45px rgba(6,58,71,.5)}
 .split2__ph>div{position:absolute;inset:-7%;background-size:cover;background-position:center}
 /* the launch: each step carries its photo */
-.viz-ph{padding:0;background-size:cover;background-position:center}
+.viz-ph{padding:0;background-size:cover;background-position:left top}
 /* forms */
 .form{display:grid;gap:16px}
 .form label{display:grid;gap:7px;font:600 14px/1.2 var(--sans)}
@@ -134,7 +134,7 @@ def beats(rows):
     for eb, title, line, bullets, kind, f, pill in rows:
         li = "".join(f"<li>{b}</li>" for b in bullets)
         if kind == "laptop":
-            vis = f'<div class="beat__vis tilt-host"><div class="devwrap devwrap--laptop">{N.device("laptop", "/img/" + f, 1280, pill)}</div></div>'
+            vis = f'<div class="beat__vis tilt-host"><div class="devwrap devwrap--laptop">{N.device("laptop", f if f.startswith("bi-desk") else "/img/" + f, 1280, pill)}</div></div>'
         else:
             vis = f'<div class="beat__vis beat__photo"><div style="background-image:url(/img/{f})"></div><span class="pill"><i></i>{pill}</span></div>'
         lede = f'<p class="lede">{line}</p>' if line else ""
@@ -174,7 +174,7 @@ SVC = {"Financial Management": ("team-table.jpg", "photo", "Month-end, on the ca
        "Operations & Execution": ("team-hands.jpg", "photo", "Decided this week, done this week"),
        "HR, Payroll & People": ("team-review-desk.jpg", "photo", "Every employee, one home base"),
        "Marketing": ("team-talk.jpg", "photo", "Campaigns held to a calendar"),
-       "Business Intelligence": ("hub-con-pl.jpg", "laptop", "The real dashboard on a sample company")}
+       "Business Intelligence": ("bi-desk-construction-pl.jpg", "laptop", "The real dashboard on a sample company")}
 
 
 def services():
@@ -205,25 +205,25 @@ def services():
 
 # ------------------------------------------------------------------ education
 EDU_PH = [("team-vicki-screen.jpg", "Board reports, every month"), ("team-monitor.jpg", "Every paycheck, on time"),
-          ("team-amanda.jpg", "Every certification on file"), ("team-papers.jpg", "Audit-ready all year"),
-          ("hub-edu-budget.jpg", "Every grant dollar tracked"), ("site-block.jpg", "Charter to opening day")]
+          ("bi-desk-education-hiring.jpg", "Hiring in the sample school network"), ("team-papers.jpg", "Audit-ready all year"),
+          ("bi-desk-education-budget.jpg", "Budget against actual, sample school network"), ("bi-desk-education-docs.jpg", "Every document a launch needs")]
 
 
 def education():
-    rows = [(t.replace("&", "&amp;"), d, "", bl, "laptop" if EDU_PH[i][0].startswith("hub-") else "photo", EDU_PH[i][0], EDU_PH[i][1]) for i, (_, t, d, bl) in enumerate(B.EDU)]
+    rows = [(t.replace("&", "&amp;"), d, "", bl, "laptop" if EDU_PH[i][0].startswith("bi-desk") else "photo", EDU_PH[i][0], EDU_PH[i][1]) for i, (_, t, d, bl) in enumerate(B.EDU)]
     grants = [("Title programs", "Title I, II and IV funds from application through expenditure tracking, monitoring and reporting."),
               ("IDEA", "Special education funding tracked and documented to the same calendar as the rest of the books."),
               ("Federal and state compliance", "Charter, state and federal deadlines on one calendar, with documentation ready for monitoring visits."),
               ("Board-ready reporting", "Grant spending shown in the monthly board package, so nothing surprises the board at audit time.")]
-    launch = [("Planning year", "Set up the books", "Chart of accounts, banking, payroll and policies in place before the first hire.", "q3-016.jpg"),
-              ("Six months out", "Staff and systems", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", "team-joseph-hall.jpg"),
-              ("Ninety days out", "Facility ready", "Facility readiness, insurance, procurement and the opening budget locked.", "site-trailer.jpg"),
-              ("Opening day", "Doors open", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", "site-dusk.jpg")]
+    launch = [("Planning year", "Set up the books", "Chart of accounts, banking, payroll and policies in place before the first hire.", "hub-edu-close.jpg"),
+              ("Six months out", "Staff and systems", "Hiring workflow, onboarding, benefits and vendor contracts ready to go.", "hub-edu-onboarding.jpg"),
+              ("Ninety days out", "Facility ready", "Facility readiness, insurance, procurement and the opening budget locked.", "hub-edu-docs.jpg"),
+              ("Opening day", "Doors open", "Payroll runs, the board sees its first report, and the school is audit-ready from day one.", "hub-edu-payroll.jpg")]
     steps = "".join(f'<div class="step"><div class="viz viz-ph" style="background-image:url(/img/{ph})"></div><span class="step__n">0{n}</span><small>{a}</small><h3>{b}</h3><p>{c}</p></div>'
                     for n, (a, b, c, ph) in enumerate(launch, 1))
     body = f'''{phero("Education services", "The complete back office <em>for schools.</em>",
                      "Built around each school's stage, priorities and staff, from the first planning year to every audit after.",
-                     "school-front.jpg", "center 45%", '<a class="btn btn--teal" href="contact.html">Talk to our education team</a><a class="btn btn--ghost" href="#launch">Starting a new school?</a>',
+                     "team-joseph-hall.jpg", "center 30%", '<a class="btn btn--teal" href="contact.html">Talk to our education team</a><a class="btn btn--ghost" href="#launch">Starting a new school?</a>',
                      chip("a", "&#10003;", "Audit-ready", "From day one") + chip("b", "&#8599;", "Board package", "Every month"))}
 <section class="story"><div class="shell"><div class="story__intro"><span class="eyebrow rv">What we run for schools</span>
 <h2 class="h2 rv">The money, handled. <em>Every review, ready.</em></h2>
@@ -232,13 +232,14 @@ def education():
 <section class="dash"><div class="shell"><div class="dash__copy"><span class="eyebrow rv">For the board</span><h2 class="h2 rv">The board sees it <em>before the meeting.</em></h2>
 <p class="lede rv">Statements, budget against actual and enrollment, read live from the school's own systems.</p><div class="rv"><a class="btn btn--teal" href="dashboard.html">Take the tour</a></div>
 <p class="dash__note rv">A sample school network in the demo.</p></div>
-<div class="lap"><div class="devwrap devwrap--laptop">{N.device("laptop", "/img/hub-edu-statements.jpg", 1280, "Board statements in the Elevate BI dashboard, sample school")}</div></div></div></section>
+<div class="lap"><div class="devwrap devwrap--laptop">{N.device("laptop", "bi-desk-education-statements.jpg", 1280, "Board statements in the Elevate BI dashboard, sample school")}</div></div></div></section>
 <section class="sec sec--cream" id="serve"><div class="shell"><div class="head"><span class="eyebrow rv">Schools we serve</span><h2 class="h2 rv">Open today. <em>Opening next.</em></h2></div>{logo_cards(B.SCHOOL_CLIENTS, 3)}</div></section>
 <section class="sec sec--white"><div class="shell"><div class="head"><span class="eyebrow rv">Grants and compliance</span><h2 class="h2 rv">Every grant dollar, <em>accounted for.</em></h2>
 <p class="lede rv">From application to expenditure tracking to the final report, documented and audit-ready all year.</p></div>{notes(grants)}</div></section>
-<section class="rhythm" id="launch"><div class="shell"><div class="rhythm__head"><span class="eyebrow rv">Starting a new school?</span><h2 class="h2 rv">From charter <em>to opening day.</em></h2></div>
+<section class="rhythm" id="launch"><div class="shell"><div class="rhythm__top"><div class="rhythm__head"><span class="eyebrow rv">Starting a new school?</span><h2 class="h2 rv">From charter <em>to opening day.</em></h2></div>
+<a class="btn btn--teal rv" href="contact.html">Plan your launch with us</a></div>
 <div class="rhythm__line" style="margin-top:40px"><svg viewBox="0 0 1000 4" preserveAspectRatio="none" aria-hidden="true"><path d="M0 2 H1000"/></svg>{steps}</div>
-<div class="rv" style="margin-top:44px;padding-bottom:20px"><a class="btn btn--teal" href="contact.html">Plan your launch with us</a></div></div></section>'''
+</div></section>'''
     return page("education", "Education Services", body, R.DESC.get("education", ""))
 
 
@@ -246,7 +247,7 @@ def education():
 def about():
     vals = [("Relationships before reports", "We learn your people, your calendar and what keeps you up at night before we touch a spreadsheet. The numbers mean more when we know the story behind them.", "team-laptop.jpg", "We learn the story first"),
             ("The same people, every month", "You will not be handed off to a rotating bookkeeper. The team you meet at the start is the team that closes your books, runs your payroll and sits with you at the board meeting.", "team-desk-vicki.jpg", "The team you meet stays"),
-            ("Give leaders their time back", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", "libertas-campus.jpg", "Hours handed back")]
+            ("Give leaders their time back", "A principal should be in classrooms. A founder should be with customers. Every process we build is measured by the hours it hands back to you.", "tnc-lobby.jpg", "Hours handed back")]
     vb = beats([(f"Value 0{i}", a, b, [], "photo", f, p) for i, (a, b, f, p) in enumerate(vals, 1)])
     local = {"provencher": "img/team-provencher.jpg"}
     team = "".join(f'<article class="person"><div class="ph" role="img" aria-label="{n}" style="background-image:url({local.get(k, "/img/team-" + k + ".jpg")})"></div><h3>{n}</h3><p>{t}</p></article>'
@@ -258,7 +259,7 @@ def about():
 <h2 class="h2 rv">We started by taking care <em>of our own.</em></h2>
 <p class="rv">Some weeks that meant closing the books for a construction company on a Friday and running payroll for a brand new charter school on Monday. Other weeks it meant helping a first-year school leader get ready for a board meeting, or making sure a growing company had a clear set of numbers to take to the bank.</p>
 <p class="rv">Doing that work up close taught us what leaders actually need: someone who picks up, knows the history and gets it right the first time.</p></div>
-<div class="split2__ph"><div style="background-image:url(/img/q3-010.jpg)"></div></div></div></section>
+<div class="split2__ph"><div style="background-image:url(/img/tnc-nova.jpg)"></div></div></div></section>
 <section class="story" id="values"><div class="shell"><div class="story__intro"><span class="eyebrow rv">Our values</span><h2 class="h2 rv">How we <em>show up for you.</em></h2></div>{vb}</div></section>
 <section class="sec sec--cream" id="clients"><div class="shell"><div class="head"><span class="eyebrow rv">Who we serve</span><h2 class="h2 rv">Our partners, <em>built on trust.</em></h2></div>{logo_cards(B.OUR_CLIENTS, 4)}</div></section>
 <section class="team" id="team"><div class="shell"><div class="team__head"><span class="eyebrow rv">The team</span><h2 class="h2 rv">The people <em>behind the numbers.</em></h2></div><div class="people">{team}</div></div></section>'''
@@ -302,7 +303,7 @@ def portal():
 <p class="small-note">Trouble signing in? Email <a href="mailto:{B.EMAIL}">{B.EMAIL}</a>.</p></div>
 <div class="portal-demo"><span class="eyebrow" style="color:var(--gold)">Not a client yet?</span><h2 class="h2">See the <em>dashboard.</em></h2>
 <p>A tour of the real dashboard on a sample company, for every industry we serve.</p><div><a class="btn btn--gold" href="dashboard.html">See the BI Dashboard &rarr;</a></div>
-<div class="devwrap devwrap--laptop">{N.device("laptop", "/img/hub-con-signin.jpg", 1280, "The Elevate BI sign-in, sample company")}</div></div></div></section>'''
+<div class="devwrap devwrap--laptop">{N.device("laptop", "bi-desk-construction-home.jpg", 1280, "The Elevate BI sign-in, sample company")}</div></div></div></section>'''
     return page("portal", "Client Portal", body, R.DESC.get("portal", ""), extra_js=js)
 
 
@@ -330,7 +331,10 @@ def dashboard():
 
 # Photos Matt has ruled off the site. The Libertas Academy flag is never used (Matt, 2026-11-18:
 # "it was a specific rule to not use this flag"), and its file is deleted from img/.
-BANNED = {"libertas-flag.jpg"}
+BANNED = {"libertas-flag.jpg", "libertas-campus.jpg", "school-front.jpg", "q3-002.jpg", "q3-010.jpg", "q3-016.jpg", "q3-020.jpg",
+          "site-block.jpg", "site-dusk.jpg", "site-trailer.jpg", "tnc-truck.jpg", "school-chalk.jpg"}
+# Libertas Academy is never shown (Matt, 2026-11-18: "again, try not to use Libertas"), and no
+# construction sites ("a construction site is a shit idea"). school-chalk is out because it may be Libertas.
 
 
 def check_images():
