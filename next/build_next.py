@@ -89,7 +89,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .hero__top .side{display:grid;gap:22px;padding-bottom:14px}
 .hero__top .btns{display:flex;gap:12px;flex-wrap:wrap}
 .hero__frame{position:relative;margin-top:clamp(40px,5vw,64px);height:clamp(380px,72vh,760px);clip-path:inset(0% 5% 0% 5% round 28px)}
-.hero__img{position:absolute;inset:-10% 0 0;background:url(/img/team-meeting.jpg) center 35%/cover;will-change:transform}
+.hero__img{position:absolute;inset:-10% 0 0;background:center 35%/cover;will-change:transform}
 .hero__frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,58,71,0) 55%,rgba(6,58,71,.35))}
 .chip{position:absolute;z-index:2;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:0 18px 40px -22px rgba(6,58,71,.5);font:500 14px/1.25 var(--sans);white-space:nowrap}
 .chip i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--tint);color:var(--teal);font-style:normal;font-weight:700}
@@ -163,6 +163,27 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .beat__photo>div{position:absolute;inset:-6%;background-size:cover;background-position:center}
 .pill{position:absolute;left:18px;bottom:18px;z-index:2;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-radius:99px;padding:10px 16px;font:500 14px/1 var(--sans);color:var(--ink);box-shadow:0 14px 30px -18px rgba(6,58,71,.6)}
 .pill i{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+
+/* the home hero, brought back from the previous site (Matt, 2026-11-18: "i like the old hero look better"):
+   the team photos crossfade under a deep teal wash, the headline centered over them */
+.hero--old{position:relative;min-height:min(92vh,760px);display:grid;place-items:center;text-align:center;color:#fff;overflow:hidden;background:var(--deep);padding:0}
+.hero--old .hero__slides{position:absolute;inset:0}
+.hero--old .hero__slides div{position:absolute;inset:0;background:center/cover;opacity:0;animation:herofade 14s infinite;transform:scale(1.04)}
+.hero--old .hero__slides div:nth-child(2){animation-delay:7s}
+@keyframes herofade{0%{opacity:0;transform:scale(1.04)}8%{opacity:1}50%{opacity:1}58%{opacity:0;transform:scale(1.12)}100%{opacity:0;transform:scale(1.12)}}
+.hero--old::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,42,51,.72),rgba(5,42,51,.55) 45%,rgba(5,42,51,.8))}
+.hero--old .hero__in{position:relative;z-index:2;max-width:920px;padding:150px 16px 96px;display:grid;gap:24px;justify-items:center}
+.hero__h{font:600 clamp(36px,4.6vw,60px)/1.12 var(--sans);letter-spacing:-.01em;color:#fff;margin:0}
+.hero--old p{font-size:clamp(17px,1.4vw,19px);color:#e3eef0;max-width:780px;margin:0}
+.hero__btns{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;align-items:center}
+.play{display:inline-flex;align-items:center;gap:12px;color:#fff;text-decoration:none;font:600 16px/1 var(--sans)}
+.play span{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.75);display:grid;place-items:center;transition:background .25s,border-color .25s}
+.play svg{width:10px;height:12px;fill:#fff;margin-left:2px}.play:hover span{background:rgba(255,255,255,.15);border-color:#fff}
+@media(prefers-reduced-motion:reduce){.hero--old .hero__slides div{animation:none}.hero--old .hero__slides div:first-child{opacity:1}}
+/* over the dark hero the nav is white until the page scrolls */
+.page-home .nav:not(.solid) .logo,.page-home .nav:not(.solid) .nav__links a:not(.btn),.page-home .nav:not(.solid) .logo small{color:#fff}
+.page-home .nav:not(.solid) .burger{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);color:#fff}
+.menu-open.page-home .nav .logo,.menu-open .page-home .nav .logo{color:var(--ink)}
 .nav__cta{display:inline-flex;padding:11px 18px;font-size:14px}
 @media(min-width:960px){.nav__cta{display:none}}
 /* the phone menu: a button beside Book a call opens every page as a sheet under the bar */
@@ -370,10 +391,11 @@ function fitDevices(){document.querySelectorAll('.dev').forEach(function(d){var 
 addEventListener('resize',fitDevices);fitDevices();
 /* hero: lines rise in, then the photo opens from a framed card to the full width as you scroll */
 gsap.from('.hero .rv-in',{y:40,opacity:0,duration:1.1,ease:EASE,stagger:.09,delay:.1});
-gsap.from('.hero__frame',{y:60,opacity:0,duration:1.3,ease:EASE,delay:.3});
+if(document.querySelector('.hero--old'))gsap.to('.hero--old .hero__in',{yPercent:14,opacity:.15,ease:'none',scrollTrigger:{trigger:'.hero--old',start:'top top',end:'bottom top',scrub:true}});
+if(document.querySelector('.hero__frame')){gsap.from('.hero__frame',{y:60,opacity:0,duration:1.3,ease:EASE,delay:.3});
 gsap.from('.hero .chip',{y:24,opacity:0,duration:1,ease:EASE,stagger:.18,delay:1});
 gsap.fromTo('.hero__frame',{clipPath:'inset(0% 5% 0% 5% round 28px)'},{clipPath:'inset(0% 0% 0% 0% round 0px)',ease:'none',scrollTrigger:{trigger:'.hero__frame',start:'top 75%',end:'top 10%',scrub:.6}});
-gsap.fromTo('.hero__img',{scale:1.12},{scale:1,yPercent:8,ease:'none',scrollTrigger:{trigger:'.hero__frame',start:'top bottom',end:'bottom top',scrub:.6}});
+gsap.fromTo('.hero__img',{scale:1.12},{scale:1,yPercent:8,ease:'none',scrollTrigger:{trigger:'.hero__frame',start:'top bottom',end:'bottom top',scrub:.6}});}
 gsap.to('.chip--a',{y:-40,ease:'none',scrollTrigger:{trigger:'.hero__frame',start:'top 60%',end:'bottom top',scrub:.8}});
 gsap.to('.chip--b',{y:30,ease:'none',scrollTrigger:{trigger:'.hero__frame',start:'top 60%',end:'bottom top',scrub:.8}});
 /* reveals */
@@ -503,14 +525,10 @@ def build():
     body = f'''<div class="grain" aria-hidden="true"></div>
 {nav()}
 
-<header class="hero"><div class="hero__wash"></div><div class="shell hero__top">
-<div><span class="eyebrow rv-in">Back office for companies and schools</span>
-<h1 class="display rv-in" style="margin-top:22px">Capacity for <em>today.</em></h1></div>
-<div class="side"><p class="lede rv-in">Finance, payroll, HR, marketing and a live dashboard, run by one team so your leaders can lead.</p>
-<div class="btns rv-in"><a class="btn btn--teal" href="contact.html">Book a discovery call</a><a class="btn btn--ghost" href="dashboard.html">See the dashboard</a></div></div></div>
-<div class="hero__frame"><div class="hero__img"></div>
-<div class="chip chip--a"><i>&#10003;</i><span>Close signed off<small>Every month, on the calendar</small></span></div>
-<div class="chip chip--b"><i>&#8599;</i><span>Board package<small>Ready before the meeting</small></span></div></div></header>
+<header class="hero hero--old"><div class="hero__slides"><div style="background-image:url(/img/team-meeting.jpg)"></div><div style="background-image:url(/img/tnc-lobby.jpg)"></div></div><div class="hero__in">
+<h1 class="hero__h rv-in">Capacity for Today: Back-Office Solutions for Companies and Schools</h1>
+<p class="rv-in">Elevate partners with growing organizations and charter schools to take the weight off their leaders. From the monthly close and payroll to compliance, HR and a live financial dashboard, we run the back office so you can lead.</p>
+<div class="hero__btns rv-in"><a class="btn btn--teal" href="contact.html">Book a discovery call</a><a class="play" href="dashboard.html"><span><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>View our dashboard demo</a></div></div></header>
 
 <section class="marq" aria-label="Organizations we serve"><div class="marq__label eyebrow">Trusted by</div>{marquee}</section>
 
@@ -542,7 +560,7 @@ def build():
              '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">')
     html = (f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
             f'<title>Elevate Managed Services</title><meta name="robots" content="noindex"><link rel="icon" href="/favicon.svg" type="image/svg+xml">'
-            f'{fonts}<style>{CSS}</style></head><body>{body}{JS}</body></html>')
+            f'{fonts}<style>{CSS}</style></head><body class="page-home">{body}{JS}</body></html>')
     (HERE / "index.html").write_text(html)
     print("wrote", HERE / "index.html", len(html))
 
