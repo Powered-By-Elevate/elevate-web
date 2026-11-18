@@ -407,7 +407,9 @@ def services():
 {QUOTE}'''
     return page("services", "Business Services", "services", body)
 
-EDU_IMG = ["team-vicki-screen.jpg", "team-monitor.jpg", "team-amanda.jpg", "team-papers.jpg", "libertas-flag.jpg", "site-block.jpg"]
+# The Libertas Academy flag is never used (Matt, 2026-11-18: "it was a specific rule to not use this flag").
+BANNED = {"libertas-flag.jpg"}
+EDU_IMG = ["team-vicki-screen.jpg", "team-monitor.jpg", "team-amanda.jpg", "team-papers.jpg", "hub-edu-budget.jpg", "site-block.jpg"]
 
 def education():
     rows = [(t, EDU_IMG[i % len(EDU_IMG)], d, bl) for i, (_, t, d, bl) in enumerate(B.EDU)]
@@ -722,6 +724,9 @@ def build():
             n = html.count("/img/" + img)
             if n > 1 or len(seen[img]) > 1:
                 dup.append((img, fn, n))
+    for fn in ("index.html", "about.html", "services.html", "education.html", "contact.html", "portal.html", "dashboard.html"):
+        if any(b in (OUT / fn).read_text() for b in BANNED):
+            raise SystemExit(fn + " uses a banned photo")
     if dup:
         raise SystemExit("an image is used more than once: " + ", ".join(sorted({d[0] for d in dup})))
     # the preview lived at /redesign/; keep those links working
