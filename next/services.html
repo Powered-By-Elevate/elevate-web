@@ -295,7 +295,7 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 /* numbered notes: the why, the grants */
 .notes{display:grid;gap:20px}
 @media(min-width:760px){.notes{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:1100px){.notes{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1100px){.notes{grid-template-columns:repeat(4,1fr)}.notes--3{grid-template-columns:repeat(3,1fr)}}
 .note{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px 24px 28px;display:grid;gap:10px;align-content:start;box-shadow:0 30px 60px -48px rgba(6,58,71,.55);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
 .note:hover{transform:translateY(-6px);box-shadow:0 40px 70px -45px rgba(6,58,71,.6)}
 .note b{font:500 46px/1 var(--serif);color:transparent;-webkit-text-stroke:1px var(--gold2)}
