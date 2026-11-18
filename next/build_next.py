@@ -97,22 +97,33 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .chip--a{left:9%;bottom:12%}.chip--b{right:9%;top:12%}
 @media(max-width:700px){.chip--b{display:none}.chip--a{left:8%;bottom:8%}}
 
-/* phone */
-.phone{aspect-ratio:9/19.3;border-radius:44px;background:#121416;padding:10px;box-shadow:0 60px 80px -40px rgba(6,58,71,.55),inset 0 0 0 1.5px #3a3d40}
-.phone__screen{position:relative;width:100%;height:100%;border-radius:34px;overflow:hidden;background:#f4f7f8}
-.phone__screen::before{content:"";position:absolute;z-index:3;top:9px;left:50%;translate:-50% 0;width:32%;height:22px;border-radius:99px;background:#121416}
+/* the device: a titanium body with real thickness (stacked layers behind the face), a thin
+   bezel, the island, a status bar, a diagonal glare, and a shadow on the ground under it */
+.phone{position:relative;aspect-ratio:9/19.5;transform-style:preserve-3d}
+.phone__layer{position:absolute;inset:0;border-radius:15%/7%;background:linear-gradient(160deg,#cfd2d6,#7c8086 45%,#b9bcc1 70%,#6e7277)}
+.phone__face{position:absolute;inset:0;border-radius:15%/7%;padding:2.2%;background:linear-gradient(140deg,#f5f6f7 0%,#a7aaaf 20%,#eceef0 42%,#8b8f95 64%,#d8dade 84%,#9a9da2 100%);transform:translateZ(0)}
+.phone__bezel{height:100%;border-radius:13.6%/6.3%;background:#08090a;padding:3.4%}
+.phone__screen{position:relative;width:100%;height:100%;border-radius:11.8%/5.4%;overflow:hidden;background:#f4f7f8}
 .phone__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
-.phone__bar{position:absolute;z-index:3;right:3px;top:8%;width:3px;height:16%;border-radius:3px;background:rgba(0,0,0,.28)}
+.phone__island{position:absolute;z-index:6;top:1.9%;left:50%;translate:-50% 0;width:31%;height:3.4%;border-radius:99px;background:#000}
+.phone__island::after{content:"";position:absolute;right:13%;top:50%;translate:0 -50%;width:18%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 35%,#2b3a55,#05070b 60%)}
+.phone__status{position:absolute;z-index:5;inset:0 0 auto;height:6.2%;display:flex;justify-content:space-between;align-items:center;padding:0 9% 0 10%;
+ font:600 clamp(10px,1vw,13px)/1 -apple-system,"SF Pro Text","Segoe UI",var(--sans);color:#111;background:linear-gradient(#f4f7f8 72%,rgba(244,247,248,0))}
+.phone__status svg{height:1em;width:auto;margin-left:4px}
+.phone__glare{position:absolute;inset:0;z-index:7;border-radius:inherit;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,.07) 34%,rgba(255,255,255,0) 34.2%,rgba(255,255,255,0) 100%)}
+.phone__btn{position:absolute;width:1.4%;border-radius:2px;background:linear-gradient(90deg,#6c7075,#d4d6da,#7a7e83)}
+.phone__btn.v1{left:-.9%;top:19%;height:4%}.phone__btn.v2{left:-.9%;top:25%;height:7%}.phone__btn.v3{left:-.9%;top:33.5%;height:7%}.phone__btn.p{right:-.9%;top:27%;height:11%}
 .phone--loop img{animation:scrollshot var(--loop,22s) ease-in-out infinite alternate}
-/* the pivoted phone: turned a little for depth, with an edge, a sheen and a long soft shadow */
-.tilt{--ry:-20deg;--rx:9deg;--rz:3deg;perspective:1500px}
-.tilt--r{--ry:16deg;--rx:7deg;--rz:-2deg}
-.tilt .phone{transform:rotateY(var(--ry)) rotateX(var(--rx)) rotateZ(var(--rz));transform-style:preserve-3d;
- box-shadow:-9px 6px 0 -2px #2a2e32,-10px 7px 0 -2px #4a4f54,0 70px 90px -45px rgba(6,58,71,.6),inset 0 0 0 1.5px #3a3d40}
-.tilt--r .phone{box-shadow:9px 6px 0 -2px #2a2e32,10px 7px 0 -2px #4a4f54,0 70px 90px -45px rgba(6,58,71,.6),inset 0 0 0 1.5px #3a3d40}
-.tilt .phone::after{content:"";position:absolute;inset:0;border-radius:44px;pointer-events:none;z-index:4;
- background:linear-gradient(118deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 22%,transparent 40%)}
-.tilt .phone{position:relative}
+.ground{position:absolute;left:12%;right:12%;bottom:-7%;height:9%;border-radius:50%;background:radial-gradient(closest-side,rgba(6,58,71,.42),rgba(6,58,71,0));filter:blur(6px)}
+/* pivoted: the body turns, so its titanium edge shows */
+.tilt{--ry:-24deg;--rx:10deg;--rz:-6deg;position:relative;perspective:1400px}
+.tilt--r{--ry:22deg;--rx:9deg;--rz:5deg}
+.tilt .phone{transform:rotateY(var(--ry)) rotateX(var(--rx)) rotateZ(var(--rz))}
+.tilt--back .phone{--ry:-14deg;--rx:58deg;--rz:-28deg}
+.duo{position:relative;width:min(300px,66vw);margin-inline:auto;padding:4% 0 10%}
+.duo .tilt--r{position:relative;z-index:2;width:100%}
+.duo .tilt--back{position:absolute;z-index:1;width:92%;left:-38%;bottom:-2%;opacity:.96}
+.duo .ground{bottom:3%;left:-10%;right:0}
 @keyframes scrollshot{0%,8%{transform:translateY(0)}92%,100%{transform:translateY(calc(-1 * var(--travel,0px)))}}
 
 /* marquee */
@@ -224,17 +235,32 @@ p{margin:0}h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
 .dash .shell{display:grid;gap:50px;align-items:center}
 @media(min-width:1000px){.dash .shell{grid-template-columns:.75fr 1.25fr}}
 .dash__copy{display:grid;gap:20px}
-.lap{position:relative;perspective:1800px;padding:40px 0}
-.lap__lid{position:relative;transform-origin:50% 100%;transform:rotateX(var(--open,0deg));border-radius:18px 18px 6px 6px;background:#121416;padding:12px 12px 16px;box-shadow:0 60px 90px -60px rgba(6,58,71,.7)}
-.lap__screen{position:relative;aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:#f4f7f8}
+.lap{position:relative;perspective:2200px;padding:10px 0 150px}
+.mac{position:relative;width:86%;margin:0 auto;transform-style:preserve-3d;transform:rotateX(-18deg) rotateY(-16deg) rotateZ(1deg)}
+.lap__lid{position:relative;transform-origin:50% 100%;transform:rotateX(var(--open,-10deg));transform-style:preserve-3d;border-radius:3.2%/5%;padding:.5%;
+ background:linear-gradient(135deg,#eef0f2,#b7bbc0 40%,#e2e4e7 60%,#a7abb0)}
+.lap__bezel{border-radius:2.8%/4.4%;background:#0a0b0c;padding:2% 2% 2.6%}
+.lap__screen{position:relative;aspect-ratio:16/10;border-radius:.6%/1%;overflow:hidden;background:#f4f7f8}
 .lap__screen img{position:absolute;left:0;top:0;width:100%;will-change:transform}
-.lap__screen::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.14),transparent 35%);pointer-events:none}
-.lap__base{height:14px;margin:0 -7%;border-radius:0 0 18px 18px;background:linear-gradient(#e3e7e9,#b9c1c4);box-shadow:0 30px 40px -30px rgba(6,58,71,.5)}
+.lap__notch{position:absolute;z-index:3;top:0;left:50%;translate:-50% 0;width:11%;height:3.6%;border-radius:0 0 8px 8px;background:#0a0b0c}
+.lap__notch::after{content:"";position:absolute;left:50%;top:40%;width:7px;height:7px;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle at 35% 35%,#26344c,#030406 60%)}
+.lap__screen::after{content:"";position:absolute;inset:0;background:linear-gradient(118deg,rgba(255,255,255,.2) 0%,rgba(255,255,255,.05) 36%,rgba(255,255,255,0) 36.2%);pointer-events:none;z-index:2}
+/* the deck lies flat in front of the lid: keyboard well, keys, trackpad */
+.lap__deck{position:absolute;left:-1.5%;right:-1.5%;top:100%;aspect-ratio:1.55/1;transform-origin:50% 0;transform:rotateX(90deg);transform-style:preserve-3d;
+ border-radius:0 0 4%/0 0 6%;background:linear-gradient(180deg,#d9dce0,#eef0f2 30%,#e4e6e9);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.lap__deck::before{content:"";position:absolute;inset:0;border-radius:inherit;transform:translateZ(-10px);background:#9fa4aa}
+.lap__keys{position:absolute;left:11%;right:11%;top:7%;height:42%;border-radius:1.5%;background:#2b2e32;padding:1%;display:grid;grid-template-rows:repeat(6,1fr);gap:3%}
+.lap__keys div{display:flex;gap:1%}
+.lap__keys i{flex:1;border-radius:2px;background:linear-gradient(#1a1c1f,#111214);box-shadow:inset 0 -1px 0 rgba(255,255,255,.06)}
+.lap__keys div:first-child i{opacity:.8}
+.lap__pad{position:absolute;left:30%;right:30%;top:55%;bottom:8%;border-radius:3%/5%;background:linear-gradient(180deg,#d3d6da,#dfe2e5);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.lap__lip{position:absolute;left:44%;right:44%;bottom:0;height:2%;border-radius:4px 4px 0 0;background:#b9bdc2}
+.lap__shadow{position:absolute;left:6%;right:6%;bottom:40px;height:60px;border-radius:50%;background:radial-gradient(closest-side,rgba(6,58,71,.35),rgba(6,58,71,0));filter:blur(10px)}
 .stat{position:absolute;z-index:2;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:0 24px 50px -28px rgba(6,58,71,.55);display:grid;gap:4px;min-width:150px}
 .stat small{font:600 10.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
 .stat b{font:500 30px/1 var(--serif);color:var(--ink)}
 .stat em{font-style:normal;font-size:12.5px;color:var(--teal)}
-.stat--a{left:-4%;top:6%}.stat--b{right:-3%;top:34%}.stat--c{left:8%;bottom:-2%}
+.stat--a{left:-4%;top:6%}.stat--b{right:-3%;top:34%}.stat--c{left:-4%;bottom:30%}
 @media(max-width:700px){.stat{min-width:0;padding:10px 12px}.stat b{font-size:22px}.stat--a{left:0}.stat--b{right:0}}
 .dash__note{font-size:13px;color:var(--ink2)}
 
@@ -302,27 +328,36 @@ gsap.utils.toArray('.step').forEach(function(s,i){gsap.from(s,{y:50,opacity:0,du
    phone scrolls its screen and straightens while it is on screen. Nothing holds the page. */
 gsap.utils.toArray('.beat__photo > div').forEach(function(d){gsap.fromTo(d,{yPercent:-5,scale:1.06},{yPercent:5,scale:1,ease:'none',scrollTrigger:{trigger:d.parentNode,start:'top bottom',end:'bottom top',scrub:.6}})});
 gsap.utils.toArray('.beat__copy').forEach(function(c){gsap.from(c.children,{y:26,opacity:0,duration:.9,ease:EASE,stagger:.07,scrollTrigger:{trigger:c,start:'top 82%'}})});
-document.querySelectorAll('.tilt-host').forEach(function(h){var s=h.querySelector('.phone__screen'),img=s.querySelector('img'),tl=h.querySelector('.tilt');
+document.querySelectorAll('.tilt-host').forEach(function(h){var tl=h.querySelector('.tilt--r'),s=tl.querySelector('.phone__screen'),img=s.querySelector('img');
  ScrollTrigger.create({trigger:h,start:'top bottom',end:'bottom top',onUpdate:function(self){var k=self.progress;
-  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});gsap.set(tl,{'--ry':(18-12*k)+'deg','--rx':(8-4*k)+'deg'});}});});
+  gsap.set(img,{y:-Math.max(0,img.clientHeight-s.clientHeight)*Math.min(1,Math.max(0,(k-.15)/.7))});gsap.set(tl,{'--ry':(26-12*k)+'deg','--rx':(10-4*k)+'deg'});}});});
 /* the dashboard: lid opens, the screen scrolls, the figures float up and count */
 (function(){var lid=document.querySelector('.lap__lid');if(!lid)return;var scr=lid.querySelector('.lap__screen'),img=scr.querySelector('img');
- gsap.fromTo(lid,{'--open':'-62deg'},{'--open':'0deg',ease:'none',scrollTrigger:{trigger:'.lap',start:'top 90%',end:'top 35%',scrub:.7}});
+ gsap.fromTo(lid,{'--open':'72deg'},{'--open':'-10deg',ease:'none',scrollTrigger:{trigger:'.lap',start:'top 95%',end:'top 40%',scrub:.7}});
  ScrollTrigger.create({trigger:'.lap',start:'top 40%',end:'bottom top',onUpdate:function(self){gsap.set(img,{y:-Math.max(0,img.clientHeight-scr.clientHeight)*self.progress})}});
- gsap.utils.toArray('.stat').forEach(function(s,i){gsap.from(s,{y:40,opacity:0,duration:.9,ease:EASE,delay:.2+i*.15,scrollTrigger:{trigger:'.lap',start:'top 45%'}});
+ gsap.utils.toArray('.stat').forEach(function(s,i){gsap.fromTo(s,{y:40,opacity:0},{y:0,opacity:1,duration:.9,ease:EASE,delay:.15+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'}});
   gsap.to(s,{y:[-36,24,-18][i],ease:'none',scrollTrigger:{trigger:'.lap',start:'top bottom',end:'bottom top',scrub:.8}});
   var b=s.querySelector('b'),to=parseFloat(b.dataset.to),dec=+(b.dataset.dec||0),pre=b.dataset.pre||'',suf=b.dataset.suf||'',o={v:0};
-  gsap.to(o,{v:to,duration:1.6,ease:'power2.out',delay:.4+i*.15,scrollTrigger:{trigger:'.lap',start:'top 45%'},onUpdate:function(){b.textContent=pre+o.v.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf}});});})();
+  gsap.fromTo(o,{v:0},{v:to,duration:1.6,ease:'power2.out',delay:.35+i*.15,immediateRender:false,scrollTrigger:{trigger:'.lap',start:'top 72%',toggleActions:'restart none none reset'},onUpdate:function(){b.textContent=pre+o.v.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec})+suf}});});})();
 addEventListener('load',function(){travel();ScrollTrigger.refresh()});
 })();
 </script>"""
 
-def tilt(inner, right=False):
-    return f'<div class="tilt{" tilt--r" if right else ""}">{inner}</div>'
+def tilt(inner, right=False, cls=""):
+    return f'<div class="tilt{" tilt--r" if right else ""} {cls}">{inner}</div>'
 
-def phone(img, loop=False, cls=""):
-    return (f'<div class="phone{" phone--loop" if loop else ""} {cls}"><div class="phone__screen">'
-            f'<img src="img/{img}" alt="" loading="lazy"><span class="phone__bar"></span></div></div>')
+STATUS = ('<div class="phone__status"><span>9:41</span><span>'
+          '<svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>'
+          '<svg viewBox="0 0 16 12"><path d="M8 11.5l2.2-2.6a3.2 3.2 0 00-4.4 0zM3.4 6.3a6.8 6.8 0 019.2 0l1.6-1.9a9.4 9.4 0 00-12.4 0zM0 2.4l1.6 1.9a11.6 11.6 0 0112.8 0L16 2.4a14.2 14.2 0 00-16 0z"/></svg>'
+          '<svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".45"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" opacity=".45"/></svg>'
+          '</span></div>')
+
+def phone(img, loop=False, cls="", depth=9):
+    layers = "".join(f'<span class="phone__layer" style="transform:translateZ({-k}px)"></span>' for k in range(depth, 0, -1))
+    return (f'<div class="phone{" phone--loop" if loop else ""} {cls}">{layers}'
+            '<span class="phone__btn v1"></span><span class="phone__btn v2"></span><span class="phone__btn v3"></span><span class="phone__btn p"></span>'
+            f'<div class="phone__face"><div class="phone__bezel"><div class="phone__screen">{STATUS}<span class="phone__island"></span>'
+            f'<img src="img/{img}" alt="" loading="lazy"><span class="phone__glare"></span></div></div></div></div>')
 
 def build():
     beats_html = ""
@@ -330,7 +365,8 @@ def build():
         li = "".join(f"<li>{b}</li>" for b in bullets)
         pill = f'<span class="pill"><i></i>{label}</span>'
         if kind == "phone":
-            small = f'<div class="beat__vis tilt-host">{tilt(phone(f), right=True)}</div>'
+            small = (f'<div class="beat__vis tilt-host"><div class="duo">{tilt(phone("bi-construction-ops-watch.jpg", depth=7), right=False, cls="tilt--back")}'
+                     f'{tilt(phone(f), right=True)}<span class="ground"></span></div></div>')
         else:
             small = f'<div class="beat__vis beat__photo"><div style="background-image:url(/img/{f})"></div>{pill}</div>'
         beats_html += (f'<article class="beat"><div class="beat__copy"><span class="eyebrow">{eb}</span>'
@@ -389,7 +425,7 @@ def build():
 <section class="dash"><div class="shell"><div class="dash__copy"><span class="eyebrow rv">Business intelligence</span><h2 class="h2 rv">Leaders see the answer. <em>Finance sees the detail.</em></h2>
 <p class="lede rv">One dashboard for every entity, cut to each person&rsquo;s role.</p>
 <div class="rv"><a class="btn btn--teal" href="/dashboard">Take the tour</a></div><p class="dash__note rv">Figures from the sample school network in the demo.</p></div>
-<div class="lap"><div class="lap__lid"><div class="lap__screen"><img src="img/bi-desk-education-home.jpg" alt="The Elevate BI dashboard on a sample school network" loading="lazy"></div></div><div class="lap__base"></div>
+<div class="lap"><span class="lap__shadow"></span><div class="mac"><div class="lap__lid"><div class="lap__bezel"><div class="lap__screen"><span class="lap__notch"></span><img src="img/bi-desk-education-home.jpg" alt="The Elevate BI dashboard on a sample school network" loading="lazy"></div></div></div><div class="lap__deck"><div class="lap__keys"><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><span class="lap__pad"></span><span class="lap__lip"></span></div></div>
 <div class="stat stat--a"><small>Revenue</small><b data-to="21.9" data-dec="1" data-pre="$" data-suf="M">$21.9M</b><em>Year to date</em></div>
 <div class="stat stat--b"><small>Seats filled</small><b data-to="86.6" data-dec="1" data-suf="%">86.6%</b><em>Across six campuses</em></div>
 <div class="stat stat--c"><small>Students enrolled</small><b data-to="2582">2,582</b><em>Read from the SIS</em></div></div></div></section>
