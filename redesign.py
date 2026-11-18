@@ -560,7 +560,7 @@ TOUR_CSS = """
 .win__cap p{color:var(--ink2);font-size:15.5px}
 .win__cap>*{transition:opacity .35s ease,transform .35s ease}
 .win__cap.swap>*{opacity:0;transform:translateY(6px)}
-.win__view{position:relative;height:clamp(420px,52vw,620px);background:#f4f7f8;overflow:hidden}
+.win__view{position:relative;height:clamp(380px,min(52vw,calc(100vh - 360px)),620px);background:#f4f7f8;overflow:hidden}
 .win__view iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#f4f7f8}
 .win__foot{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 16px;font-size:13px;color:var(--ink2);border-top:1px solid var(--line);background:#fbfcfc}
 .win__foot a{color:var(--teal);font-weight:600;text-decoration:none}.win__foot a:hover{color:var(--teal2)}

@@ -6,7 +6,7 @@
    persists to this browser and exports as a JSON file, which is the file a
    real deployment is built from. That is the CMS: one object, one apply(). */
 
-import { brandVars } from './color.js?v=4f9513663c';
+import { brandVars } from './color.js?v=831769d7d1';
 
 const KEY = 'hub.settings.v2';
 
