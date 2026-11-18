@@ -358,6 +358,9 @@ def check_images():
     for f in ["index", "services", "education", "about", "contact", "portal", "dashboard"]:
         html = (HERE / f"{f}.html").read_text()
         html = re.sub(r"<script.*?</script>", "", html, flags=re.S)
+        # the home hero's rotation may repeat photos from the pages (Matt, 2026-11-18, chose "Repeat them"
+        # for Joseph at the laptop and the table photo); nothing else may
+        html = re.sub(r'<div class="hero__slides">.*?</div></div>', "", html, flags=re.S)
         if f != "index":  # the shared stylesheet carries the home page's own photos
             html = re.sub(r"<style>.*?</style>", "", html, flags=re.S)
         for img in re.findall(r"[\w./-]*?/?((?:img/)?[\w-]+\.(?:jpg|png))", html):
