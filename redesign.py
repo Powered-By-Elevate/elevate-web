@@ -560,6 +560,33 @@ TOUR_CSS = """
 .how div{border-top:3px solid var(--teal);padding-top:16px;display:grid;gap:8px;align-content:start}
 .how b{font:600 19px/1.3 var(--sans)}.how p{color:var(--ink2);font-size:16px}
 @media(prefers-reduced-motion:reduce){.tour.auto .tour__steps button[aria-selected=true] i{animation:none}.win__live i{animation:none}}
+
+.quote{background:var(--grey);padding-block:clamp(64px,8vw,104px)}
+.quote__head{display:grid;gap:14px;max-width:780px;margin-bottom:32px}
+.quote__head p{color:var(--ink2)}
+.qform{display:grid;gap:26px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(22px,4vw,44px)}
+.qform h3{font:600 19px/1.3 var(--sans);margin-bottom:4px}
+.qform .hint{color:var(--ink2);font-size:15px;margin-bottom:12px}
+.qform .row{display:grid;gap:16px}@media(min-width:760px){.qform .row{grid-template-columns:1fr 1fr}}
+.qform label.f{display:grid;gap:6px;font:600 14px/1.2 var(--sans)}
+.qform input[type=text],.qform input[type=email],.qform select,.qform textarea{font:400 16px/1.4 var(--sans);padding:13px 14px;border:1px solid #cfd8da;border-radius:10px;background:#fff;width:100%}
+.qform input:focus,.qform select:focus,.qform textarea:focus{outline:2px solid var(--teal2);outline-offset:1px;border-color:var(--teal2)}
+.qgroup{border-top:1px solid var(--line);padding-top:18px}
+.qgroup>b{display:block;font:600 14px/1.3 var(--sans);margin-bottom:10px}
+.qgroup>b small{font-weight:400;color:var(--ink2)}
+.qchips{display:flex;flex-wrap:wrap;gap:8px}
+.qchips label{position:relative;cursor:pointer}
+.qchips input{position:absolute;opacity:0;pointer-events:none}
+.qchips span{display:inline-flex;align-items:center;gap:7px;border:1px solid #cfd8da;border-radius:99px;padding:9px 14px;font:500 14.5px/1 var(--sans);color:var(--ink);background:#fff;transition:background .2s,border-color .2s,color .2s}
+.qchips span::before{content:"";width:14px;height:14px;border-radius:4px;border:1.5px solid #b5c2c5;flex:none;transition:all .2s}
+.qchips label:hover span{border-color:var(--teal2)}
+.qchips input:checked+span{background:var(--tint);border-color:var(--teal);color:var(--teal)}
+.qchips input:checked+span::before{background:var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/100%;border-color:var(--teal)}
+.qchips input:focus-visible+span{outline:2px solid var(--teal2);outline-offset:2px}
+.qcount{font:600 14px/1 var(--sans);color:var(--teal)}
+.qsubmit{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:22px}
+.qdone{background:#fff;border:1px solid var(--line);border-radius:18px;padding:clamp(28px,5vw,56px);display:grid;gap:12px}
+.qform .msg{font-size:15px}.qform .msg.bad{color:#b4412f}
 """
 
 TOUR_JS = r"""<script>
@@ -590,6 +617,58 @@ if('IntersectionObserver' in window){new IntersectionObserver(function(es,o){if(
 })();
 </script>"""
 
+# Matt, 2026-11-18: a form for the software they use and what they want connected, so we can quote.
+# It sends through FormSubmit exactly as the contact form does (build.py FORM_URL).
+QUOTE_SHOWS = ["Financial dashboard", "Budget vs actual", "Cash &amp; working capital", "Statements &amp; board packs",
+               "Operations by location, job or campus", "Enrollment &amp; attendance", "Sales pipeline &amp; CRM",
+               "Marketing results", "HR &amp; payroll", "Documents"]
+QUOTE_JS = r"""<script>
+(function(){var URL=%s,CC=%s,f=document.getElementById('quoteForm');if(!f)return;var st=document.getElementById('quoteStatus'),cnt=document.getElementById('quoteCount');
+function picked(n){return [].map.call(f.querySelectorAll('input[name="'+n+'"]:checked'),function(i){return i.value;});}
+f.addEventListener('change',function(){var n=picked('software').length;cnt.textContent=n?n+' selected':'';});
+f.addEventListener('submit',function(ev){ev.preventDefault();var d={};new FormData(f).forEach(function(v,k){if(k!=='software'&&k!=='shows')d[k]=String(v).trim();});
+if(d.botcheck)return;var sw=picked('software'),sh=picked('shows'),miss=[];
+if(!d.name)miss.push('your name');if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email||''))miss.push('a valid work email');if(!d.company)miss.push('your company');
+if(!sw.length&&!d.other)miss.push('the software you use');
+if(miss.length){st.className='msg bad';st.textContent='Please add '+miss.join(', ')+'.';return;}
+var btn=f.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Sending…';
+fetch(URL,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
+body:JSON.stringify({_cc:CC,_subject:'Dashboard quote request: '+d.company,_template:'table',_captcha:'false',_replyto:d.email,
+name:d.name,email:d.email,company:d.company,industry:d.industry,entities:d.entities,software:sw.join(', ')||'(none ticked)',other_software:d.other||'',dashboard_should_show:sh.join(', ')||'(not specified)',notes:d.notes||''})})
+.then(function(r){return r.json();}).then(function(j){if(!(j.success===true||j.success==='true'))throw 0;f.hidden=true;document.getElementById('quoteDone').hidden=false;})
+.catch(function(){st.className='msg bad';st.textContent='Something went wrong sending the form. Please try again in a moment.';btn.disabled=false;btn.textContent='Request a quote';});});})();
+</script>"""
+
+def quote_section():
+    import json
+    cfg = json.loads((HERE / "demo" / "config" / "connectors.json").read_text())
+    groups = ""
+    for c in cfg["categories"]:
+        names = sorted({x["name"] for x in cfg["connectors"] if x["cat"] == c["id"]}, key=str.lower)
+        chips = "".join(f'<label><input type="checkbox" name="software" value="{n}"><span>{n}</span></label>' for n in names)
+        groups += f'<div class="qgroup"><b>{c["name"]}</b><div class="qchips">{chips}</div></div>'
+    shows = "".join(f'<label><input type="checkbox" name="shows" value="{s}"><span>{s}</span></label>' for s in QUOTE_SHOWS)
+    inds = "".join(f"<option>{n}</option>" for n in ["Schools &amp; education", "Construction &amp; development", "Retail &amp; multi-site",
+                   "Food &amp; beverage", "Manufacturing &amp; industrial", "Freight &amp; logistics", "Software &amp; technology",
+                   "Healthcare &amp; clinics", "Something else"])
+    ents = "".join(f"<option>{n}</option>" for n in ["1", "2 to 5", "6 to 10", "More than 10"])
+    return f"""<section class="quote"><div class="shell"><div class="quote__head"><span class="eyebrow">Get a quote</span>
+<h2 class="h2">Tell Us What You <span class="hl">Run On</span></h2>
+<p>Tick the software you use and what you want to see. We will come back with a quote for connecting it.</p></div>
+<form id="quoteForm" class="qform" novalidate>
+<div class="row"><label class="f">Name<input type="text" name="name" autocomplete="name"></label><label class="f">Work email<input type="email" name="email" autocomplete="email" placeholder="name@company.com"></label></div>
+<div class="row"><label class="f">Company<input type="text" name="company" autocomplete="organization"></label><label class="f">Industry<select name="industry">{inds}</select></label></div>
+<div class="row"><label class="f">Companies, campuses or locations<select name="entities">{ents}</select></label><span></span></div>
+<div><h3>The software you use <span class="qcount" id="quoteCount"></span></h3><p class="hint">Tick everything that holds numbers you would want on the dashboard.</p>{groups}
+<div class="qgroup"><label class="f">Anything else you use<input type="text" name="other" placeholder="Software not listed above"></label></div></div>
+<div><h3>What the dashboard should show</h3><div class="qchips">{shows}</div></div>
+<label class="f">Anything else we should know<textarea name="notes" rows="4"></textarea></label>
+<input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+<div class="qsubmit"><button class="btn btn--teal" type="submit">Request a quote</button><p id="quoteStatus" class="msg" role="status" aria-live="polite"></p></div>
+</form>
+<div id="quoteDone" class="qdone" hidden><span class="eyebrow">Thank you</span><h2 class="h2">We Have Your <span class="hl">List</span></h2><p style="color:var(--ink2)">We will review what you use and come back with a quote. Questions in the meantime: <a href="mailto:{EMAIL}">{EMAIL}</a>.</p></div>
+</div></section>{QUOTE_JS % (json.dumps(B.FORM_URL), json.dumps(B.FORM_CC))}"""
+
 def dashboard():
     import json
     demo = HERE / "demo"
@@ -616,6 +695,7 @@ def dashboard():
 <div class="win__view"><iframe id="tourFrame" title="Elevate BI dashboard, sample company" loading="lazy"></iframe></div>
 <div class="win__foot"><span>Sample company and figures. Every number in a client's dashboard is read from their own systems.</span><a id="tourFull" target="_blank" rel="noopener" href="/demo/#/choose">Open the full demo &rarr;</a></div></div></div>
 </div></section>
+{quote_section()}
 <section class="sec"><div class="shell"><span class="eyebrow">How it works</span><h2 class="h2" style="margin-bottom:28px">Set Up Once, <span class="hl">Live Every Day</span></h2><div class="how">{hw}</div></div></section>
 {TOUR_JS % json.dumps(data)}"""
     return page("dashboard", "BI Dashboard", "dashboard", body)

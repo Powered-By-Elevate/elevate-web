@@ -26,10 +26,10 @@ def mark(i):
 BEATS = [
     ("finance", "Financial management", "A close you can set a clock by.",
      "The close, the reporting and the forecast, run on a fixed calendar.",
-     B.BIZ[0][3][:4], ("photo", "team-papers.jpg", "Month-end close, signed off"), ""),
+     B.BIZ[0][3][:4], ("photo", "team-overhead.jpg", "Month-end close, signed off"), ""),
     ("people", "HR, payroll &amp; people", "One home base for every employee.",
      "Payroll, onboarding and personnel records, handled by people who know your team.",
-     B.BIZ[3][3], ("photo", "team-laugh.jpg", "One home base for every employee"), ""),
+     B.BIZ[3][3], ("photo", "team-hall.jpg", "One home base for every employee"), ""),
     ("marketing", "Marketing", "Campaigns on the same cadence as the books.",
      "Brand, collateral and campaigns, measured against what they bring in.",
      B.BIZ[4][3] + ["Enrollment marketing for schools"], ("photo", "team-plan.jpg", "Campaigns held to a calendar"), ""),
